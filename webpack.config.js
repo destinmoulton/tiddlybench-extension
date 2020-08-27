@@ -6,9 +6,12 @@ const TerserPlugin = require("terser-webpack-plugin");
 module.exports = {
     devtool: "source-map",
     stats: "errors-only",
+    resolve: {
+        extensions: [".ts", ".js", ".json"],
+    },
     entry: {
-        background: "./source/background",
-        options: "./source/options",
+        background: "./source/background.ts",
+        options: "./source/options.ts",
     },
     output: {
         path: path.join(__dirname, "distribution"),
