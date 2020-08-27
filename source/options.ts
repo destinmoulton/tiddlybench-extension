@@ -12,15 +12,18 @@ const numberInputs: HTMLInputElement[] = [
         'input[type="number"][name^="color"]'
     ),
 ];
-const output: HTMLElement = document.querySelector(".color-output");
+const output: HTMLElement = <HTMLElement>(
+    document.querySelector(".color-output")
+);
 
 function updateColor() {
     output.style.backgroundColor = `rgb(${rangeInputs[0].value}, ${rangeInputs[1].value}, ${rangeInputs[2].value})`;
 }
 
-function updateInputField(event) {
-    numberInputs[rangeInputs.indexOf(event.currentTarget)].value =
-        event.currentTarget.value;
+function updateInputField(event: Event) {
+    numberInputs[
+        rangeInputs.indexOf(event.currentTarget as HTMLInputElement)
+    ].value = (<HTMLInputElement>event.currentTarget).value;
 }
 
 for (const input of rangeInputs) {
