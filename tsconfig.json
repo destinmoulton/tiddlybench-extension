@@ -1,6 +1,22 @@
 {
-    "extends": "@sindresorhus/tsconfig",
     "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "jsx": "react",
+        "pretty": true,
+        "newLine": "lf",
+        "stripInternal": true,
+        "strict": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "noEmitOnError": true,
+        // Disabled because of TS bugs: https://github.com/sindresorhus/tsconfig/issues/7
+        // "useDefineForClassFields": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
         "target": "esnext",
         "declaration": false
     },
