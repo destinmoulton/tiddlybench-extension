@@ -1,7 +1,7 @@
-import optionsStorage from "./options-storage";
-import api from "./api";
+import optionsStorage from "../lib/options-storage";
+import api from "../lib/api";
 //import { browser } from "webextension-polyfill-ts";
-import messenger from "./messenger";
+import messenger from "../lib/messenger";
 
 window.addEventListener("load", startOptions);
 

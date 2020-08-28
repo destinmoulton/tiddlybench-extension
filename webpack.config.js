@@ -12,11 +12,11 @@ module.exports = {
     entry: {
         background: "./source/background.ts",
         options: "./source/options.ts",
-        popup: "./source/popup.ts",
+        popup: "./source/popup/popup.ts",
     },
     output: {
         path: path.join(__dirname, "distribution"),
-        filename: "[name].js",
+        filename: "[name]/[name].js",
     },
     module: {
         rules: [
@@ -33,7 +33,7 @@ module.exports = {
             {
                 from: "**/*",
                 context: "source",
-                ignore: ["*.js"],
+                ignore: ["*.js", "*.ts", "*.tsx"],
             },
             {
                 from:
