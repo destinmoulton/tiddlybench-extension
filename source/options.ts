@@ -1,34 +1,15 @@
 import optionsStorage from "./options-storage";
+import api from "./api";
+//import { browser } from "webextension-polyfill-ts";
+import messenger from "./messenger";
 
-optionsStorage.syncForm("#options-form");
+window.addEventListener("load", startOptions);
 
-const rangeInputs: HTMLInputElement[] = [
-    ...document.querySelectorAll<HTMLInputElement>(
-        'input[type="range"][name^="color"]'
-    ),
-];
-const numberInputs: HTMLInputElement[] = [
-    ...document.querySelectorAll<HTMLInputElement>(
-        'input[type="number"][name^="color"]'
-    ),
-];
-const output: HTMLElement = <HTMLElement>(
-    document.querySelector(".color-output")
+function startOptions() {
+    messenger.log("options :: onload");
+    optionsStorage.syncForm("#options-form");
+}
+const testConnection: HTMLElement = <HTMLElement>(
+    document.getElementById("tb-test-connection")
 );
-
-function updateColor() {
-    output.style.backgroundColor = `rgb(${rangeInputs[0].value}, ${rangeInputs[1].value}, ${rangeInputs[2].value})`;
-}
-
-function updateInputField(event: Event) {
-    numberInputs[
-        rangeInputs.indexOf(event.currentTarget as HTMLInputElement)
-    ].value = (<HTMLInputElement>event.currentTarget).value;
-}
-
-for (const input of rangeInputs) {
-    input.addEventListener("input", updateColor);
-    input.addEventListener("input", updateInputField);
-}
-
-window.addEventListener("load", updateColor);
+testConnection.addEventListener("click", api.test);
