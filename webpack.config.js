@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const SizePlugin = require("size-plugin");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
@@ -10,8 +11,8 @@ module.exports = {
         extensions: [".ts", ".js", ".json"],
     },
     entry: {
-        background: "./source/background.ts",
-        options: "./source/options.ts",
+        background: "./source/background/background.ts",
+        options: "./source/options/options.ts",
         popup: "./source/popup/popup.ts",
     },
     output: {
@@ -43,6 +44,9 @@ module.exports = {
                 from: "node_modules/base-64/base64.js",
             },
         ]),
+        new webpack.DefinePlugin({
+            ENV: JSON.stringify(process.env.NODE_ENV),
+        }),
     ],
     optimization: {
         minimizer: [
