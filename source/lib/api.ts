@@ -1,28 +1,26 @@
-import messenger from "./messenger";
-
-import optionsStorage from "./options-storage";
+import optionsStorage from "../lib//options-storage";
 import base64 from "base-64";
 
-const ENDPOINTS = {
+//import logger from "../lib/logger";
+import { API_Result, Tiddler } from "../types";
+export const ENDPOINTS = {
     BASE: "/",
     GET_ALL: "/recipes/default/tiddlers.json",
 };
 
 class API {
+    constructor() {
+        this.joinURL = this.joinURL.bind(this);
+    }
     joinURL(p1: string, p2: string) {
-        messenger.log("joining url");
         p1 = p1.endsWith("/") ? p1.substr(0, p1.length - 1) : p1;
         p2 = p2.startsWith("/") ? p2.substr(1) : p2;
 
         return p1 + "/" + p2;
     }
 
-    async test() {
-        messenger.log("running api test");
-        var options = await optionsStorage.getAll();
-        messenger.log(options);
-        var url = this.joinURL(options.url, ENDPOINTS.GET_ALL);
-        messenger.log(url);
+    async get(url: string): Promise<API_Result> {
+        const options = await optionsStorage.getAll();
 
         const headers = new Headers({
             Authorization: `Basic ${base64.encode(
@@ -30,12 +28,45 @@ class API {
             )}`,
         });
 
-        return fetch(url, { headers }).then((response) => {
-            messenger.log(response.status);
-            if (!response.ok) throw new Error(response.status.toString());
-            messenger.log("test :: ", response.json());
-            return response.json();
-        });
+        let response;
+        try {
+            response = await fetch(url, { headers });
+        } catch (err) {
+            return {
+                ok: false,
+                message:
+                    "Failed to connect. Check the URL. Make sure you include http:// or https://.",
+            };
+        }
+
+        if (!response.ok) {
+            return {
+                ok: false,
+                message:
+                    "Failed to connect to that server. Check the URL. Make sure you include http:// or https://.",
+                response,
+            };
+        }
+
+        if (response.status === 404) {
+            return {
+                ok: false,
+                message:
+                    "Unable to find that URL. Make sure you include http:// or https://.",
+                response,
+            };
+        }
+
+        if (response.status === 401) {
+            return {
+                ok: false,
+                message: "The username or password is invalid.",
+                response,
+            };
+        }
+        const data: Tiddler[] = await response.json();
+
+        return { ok: true, data };
     }
 }
 
