@@ -12,6 +12,7 @@ module.exports = {
     entry: {
         background: "./source/background.ts",
         options: "./source/options.ts",
+        popup: "./source/popup.ts",
     },
     output: {
         path: path.join(__dirname, "distribution"),
