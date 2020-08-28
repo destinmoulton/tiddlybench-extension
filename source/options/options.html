@@ -1,29 +1,73 @@
 <!DOCTYPE html>
 <meta charset="utf-8" />
-<title>Options</title>
-<link rel="stylesheet" href="chrome://global/skin/in-content/common.css" />
+<title>TiddlyBench Options</title>
+<link rel="stylesheet" href="../css/pure-min.css" />
 <link rel="stylesheet" href="options.css" />
 
-<form id="options-form" class="detail-view-container">
+<form id="options-form" class="pure-form pure-form-aligned">
     <h3>TiddlyBench Options</h3>
     <fieldset>
-        <legend>Connection</legend>
-        <div>
-            <label for="url">TiddlyWiki URL</label>
+        <legend>TiddlyWiki Connection Settings</legend>
+        <div class="pure-control-group">
+            <label for="url">URL</label>
             <input name="url" type="text" />
         </div>
+        <div class="pure-control-group">
+            <label for="username">Username</label>
+            <input name="username" type="text" />
+        </div>
+        <div class="pure-control-group">
+            <label for="password">Password</label>
+            <input name="password" type="password" />
+        </div>
+        <span
+            id="tb-connection-success-message"
+            class="pure-form-message"
+            style="display:none;"
+            >Successfully connected to server.</span
+        >
+        <span
+            id="tb-connection-error-message"
+            class="pure-form-message"
+            style="display:none;"
+        ></span>
         <div>
+            <button type="button" id="tb-test-connection">
+                Test Connection
+            </button>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Sync Settings</legend>
+        <div class="pure-control-group">
+            <label for="sync_type_auto">
+                <input
+                    name="sync_type"
+                    id="sync_type_auto"
+                    type="radio"
+                    value="auto"
+                />&nbsp;Automatic
+            </label>
+            <label for="sync_type_manual">
+                <input
+                    name="sync_type"
+                    id="sync_type_manual"
+                    type="radio"
+                    value="manual"
+                />&nbsp;Manual</label
+            >
+        </div>
+        <div class="pure-control-group">
             <label for="username">TiddlyWiki Username</label>
             <input name="username" type="text" />
         </div>
-        <div>
+        <div class="pure-control-group">
             <label for="password">TiddlyWiki Password</label>
             <input name="password" type="password" />
         </div>
     </fieldset>
-    <button type="button" id="tb-test-connection">Test Connection</button>
 </form>
 
-<script src="base64.js"></script>
-<script src="browser-polyfill.min.js"></script>
+<script src="../base64.js"></script>
+<script src="../browser-polyfill.min.js"></script>
 <script src="options.js"></script>
