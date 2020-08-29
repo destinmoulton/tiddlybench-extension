@@ -38,32 +38,12 @@
         </div>
     </fieldset>
     <fieldset>
-        <legend>Sync Settings</legend>
+        <legend>Context Menu</legend>
         <div class="pure-control-group">
-            <label for="sync_type_auto">
-                <input
-                    name="sync_type"
-                    id="sync_type_auto"
-                    type="radio"
-                    value="auto"
-                />&nbsp;Automatic
-            </label>
-            <label for="sync_type_manual">
-                <input
-                    name="sync_type"
-                    id="sync_type_manual"
-                    type="radio"
-                    value="manual"
-                />&nbsp;Manual</label
-            >
-        </div>
-        <div class="pure-control-group">
-            <label for="username">TiddlyWiki Username</label>
-            <input name="username" type="text" />
-        </div>
-        <div class="pure-control-group">
-            <label for="password">TiddlyWiki Password</label>
-            <input name="password" type="password" />
+            <select name="is_context_menu_enabled">
+                <option value="true">On</option>
+                <option value="false">Off</option>
+            </select>
         </div>
     </fieldset>
 </form>
