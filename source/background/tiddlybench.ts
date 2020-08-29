@@ -1,22 +1,25 @@
 import { browser } from "webextension-polyfill-ts";
 //import config from "../lib/config";
 import messenger from "../lib/messenger";
-
+import contextmenu from "./contextmenu";
+import logger from "../lib/logger";
 class TiddlyBench {
     async initialize() {
-        this.reconfigure();
+        logger.log("TiddlyBench :: intitialze() called");
         messenger.setup();
+
+        await contextmenu.initialize();
+        this.setupListeners();
     }
 
     setupListeners() {
-        if (!browser.storage.onChanged.hasListener(this.reconfigure)) {
-            // Detect when the configuration has been changed
-            browser.storage.onChanged.addListener(this.reconfigure);
-        }
+        // Look for config changes (stored in .storage)
+        browser.storage.onChanged.addListener(this.reconfigure);
     }
 
     async reconfigure() {
-        //config.
+        logger.log("TiddlyBench :: reconfigure called");
+        await contextmenu.reconfigure();
     }
 }
 

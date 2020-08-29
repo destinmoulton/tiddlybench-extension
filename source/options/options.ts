@@ -1,4 +1,4 @@
-import optionsStorage from "../lib/options-storage";
+import config from "../lib/config";
 import api, { ENDPOINTS } from "../lib/api";
 import logger from "../lib/logger";
 
@@ -8,7 +8,7 @@ import { API_Result } from "../types";
 window.addEventListener("load", startOptions);
 function startOptions() {
     logger.log("StartOptions handler running");
-    optionsStorage.syncForm("#options-form");
+    config.syncForm("#options-form");
 }
 const testConnection: HTMLElement = <HTMLElement>(
     document.getElementById("tb-test-connection")
@@ -23,7 +23,7 @@ const $error = <HTMLElement>(
     document.getElementById("tb-connection-error-message")
 );
 async function testConnectionOptions(): Promise<API_Result> {
-    const options = await optionsStorage.getAll();
+    const options = await config.getAll();
     const url = api.joinURL(options.url, ENDPOINTS.GET_ALL);
     const res = await api.get(url);
 
