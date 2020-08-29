@@ -1,3 +1,4 @@
+import OptionsSync from "webext-options-sync";
 export interface Tiddler {
     created: string;
     creator: string;
@@ -14,3 +15,5 @@ export interface API_Result {
     data?: Tiddler[];
     response?: Response;
 }
+
+export type ErrValTuple = [any, Error | null];
