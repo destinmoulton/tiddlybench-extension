@@ -17,3 +17,10 @@ export interface API_Result {
 }
 
 export type ErrValTuple = [any, Error | null];
+
+export interface IOptions {
+    url: string;
+    username: string;
+    password: string;
+    is_context_menu_enabled: boolean;
+}
