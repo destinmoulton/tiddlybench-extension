@@ -14,7 +14,13 @@
     "icons": {
         "128": "icon.png"
     },
-    "permissions": ["storage", "webRequest", "*://*/*"],
+    "permissions": [
+        "storage",
+        "webRequest",
+        "activeTab",
+        "contextMenus",
+        "*://*/*"
+    ],
     "browser_action": {
         "default_icon": "icon.png",
         "default_title": "TiddlyBench",
