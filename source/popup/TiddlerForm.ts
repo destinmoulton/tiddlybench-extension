@@ -1,6 +1,7 @@
-import TiddlerTemplate from "./TiddlerTemplate";
-class TiddlerForm extends TiddlerTemplate {
-    showTiddlerForm() {
+import HTMLTemplate from "./HTMLTemplate";
+import mainmenu from "./MainMenu";
+class TiddlerForm extends HTMLTemplate {
+    show() {
         const html = this._compile("tmpl-tiddler-form", {});
 
         this._render(html);
@@ -15,6 +16,14 @@ class TiddlerForm extends TiddlerTemplate {
         if ($save) {
             $save.addEventListener("click", this.cancel);
         }
+    }
+
+    saveTiddler() {
+        mainmenu.show();
+    }
+
+    cancel() {
+        mainmenu.show();
     }
 }
 
