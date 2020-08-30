@@ -3,6 +3,10 @@
     min-height: 300px;
 }
 
+.tb-error {
+    color: maroon;
+    font-weight: bold;
+}
 /**
 * Loading Animation
 * Loader generously provided by: https://tobiasahlin.com/spinkit/
