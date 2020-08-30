@@ -28,6 +28,7 @@ module.exports = {
             },
         ],
     },
+    externals: {},
     plugins: [
         new SizePlugin(),
         new CopyWebpackPlugin([
