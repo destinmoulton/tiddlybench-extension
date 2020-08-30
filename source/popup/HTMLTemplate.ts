@@ -1,5 +1,5 @@
 import logger from "../lib/logger";
-class TiddlerTemplate {
+class HTMLTemplate {
     _compile(templateID: string, data: any): string {
         const $tmpl = document.getElementById(templateID);
 
@@ -25,16 +25,6 @@ class TiddlerTemplate {
         return "";
     }
 
-    showMenu() {
-        const html = this._compile("tmpl-main-menu", {});
-
-        this._render(html);
-
-        const $link = document.getElementById("tb-link-add-tiddler");
-        if ($link) {
-            $link.addEventListener("click", this.showTiddlerForm.bind(this));
-        }
-    }
     _render(html: string) {
         const $root = document.getElementById("root");
 
@@ -45,4 +35,4 @@ class TiddlerTemplate {
     }
 }
 
-export default TiddlerTemplate;
+export default HTMLTemplate;
