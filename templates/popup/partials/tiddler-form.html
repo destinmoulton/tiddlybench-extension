@@ -3,9 +3,15 @@
         <div class="pure-control-group">
             <label for="tiddler-title">Tiddler Title</label>
             <input type="text" id="tiddler-title" placeholder="Tiddler Title" />
+            <span class="pure-form-message-inline tb-error" id="tiddler-title-error" style="display:none"></span>
         </div>
         <div class="pure-control-group">
-            <textarea name="tiddler-contents"></textarea>
+            <label for="tiddler-tags">Tiddler Tags</label>
+            <input type="text" id="tiddler-tags" placeholder="Tiddler Tags" />
+        </div>
+        <div class="pure-control-group">
+            <textarea id="tiddler-contents"></textarea>
+            <span class="pure-form-message-inline tb-error" id="tiddler-contents-error" style="display:none"></span>
         </div>
          <div class="pure-controls">
             <button type="button"
