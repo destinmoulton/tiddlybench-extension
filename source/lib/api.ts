@@ -1,4 +1,4 @@
-import optionsStorage from "../lib//options-storage";
+import optionsStorage from "./config";
 import base64 from "base-64";
 
 //import logger from "../lib/logger";
@@ -6,12 +6,14 @@ import { API_Result, Tiddler } from "../types";
 export const ENDPOINTS = {
     BASE: "/",
     GET_ALL: "/recipes/default/tiddlers.json",
+    STATUS: "/status",
 };
 
 class API {
     constructor() {
         this.joinURL = this.joinURL.bind(this);
     }
+
     joinURL(p1: string, p2: string) {
         p1 = p1.endsWith("/") ? p1.substr(0, p1.length - 1) : p1;
         p2 = p2.startsWith("/") ? p2.substr(1) : p2;
