@@ -28,7 +28,7 @@ module.exports = {
             },
         ],
     },
-    externals: {},
+    externals: { lodash: "_" },
     plugins: [
         new SizePlugin(),
         new CopyWebpackPlugin([
@@ -43,6 +43,10 @@ module.exports = {
             },
             {
                 from: "node_modules/base-64/base64.js",
+            },
+
+            {
+                from: "node_modules/lodash/lodash.min.js",
             },
         ]),
         new webpack.DefinePlugin({
