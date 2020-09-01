@@ -8,7 +8,7 @@ import { API_Result } from "../types";
 window.addEventListener("load", startOptions);
 function startOptions() {
     logger.log("StartOptions handler running");
-    config.syncForm("#options-form");
+    config.syncForm("options-form");
 }
 const testConnection: HTMLElement = <HTMLElement>(
     document.getElementById("tb-test-connection")
@@ -22,9 +22,14 @@ const $success = <HTMLElement>(
 const $error = <HTMLElement>(
     document.getElementById("tb-connection-error-message")
 );
+
+const $reset = <HTMLElement>document.getElementById("reset-settings");
+
+$reset.addEventListener("click", shouldReset);
+
 async function testConnectionOptions(): Promise<API_Result> {
     const options = await config.getAll();
-    const url = api.joinURL(options.url, ENDPOINTS.GET_ALL);
+    const url = api.joinURL(options.url, ENDPOINTS.STATUS);
     const res = await api.get(url);
 
     logger.log("options :: test()", res);
@@ -35,4 +40,14 @@ async function testConnectionOptions(): Promise<API_Result> {
         $error.style.display = "inline-block";
     }
     return res;
+}
+
+async function shouldReset() {
+    const isOk = confirm(
+        "Are you sure you want reset the settings back to default?"
+    );
+
+    if (isOk) {
+        await config.reset("options-form");
+    }
 }
