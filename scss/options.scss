@@ -1,0 +1,16 @@
+html {
+    min-width: 550px;
+    overflow-x: hidden; /* Required to hide horizontal scroll on Firefox */
+}
+
+.tb-success {
+    font-weight: bold;
+    color: green;
+    font-size: 1.2em;
+}
+
+.tb-error {
+    font-weight: bold;
+    color: maroon;
+    font-size: 1.2em;
+}
