@@ -33,6 +33,7 @@
     "background": {
         "persistent": true,
         "scripts": [
+            "lodash.min.js",
             "base64.js",
             "browser-polyfill.min.js",
             "background/background.js"
