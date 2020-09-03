@@ -10,14 +10,16 @@
 
     <body>
         <div class="tb-tabs-content">
-            <div class="tb-tabs-editor-container">
+            <div class="tb-tabs-editor-container" id="tiddler-editor-form">
                 <input type="text" class="tb-edit-text" id="tiddler-title" />
+                <input type="text" class="tb-edit-text" id="tiddler-tags" />
                 <textarea
                     class="tb-edit-textarea"
-                    id="tiddler-contents"
+                    id="tiddler-content"
                 ></textarea>
             </div>
         </div>
-        <script src="popup.js"></script>
+        <script src="../lodash.min.js"></script>
+        <script src="editor.js"></script>
     </body>
 </html>
