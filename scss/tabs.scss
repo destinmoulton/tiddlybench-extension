@@ -1,0 +1,31 @@
+.tb-tabs-content {
+    width: 100%;
+    background-color: #f4f4f4;
+    height: 100%;
+}
+
+.tb-tabs-editor-container {
+    width: 600px;
+    min-height: 100px;
+    background-color: white;
+    padding: 42px;
+    margin: 20px auto;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+
+    input.tb-edit-text {
+        box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.15);
+        width: 100%;
+        padding: 3px 3px 3px 3px;
+        background-color: #f8f8f8;
+        line-height: 1.3em;
+        font-size: 2.35em;
+        font-weight: 300;
+    }
+
+    textarea.tb-edit-textarea {
+        width: 100%;
+        min-height: 100px;
+        font-size: 1.8em;
+        font-family: monospace;
+    }
+}
