@@ -49,6 +49,9 @@ module.exports = {
             {
                 from: "node_modules/lodash/lodash.min.js",
             },
+            {
+                from: "node_modules/md5/dist/md5.min.js",
+            },
         ]),
         new webpack.DefinePlugin({
             ENV: JSON.stringify(process.env.NODE_ENV),
