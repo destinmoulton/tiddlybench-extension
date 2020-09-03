@@ -1,5 +1,5 @@
 import { browser } from "webextension-polyfill-ts";
-import config from "../lib/config";
+import config from "../lib/storage/config";
 //import messenger from "../lib/messenger";
 //import logger from "../lib/logger";
 class ContextMenu {

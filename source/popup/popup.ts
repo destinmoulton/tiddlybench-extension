@@ -1,3 +1,4 @@
+import mainmenu from "./MainMenu";
 window.addEventListener("load", function() {
-    console.log("here we goes");
+    mainmenu.show();
 });

@@ -1,4 +1,4 @@
-import optionsStorage from "./config";
+import optionsStorage from "./storage/config";
 import base64 from "base-64";
 
 //import logger from "../lib/logger";

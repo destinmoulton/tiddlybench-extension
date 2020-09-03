@@ -1,4 +1,4 @@
-import config from "../lib/config";
+import config from "../lib/storage/config";
 import api, { ENDPOINTS } from "../lib/api";
 import logger from "../lib/logger";
 
