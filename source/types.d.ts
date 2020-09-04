@@ -24,3 +24,11 @@ export interface IOptions {
     password: string;
     is_context_menu_enabled: boolean;
 }
+
+export interface ITiddlyEditor {
+    tab_id: string;
+    url: string;
+    title: string;
+    tags: string;
+    content: string;
+}
