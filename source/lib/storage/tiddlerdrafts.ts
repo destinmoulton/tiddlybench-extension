@@ -1,28 +1,30 @@
 import _ from "lodash";
 import AbstractStorage, { StorageElement } from "./AbstractStorage";
-import { ITiddlyEditor } from "../../types";
+import { ITiddlerDraft } from "../../types";
+import { v4 } from "uuid";
 
 interface ITiddlerCache extends StorageElement {
-    cached_tiddlers: ITiddlyEditor[];
+    tiddler_drafts: ITiddlerDraft[];
 }
-class TiddlerCache extends AbstractStorage<ITiddlerCache> {
-    _settingDefaults: ITiddlerCache;
+class TiddlerDrafts extends AbstractStorage<ITiddlerCache> {
+    _storageDefaults: ITiddlerCache;
     _storageKey: string;
     _cacheKey: string;
 
     constructor() {
         super();
-        this._cacheKey = "cached_tiddlers";
-        this._settingDefaults = {
-            cached_tiddlers: [],
+        this._cacheKey = "tiddler_drafts";
+        this._storageDefaults = {
+            tiddler_drafts: [],
         };
 
-        this._storageKey = "editorcache";
+        this._storageKey = "drafts";
     }
 
     async add(tab_id: number, url: string, title: string, content: string) {
         const editor = {
             tab_id,
+            draft_id: v4(),
             url,
             title,
             tags: "",
@@ -36,19 +38,27 @@ class TiddlerCache extends AbstractStorage<ITiddlerCache> {
         this.set(this._cacheKey, editors);
     }
 
+    async getAllDrafts() {
+        const data = await this.getAll();
+        if (!data.hasOwnProperty(this._cacheKey)) {
+            return [];
+        }
+
+        return data[this._cacheKey];
+    }
     async getTiddlerByTabID(tab_id: string) {
         const editors = await this.get(this._cacheKey);
         const editor = editors.filter(
-            (editor: ITiddlyEditor) => editor.tab_id === tab_id
+            (editor: ITiddlerDraft) => editor.tab_id === tab_id
         );
         return editor.pop();
     }
 
     async reset() {
-        await this._setAll(this._settingDefaults);
+        await this._setAll(this._storageDefaults);
     }
 
-    async updateTiddler(tab_id: string, tiddler: ITiddlyEditor) {
+    async updateTiddler(tab_id: string, tiddler: ITiddlerDraft) {
         const tiddlers = await this.get(this._cacheKey);
         for (let i = 0; i < tiddlers.length; i++) {
             const tid = tiddlers[i];
@@ -60,4 +70,4 @@ class TiddlerCache extends AbstractStorage<ITiddlerCache> {
     }
 }
 
-export default new TiddlerCache();
+export default new TiddlerDrafts();
