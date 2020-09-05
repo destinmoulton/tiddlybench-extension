@@ -8,7 +8,7 @@
     font-weight: bold;
 }
 
-ul.tb-main-menu {
+ul.tb-popup-main-menu {
     list-style-type: none;
     margin: 0px 0px;
     padding: 0px 0px;
@@ -25,6 +25,13 @@ ul.tb-main-menu {
             background-color: #f2f7ff;
         }
     }
+}
+
+.tb-popup-quick-add-box {
+    width: 100%;
+    margin: 10px;
+    border: 1px solid gray;
+    padding: 10px;
 }
 
 /**
