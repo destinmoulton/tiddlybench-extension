@@ -1,18 +1,28 @@
 <!DOCTYPE html>
-<meta charset="utf-8" />
-<title>TiddlyBench Options</title>
-<link rel="stylesheet" href="../css/pure-min.css" />
-<link rel="stylesheet" href="../css/tiddlybench.css" />
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>TiddlyBench Options</title>
+        <link rel="stylesheet" href="../css/pure-min.css" />
+        <link rel="stylesheet" href="../css/tiddlybench.css" />
+    </head>
+    <body>
+        <div class="tb-options-container">
+            <form id="options-form" class="pure-form pure-form-aligned">
+                <h3>TiddlyBench Options</h3>
 
-<form id="options-form" class="pure-form pure-form-aligned">
-    <h3>TiddlyBench Options</h3>
+                <!-- Partials (gulp task compiles these)-->
+                <partial src="connection-settings.html"></partial>
+                <partial src="inbox-journal-settings.html"></partial>
+                <partial src="context-menu.html"></partial>
+                <partial src="reset.html"></partial>
+            </form>
+        </div>
 
-    <partial src="connection-settings.html"></partial>
-    <partial src="context-menu.html"></partial>
-    <partial src="reset.html"></partial>
-</form>
-
-<script src="../lodash.min.js"></script>
-<script src="../base64.js"></script>
-<script src="../browser-polyfill.min.js"></script>
-<script src="options.js"></script>
+        <!-- Scripts-->
+        <script src="../lodash.min.js"></script>
+        <script src="../base64.js"></script>
+        <script src="../browser-polyfill.min.js"></script>
+        <script src="options.js"></script>
+    </body>
+</html>
