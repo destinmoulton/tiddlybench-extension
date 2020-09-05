@@ -1,5 +1,6 @@
 import { browser } from "webextension-polyfill-ts";
-import editorcache from "./storage/editorcache";
+import _ from "lodash";
+import tiddlercache from "./storage/tiddlercache";
 class EditorTabs {
     async getAll() {
         return await browser.tabs.query({});
@@ -10,9 +11,86 @@ class EditorTabs {
         const tabInfo = await browser.tabs.create({ url: tabURL });
 
         if (tabInfo.id) {
-            await editorcache.add(tabInfo.id, sourceURL, sourceTitle, content);
+            await tiddlercache.add(tabInfo.id, sourceURL, sourceTitle, content);
             const hashURL = tabURL + "#id=" + tabInfo.id;
             await browser.tabs.update(tabInfo.id, { url: hashURL });
+        }
+    }
+
+    async doesTabExist(tab_id: number) {
+        const tabs = await this.getAll();
+
+        return tabs.some((tab) => tab.id === tab_id);
+    }
+
+    /**
+     * Synchronize a form with the settings.
+     *
+     * @param formID string
+     */
+    async syncForm(formID: string, tab_id: string) {
+        const $form = document.getElementById(formID);
+        const tiddler = await tiddlercache.getTiddlerByTabID(tab_id);
+
+        if (!$form) {
+            throw new Error(
+                `Cannot sync settings. The form '${formID}' does not exist in the DOM.`
+            );
+        }
+
+        const inputIDs = Object.keys(tiddler);
+
+        for (let inputID of inputIDs) {
+            const $input: HTMLInputElement = <HTMLInputElement>(
+                $form.querySelector(`#${inputID}`)
+            );
+
+            if (!$input) {
+                throw new Error(
+                    `Cannot sync settings. Unable to find '${inputID}' in the form.`
+                );
+            }
+
+            // Populate from the stored settings
+            $input.value = tiddler[inputID];
+
+            // Setup the event listeners
+            if (
+                $input.type === "text" ||
+                $input.type === "password" ||
+                $input.type === "textarea"
+            ) {
+                // Debounce keyboard input items
+                $input.addEventListener(
+                    "keyup",
+                    _.debounce(this.syncInputElement.bind(this, tab_id), 200)
+                );
+            } else if (
+                $input.tagName === "SELECT" ||
+                $input.type === "radio" ||
+                $input.type === "checkbox"
+            ) {
+                // Run update on change
+                $input.addEventListener(
+                    "change",
+                    this.syncInputElement.bind(this, tab_id)
+                );
+            } else {
+                throw new Error(
+                    "Cannot sync settings. Unable to sync " + $input.tagName
+                );
+            }
+        }
+    }
+
+    async syncInputElement(tab_id: string, e: Event) {
+        if (e.target) {
+            const id = (<HTMLInputElement>e.target).id;
+            const val = (<HTMLInputElement>e.target).value;
+
+            const tiddler = await tiddlercache.getTiddlerByTabID(tab_id);
+            tiddler[id] = val;
+            await tiddlercache.updateTiddler(tab_id, tiddler);
         }
     }
 }
