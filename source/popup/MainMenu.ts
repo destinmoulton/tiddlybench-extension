@@ -1,6 +1,7 @@
 import HTMLTemplate from "./HTMLTemplate";
 import tiddlerform from "./TiddlerForm";
-import tiddlercache from "../lib/storage/tiddlercache";
+import tiddlerdrafts from "../lib/storage/tiddlerdrafts";
+import TiddlerDraftsMenu from "./TiddlerDraftsMenu";
 class MainMenu extends HTMLTemplate {
     show() {
         const html = this._compile("tmpl-main-menu", {});
@@ -11,13 +12,23 @@ class MainMenu extends HTMLTemplate {
         if ($link) {
             $link.addEventListener("click", tiddlerform.show.bind(tiddlerform));
         }
-        const $clearTiddlerCache = document.getElementById(
+        const $clearTiddlerDrafts = document.getElementById(
             "tb-link-clear-tiddler-cache"
         );
-        if ($clearTiddlerCache) {
-            $clearTiddlerCache.addEventListener(
+        if ($clearTiddlerDrafts) {
+            $clearTiddlerDrafts.addEventListener(
                 "click",
-                tiddlercache.reset.bind(tiddlercache)
+                tiddlerdrafts.reset.bind(tiddlerdrafts)
+            );
+        }
+        const tiddlerDraftsMenu = new TiddlerDraftsMenu();
+        const $tiddlerDrafts = document.getElementById(
+            "tb-link-list-tiddler-drafts"
+        );
+        if ($tiddlerDrafts) {
+            $tiddlerDrafts.addEventListener(
+                "click",
+                tiddlerDraftsMenu.display.bind(tiddlerDraftsMenu)
             );
         }
     }
