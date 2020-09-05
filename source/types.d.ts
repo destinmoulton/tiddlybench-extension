@@ -32,4 +32,5 @@ export interface ITiddlerDraft {
     title: string;
     tags: string;
     content: string;
+    [key: string]: string;
 }
