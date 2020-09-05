@@ -29,7 +29,7 @@ module.exports = {
             },
         ],
     },
-    externals: { lodash: "_", uuid: "uuid" },
+    externals: { lodash: "_" },
     plugins: [
         new SizePlugin(),
         new CopyWebpackPlugin([
@@ -48,9 +48,6 @@ module.exports = {
 
             {
                 from: "node_modules/lodash/lodash.min.js",
-            },
-            {
-                from: " node_modules/uuid/dist/umd/uuid.min.js",
             },
         ]),
         new webpack.DefinePlugin({
