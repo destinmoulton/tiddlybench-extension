@@ -13,7 +13,7 @@ export interface StorageElement {
 
 /** The option name corresponds to the input id */
 abstract class AbstractStorage<T extends StorageElement> {
-    abstract _settingDefaults: T;
+    abstract _storageDefaults: T;
     abstract _storageKey: string;
 
     async _setAll(settings: T) {
@@ -31,16 +31,18 @@ abstract class AbstractStorage<T extends StorageElement> {
 
         try {
             // There is nothing, so set the default value
-            await this._setAll(this._settingDefaults);
+            await this._setAll(this._storageDefaults);
         } catch (err) {
             throw err;
         }
 
-        return this._settingDefaults;
+        return this._storageDefaults;
     }
 
     async set(key: keyof T, value: any) {
         const settings: T = await this.getAll();
+
+        console.log(settings);
         if (!settings.hasOwnProperty(key)) {
             throw new Error(`${key} is not defined as a setting.`);
         }

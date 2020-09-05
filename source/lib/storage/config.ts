@@ -1,7 +1,6 @@
 import _ from "lodash";
 import AbstractStorage, { StorageElement } from "./AbstractStorage";
 
-/** The option name corresponds to the input id */
 interface ISettings extends StorageElement {
     url: string;
     username: string;
@@ -9,12 +8,12 @@ interface ISettings extends StorageElement {
     context_menu_visibility: string;
 }
 class Config extends AbstractStorage<ISettings> {
-    _settingDefaults: ISettings;
+    _storageDefaults: ISettings;
     _storageKey: string;
 
     constructor() {
         super();
-        this._settingDefaults = {
+        this._storageDefaults = {
             url: "",
             username: "",
             password: "",
@@ -37,7 +36,7 @@ class Config extends AbstractStorage<ISettings> {
         // Rewrite the html to reset all the even handlers
         $form.innerHTML = html;
 
-        await this._setAll(this._settingDefaults);
+        await this._setAll(this._storageDefaults);
 
         this.syncForm(formID);
     }
@@ -58,7 +57,7 @@ class Config extends AbstractStorage<ISettings> {
             );
         }
 
-        const inputIDs = Object.keys(this._settingDefaults);
+        const inputIDs = Object.keys(this._storageDefaults);
 
         for (let inputID of inputIDs) {
             const $input: HTMLInputElement = <HTMLInputElement>(
