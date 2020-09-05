@@ -25,8 +25,9 @@ export interface IOptions {
     is_context_menu_enabled: boolean;
 }
 
-export interface ITiddlyEditor {
+export interface ITiddlerDraft {
     tab_id: string;
+    draft_id: string;
     url: string;
     title: string;
     tags: string;
