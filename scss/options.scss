@@ -1,6 +1,26 @@
-html {
+.tb-options-icon {
+}
+.tb-options-container {
     min-width: 550px;
     overflow-x: hidden; /* Required to hide horizontal scroll on Firefox */
+    margin: 20px;
+
+    label {
+        width: 20%;
+    }
+    .tb-options-form-info-box {
+        padding: 5px;
+        background-color: #f5f5f5;
+        line-height: 1.5em;
+        font-size: 12px;
+        font-family: monospace;
+        margin-top: 5px;
+    }
+    .tb-options-section {
+        margin: 10px;
+        padding: 10px;
+        border: 1px solid gray;
+    }
 }
 
 .tb-success {
