@@ -46,14 +46,22 @@ class HTMLTemplate {
         this._$root.innerHTML = html;
     }
 
+    _append(html: string) {
+        this._$root.innerHTML = this._$root.innerHTML + html;
+    }
+
     _loadingAnimation(animationText: string) {
         this._loadingAnimationOldHTML = this._$root.innerHTML;
 
-        const loaderHTML = this._compile("tmpl-loading-animation", {
-            text: animationText,
-        });
+        const loaderHTML = this._getLoadingAnimationHTML(animationText);
 
         this._render(loaderHTML);
+    }
+
+    _getLoadingAnimationHTML(loadingText: string) {
+        return this._compile("tmpl-loading-animation", {
+            text: loadingText,
+        });
     }
 
     // Return the root to the old HTML
