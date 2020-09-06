@@ -1,5 +1,8 @@
 import tiddlerdrafts from "../lib/storage/tiddlerdrafts";
 import HTMLTemplate from "./HTMLTemplate";
+
+import { browser } from "webextension-polyfill-ts";
+import editortabs from "../lib/editortabs";
 class TiddlerDraftsMenu extends HTMLTemplate {
     async display() {
         const tiddlers = await tiddlerdrafts.getAllDrafts();
@@ -38,8 +41,25 @@ class TiddlerDraftsMenu extends HTMLTemplate {
         }
     }
 
-    clickDraftHandler(e: Event) {
-        console.log((<HTMLElement>e.target).getAttribute("data-draft-id"));
+    async clickDraftHandler(e: Event) {
+        const draft_id = (<HTMLElement>e.target).getAttribute("data-draft-id");
+
+        if (draft_id) {
+            const tiddler = await tiddlerdrafts.getTiddlerByDraftID(draft_id);
+            const tab = await editortabs.getTabByID(parseInt(tiddler.tab_id));
+            if (tab) {
+                const options = { tabs: [tab.index] };
+                console.log(options);
+                try {
+                    await browser.tabs.highlight(options);
+                } catch (err) {
+                    alert("Unable to find that tab.");
+                    console.error(err);
+                }
+            } else {
+                alert("Unable to find that tab.");
+            }
+        }
     }
 }
 
