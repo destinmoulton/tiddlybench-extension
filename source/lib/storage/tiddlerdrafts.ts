@@ -38,7 +38,7 @@ class TiddlerDrafts extends AbstractStorage<ITiddlerCache> {
         this.set(this._cacheKey, editors);
     }
 
-    async getAllDrafts() {
+    async getAllDrafts(): Promise<ITiddlerDraft[]> {
         const data = await this.getAll();
         if (!data.hasOwnProperty(this._cacheKey)) {
             return [];
@@ -46,7 +46,7 @@ class TiddlerDrafts extends AbstractStorage<ITiddlerCache> {
 
         return data[this._cacheKey];
     }
-    async getTiddlerByTabID(tab_id: string) {
+    async getTiddlerByTabID(tab_id: string): Promise<ITiddlerDraft> {
         const editors = await this.get(this._cacheKey);
         const editor = editors.filter(
             (editor: ITiddlerDraft) => editor.tab_id === tab_id
@@ -54,6 +54,13 @@ class TiddlerDrafts extends AbstractStorage<ITiddlerCache> {
         return editor.pop();
     }
 
+    async getTiddlerByDraftID(draft_id: string): Promise<ITiddlerDraft> {
+        const editors = await this.get(this._cacheKey);
+        const editor = editors.filter(
+            (editor: ITiddlerDraft) => editor.draft_id === draft_id
+        );
+        return editor.pop();
+    }
     async reset() {
         await this._setAll(this._storageDefaults);
     }
