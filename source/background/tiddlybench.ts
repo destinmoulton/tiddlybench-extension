@@ -6,7 +6,7 @@ import logger from "../lib/logger";
 class TiddlyBench {
     async initialize() {
         logger.log("TiddlyBench :: intitialze() called");
-        messenger.setup();
+        messenger.setupListener();
 
         await contextmenu.initialize();
         this.setupListeners();
@@ -18,6 +18,7 @@ class TiddlyBench {
     }
 
     async reconfigure() {
+        console.log("browser.storage changed");
         logger.log("TiddlyBench :: reconfigure called");
         await contextmenu.reconfigure();
     }

@@ -1,23 +1,21 @@
 import { browser } from "webextension-polyfill-ts";
 
 class Messenger {
-    setup() {
-        browser.runtime.onMessage.addListener(this.messageHandler);
+    setupListener() {
+        console.log("setupListener() called");
+        browser.runtime.onMessage.addListener((data, sender) => {
+            console.log("message received");
+            console.log(data, sender);
+        });
     }
 
     messageHandler(message: any, sender: browser.runtime.MessageSender) {
-        if (message.type === "console.log") {
-            if (message.showSender) {
-                console.log(sender);
-            }
-            console.log(message.contents);
-        }
-        return;
+        console.log("message received");
+        console.log(message, sender);
     }
 
     send(message: any) {
-        const sending = browser.runtime.sendMessage(message);
-        sending.then(this._handleResponse, this._handleError);
+        browser.runtime.sendMessage(message);
     }
 
     log(...args: any[]) {

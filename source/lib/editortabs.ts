@@ -1,6 +1,6 @@
 import { browser } from "webextension-polyfill-ts";
 import _ from "lodash";
-import tiddlercache from "./storage/tiddlercache";
+import tiddlerdrafts from "./storage/tiddlerdrafts";
 class EditorTabs {
     async getAll() {
         return await browser.tabs.query({});
@@ -11,7 +11,12 @@ class EditorTabs {
         const tabInfo = await browser.tabs.create({ url: tabURL });
 
         if (tabInfo.id) {
-            await tiddlercache.add(tabInfo.id, sourceURL, sourceTitle, content);
+            await tiddlerdrafts.add(
+                tabInfo.id,
+                sourceURL,
+                sourceTitle,
+                content
+            );
             const hashURL = tabURL + "#id=" + tabInfo.id;
             await browser.tabs.update(tabInfo.id, { url: hashURL });
         }
@@ -23,6 +28,15 @@ class EditorTabs {
         return tabs.some((tab) => tab.id === tab_id);
     }
 
+    async getTabByID(tab_id: number): Promise<browser.tabs.Tab | undefined> {
+        const tabs = await this.getAll();
+        const results = tabs.filter((tab) => tab.id === tab_id);
+        if (results.length > 0) {
+            return results.pop();
+        }
+        return undefined;
+    }
+
     /**
      * Synchronize a form with the settings.
      *
@@ -30,7 +44,7 @@ class EditorTabs {
      */
     async syncForm(formID: string, tab_id: string) {
         const $form = document.getElementById(formID);
-        const tiddler = await tiddlercache.getTiddlerByTabID(tab_id);
+        const tiddler = await tiddlerdrafts.getTiddlerByTabID(tab_id);
 
         if (!$form) {
             throw new Error(
@@ -88,9 +102,9 @@ class EditorTabs {
             const id = (<HTMLInputElement>e.target).id;
             const val = (<HTMLInputElement>e.target).value;
 
-            const tiddler = await tiddlercache.getTiddlerByTabID(tab_id);
+            const tiddler = await tiddlerdrafts.getTiddlerByTabID(tab_id);
             tiddler[id] = val;
-            await tiddlercache.updateTiddler(tab_id, tiddler);
+            await tiddlerdrafts.updateTiddler(tab_id, tiddler);
         }
     }
 }

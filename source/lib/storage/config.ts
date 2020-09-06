@@ -17,6 +17,7 @@ class Config extends AbstractStorage<ISettings> {
             url: "",
             username: "",
             password: "",
+            "inbox-tiddler-title"
             context_menu_visibility: "on",
         };
 
