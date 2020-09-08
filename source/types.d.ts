@@ -22,6 +22,9 @@ export interface IOptions {
     url: string;
     username: string;
     password: string;
+    inbox_tiddler_title: string;
+    journal_tiddler_title: string;
+    journal_tiddler_tags: string;
     is_context_menu_enabled: boolean;
 }
 

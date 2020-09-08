@@ -17,6 +17,9 @@ class Config extends AbstractStorage<ISettings> {
             url: "",
             username: "",
             password: "",
+            inbox_tiddler_title: "Inbox",
+            journal_tiddler_title: "Journal",
+            journal_tiddler_tags: "journal",
             context_menu_visibility: "on",
         };
 
