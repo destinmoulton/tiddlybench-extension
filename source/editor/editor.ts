@@ -1,4 +1,5 @@
-import editorcache from "../lib/storage/editorcache";
+//import editortabs from "../lib/editortabs";
+//import editorcache from "../lib/storage/tiddlerdrafts";
 
 window.addEventListener("load", () => {
     const editor = new Editor();
@@ -6,6 +7,10 @@ window.addEventListener("load", () => {
 });
 class Editor {
     initialize() {
-        editorcache.syncForm("tiddler-editor-form");
+        var urlParams = new URLSearchParams(window.location.hash.substr(1));
+        var tab_id = urlParams.get("id");
+
+        if (tab_id) {
+        }
     }
 }
