@@ -5,6 +5,9 @@ interface ISettings extends StorageElement {
     url: string;
     username: string;
     password: string;
+    inbox_tiddler_title: string;
+    journal_tiddler_title: string;
+    journal_tiddler_tags: string;
     context_menu_visibility: string;
 }
 class Config extends AbstractStorage<ISettings> {
