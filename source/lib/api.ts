@@ -1,4 +1,4 @@
-import optionsStorage from "./storage/config";
+import config from "./storage/config";
 import base64 from "base-64";
 
 //import logger from "../lib/logger";
@@ -22,7 +22,7 @@ class API {
     }
 
     async get(url: string): Promise<API_Result> {
-        const options = await optionsStorage.getAll();
+        const options = await config.getAll();
 
         const headers = new Headers({
             Authorization: `Basic ${base64.encode(
@@ -69,6 +69,15 @@ class API {
         const data: Tiddler[] = await response.json();
 
         return { ok: true, data };
+    }
+
+    /**
+     * Get the /status of the server
+     */
+    async getStatus(): Promise<API_Result> {
+        const options = await config.getAll();
+        const url = this.joinURL(options.url, ENDPOINTS.STATUS);
+        return await this.get(url);
     }
 }
 

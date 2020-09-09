@@ -1,5 +1,5 @@
 import config from "../lib/storage/config";
-import api, { ENDPOINTS } from "../lib/api";
+import api from "../lib/api";
 import logger from "../lib/logger";
 
 import { API_Result } from "../types";
@@ -28,10 +28,7 @@ const $reset = <HTMLElement>document.getElementById("reset-settings");
 $reset.addEventListener("click", shouldReset);
 
 async function testConnectionOptions(): Promise<API_Result> {
-    const options = await config.getAll();
-    const url = api.joinURL(options.url, ENDPOINTS.STATUS);
-    const res = await api.get(url);
-
+    const res = await api.getStatus();
     logger.log("options :: test()", res);
     if (res.ok) {
         $success.style.display = "inline-block";
