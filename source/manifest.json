@@ -20,6 +20,7 @@
         "activeTab",
         "tabs",
         "contextMenus",
+        "notifications",
         "*://*/*"
     ],
     "browser_action": {
