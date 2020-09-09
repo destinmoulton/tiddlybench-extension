@@ -6,8 +6,10 @@ import moment from "moment";
  * https://tiddlywiki.com/static/DateFormat.html
  * https://momentjs.com/docs/#/displaying/
  */
-
-const DATE_FORMAT_MAP = {
+interface IDateFormatMap {
+    [key: string]: string;
+}
+const DATE_FORMAT_MAP: IDateFormatMap = {
     DDD: "dddd",
     ddd: "ddd",
     DD: "D",
