@@ -1,5 +1,7 @@
 import OptionsSync from "webext-options-sync";
-export interface Tiddler {
+
+// The tiddler that is returned by get calls
+export interface ITiddlerItem {
     created: string;
     creator: string;
     modified: string;
@@ -9,10 +11,29 @@ export interface Tiddler {
     type: string;
 }
 
+// A full tiddler
+// Defined at: https://tiddlywiki.com/prerelease/static/TiddlyWeb%2520JSON%2520tiddler%2520format.html
+export interface IFullTiddler {
+    title: string;
+    text: string;
+    tags?: string;
+    bag?: string;
+    created?: string;
+    creator?: string;
+    modified?: string;
+    modifier?: string;
+    permissions?: string;
+    recipe?: string;
+    revision?: string;
+    type?: string;
+    uri?: string;
+    [key: string]: string;
+}
+
 export interface API_Result {
     ok: boolean;
     message?: string;
-    data?: Tiddler[];
+    data?: ITiddlerItem[];
     response?: Response;
 }
 
