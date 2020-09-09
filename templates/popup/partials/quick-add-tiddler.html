@@ -1,20 +1,21 @@
 <script id="tmpl-quickadd-tiddler" type="text/template">
 
     <div id="tb-popup-quickadd-box">
-        <form class="pure-form pure-form-aligned">
+        <form class="pure-form ">
             <fieldset>
                 <legend>Quick Add</legend>
                 <div class="pure-control-group">
-                    <label for="tb-popup-quickadd-type">Add Tiddler To</label>
-                    <select id="tb-popup-quickadd-type">
-                        <option value="journal">Journal</option>
-                        <option value="inbox">Inbox</option>
-                    </select>
                 </div>
                 <div class="pure-control-group">
                     <textarea id="tb-popup-quickadd-contents"></textarea>
                 </div>
                 <div class="pure-control-group tb-popup-quickadd-button-container">
+
+                    <label for="tb-popup-quickadd-type" >Quick Add to</label>
+                    <select id="tb-popup-quickadd-type">
+                        <option value="journal">Journal</option>
+                        <option value="inbox">Inbox</option>
+                    </select>
                     <button type="button"
                             id="tb-popup-quickadd-submit-button"
                             class="pure-button pure-button-primary">Quick Add</button>

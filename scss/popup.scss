@@ -1,7 +1,11 @@
+#tb-popup-root {
+    box-sizing: border-box;
+}
 .tb-popup-container {
     width: 400px;
     min-height: 300px;
     box-sizing: border-box;
+    padding: 10px;
 }
 
 .tb-error {
@@ -30,10 +34,12 @@ ul.tb-popup-main-menu {
 
 #tb-popup-quickadd-box {
     width: 100%;
-    margin: 10px;
     border: 1px solid gray;
     padding: 10px;
     box-sizing: border-box;
+    label {
+        display: inline-block;
+    }
 
     .tb-popup-quickadd-button-container {
         width: 100%;
@@ -49,10 +55,10 @@ ul.tb-popup-main-menu {
 #tb-popup-not-connected-container {
     width: 100%;
     height: 100%;
-    margin: 10px;
     padding: 10px;
     text-align: center;
     font-size: 1.5em;
+    box-sizing: border-box;
 }
 
 /**

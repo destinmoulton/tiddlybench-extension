@@ -8,7 +8,7 @@ class HTMLTemplate {
     }
 
     _getRootElement(): HTMLElement {
-        const $root = document.getElementById("root");
+        const $root = document.getElementById("tb-popup-root");
 
         if (!$root) {
             throw new Error("Unable to find root element.");
