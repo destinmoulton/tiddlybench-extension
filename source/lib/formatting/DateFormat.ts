@@ -1,4 +1,6 @@
 import moment from "moment";
+
+import { IFormatMap } from "../../types";
 /**
  * Map of tiddlywiki date format to momentjs
  * date format.
@@ -6,10 +8,7 @@ import moment from "moment";
  * https://tiddlywiki.com/static/DateFormat.html
  * https://momentjs.com/docs/#/displaying/
  */
-interface IDateFormatMap {
-    [key: string]: string;
-}
-const DATE_FORMAT_MAP: IDateFormatMap = {
+const DATE_FORMAT_MAP: IFormatMap = {
     DDD: "dddd",
     ddd: "ddd",
     DD: "D",
