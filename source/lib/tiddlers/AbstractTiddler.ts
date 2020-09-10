@@ -5,6 +5,7 @@ abstract class AbstractTiddler {
     protected _tiddlerText: string;
     protected _tiddler: IFullTiddler;
     protected abstract _populateTitle(): void;
+    protected abstract setText(): void;
 
     constructor() {
         this._tiddlerTitle = "";
