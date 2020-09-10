@@ -42,31 +42,27 @@ const DATE_FORMAT_MAP: IFormatMap = {
 };
 
 /**
- * Convert the TiddlyWiki formatted string to
- * a moment compatible version using the map.
+ * Apply the time to any possible DateFormat parts
+ * of a bit of text
  *
- * @param original string
+ * @param text string
  */
-function convertTWtoMoment(original: string) {
+export default function dateformat(text: string) {
     const tdKeys = Object.keys(DATE_FORMAT_MAP);
 
-    let rep = original;
-    for (let part of tdKeys) {
-        const momentReplacement = DATE_FORMAT_MAP[part];
-        rep = rep.replaceAll(part, momentReplacement);
+    const now = moment();
+    for (let key of tdKeys) {
+        const D = "{[D|" + key + "]}";
+
+        const idx = text.search(D);
+        if (idx > -1) {
+            const momentFmtString = DATE_FORMAT_MAP[key];
+            let momentFormattedSubstring = "";
+            if (momentFmtString !== "") {
+                momentFormattedSubstring = now.format(momentFmtString);
+            }
+            text = text.replace(D, momentFormattedSubstring);
+        }
     }
-    return rep;
-}
-
-/**
- * Apply the time to any possible DateFormat parts
- * of a tiddler title.
- *
- * @param tiddlerTitle string
- */
-export default function dateformat(tiddlerTitle: string) {
-    const momentCompatible = convertTWtoMoment(tiddlerTitle);
-
-    const time = moment();
-    return time.format(momentCompatible);
+    return text;
 }
