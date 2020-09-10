@@ -29,7 +29,7 @@ module.exports = {
             },
         ],
     },
-    externals: { lodash: "_", "webextension-polyfill-ts": "browser" },
+    externals: { lodash: "_" },
     plugins: [
         new SizePlugin(),
         new CopyWebpackPlugin([
