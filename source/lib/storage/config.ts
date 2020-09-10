@@ -6,12 +6,12 @@ interface ISettings extends StorageElement {
     username: string;
     password: string;
     inbox_tiddler_title: string;
-    inbox_tiddler_prefix: string;
-    inbox_tiddler_suffix: string;
+    inbox_text_prefix: string;
+    inbox_text_suffix: string;
     journal_tiddler_title: string;
     journal_tiddler_tags: string;
-    journal_tiddler_prefix: string;
-    journal_tiddler_suffix: string;
+    journal_text_prefix: string;
+    journal_text_suffix: string;
     context_menu_visibility: string;
 }
 class Config extends AbstractStorage<ISettings> {
@@ -25,12 +25,12 @@ class Config extends AbstractStorage<ISettings> {
             username: "",
             password: "",
             inbox_tiddler_title: "Inbox",
-            inbox_tiddler_prefix: "\n\n",
-            inbox_tiddler_suffix: "\n\n",
+            inbox_text_prefix: "\n\n",
+            inbox_text_suffix: "\n\n",
             journal_tiddler_title: "Journal",
             journal_tiddler_tags: "journal",
-            journal_tiddler_prefix: "\n\n",
-            journal_tiddler_suffix: "\n\n",
+            journal_text_prefix: "\n\n",
+            journal_text_suffix: "\n\n",
             context_menu_visibility: "on",
         };
 
