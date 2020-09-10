@@ -59,3 +59,7 @@ export interface ITiddlerDraft {
     content: string;
     [key: string]: string;
 }
+
+interface IFormatMap {
+    [key: string]: string;
+}
