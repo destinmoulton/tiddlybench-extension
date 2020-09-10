@@ -33,7 +33,8 @@ export interface IFullTiddler {
 export interface API_Result {
     ok: boolean;
     message?: string;
-    data?: ITiddlerItem[];
+    data?: ITiddlerItem[] | IFullTiddler;
+    status?: number;
     response?: Response;
 }
 
