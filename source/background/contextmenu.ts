@@ -2,6 +2,7 @@ import { browser } from "webextension-polyfill-ts";
 import _ from "lodash";
 import config from "../lib/storage/config";
 import editortabs from "../lib/editortabs";
+//import api from "../lib/api";
 //import messenger from "../lib/messenger";
 //import logger from "../lib/logger";
 class ContextMenu {
