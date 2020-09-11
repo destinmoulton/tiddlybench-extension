@@ -1,4 +1,5 @@
 import OptionsSync from "webext-options-sync";
+import { Response } from "superagent";
 
 // The tiddler that is returned by get calls
 export interface ITiddlerItem {
