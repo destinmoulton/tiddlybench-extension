@@ -1,5 +1,6 @@
 import config from "./storage/config";
 import base64 from "base-64";
+import superagent from "superagent";
 
 //import logger from "../lib/logger";
 import { API_Result, ITiddlerItem, IFullTiddler } from "../types";
@@ -35,12 +36,18 @@ class API {
 
     async get(url: string): Promise<API_Result> {
         let response;
-        const headers = await this._getAuthorizationHeaders();
+        const options = await config.getAll();
+        //const headers = await this._getAuthorizationHeaders();
         try {
-            response = await fetch(url, { headers });
+            response = await superagent
+                .get(url)
+                .withCredentials()
+                .auth(options.username, options.password)
+                .set("Accept", "application/json");
         } catch (err) {
             return {
                 ok: false,
+                status: err.status,
                 message:
                     "Failed to connect. Check the URL. Make sure you include http:// or https://.",
             };
@@ -72,7 +79,7 @@ class API {
                 response,
             };
         }
-        const data: ITiddlerItem[] = await response.json();
+        const data: ITiddlerItem[] = await response.body;
 
         return { ok: true, data };
     }
@@ -83,18 +90,22 @@ class API {
                 "API :: putTiddler() :: You must include a title in the tiddler."
             );
         }
+        const conf = await config.getAll();
         let response;
-        const headers = await this._getAuthorizationHeaders();
-        const options = {
-            method: "PUT",
-            headers,
-        };
+        //const headers = await this._getAuthorizationHeaders();
         const uriTitle = encodeURIComponent(tiddler.title);
-        const url = ENDPOINTS.PUT_TIDDLER + uriTitle;
+        let url = this.joinURL(conf.url, ENDPOINTS.PUT_TIDDLER);
+        url = this.joinURL(url, uriTitle);
         try {
-            response = await fetch(url, options);
+            response = await superagent
+                .put(url)
+                .withCredentials()
+                .auth(conf.username, conf.password)
+                .set("Accept", "application/json")
+                .set("X-Requested-With", "TiddlyWiki");
             console.log("API :: putTiddler() :: ", response);
         } catch (err) {
+            console.log(err);
             return {
                 ok: false,
                 message:
