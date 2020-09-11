@@ -10,7 +10,7 @@ export default function textformat(inputString: string): string {
     let newString = inputString;
     for (let key of formatKeys) {
         const F = "{[F|" + key + "]}";
-        newString += newString.replaceAll(F, TEXT_FORMAT_MAP[key]);
+        newString = newString.replaceAll(F, TEXT_FORMAT_MAP[key]);
     }
     return newString;
 }
