@@ -8,6 +8,7 @@ export const ENDPOINTS = {
     GET_ALL: "/recipes/default/tiddlers.json",
     STATUS: "/status",
     PUT_TIDDLER: "/recipes/default/tiddlers/",
+    GET_SINGLE_TIDDLER: "/recipes/default/tiddlers/",
 };
 
 class API {
@@ -57,6 +58,7 @@ class API {
         if (response.status === 404) {
             return {
                 ok: false,
+                status: 404,
                 message:
                     "Unable to find that URL. Make sure you include http:// or https://.",
                 response,
@@ -134,6 +136,15 @@ class API {
     async getStatus(): Promise<API_Result> {
         const options = await config.getAll();
         const url = this.joinURL(options.url, ENDPOINTS.STATUS);
+        return await this.get(url);
+    }
+
+    async getTiddler(tiddlerTitle: string): Promise<API_Result> {
+        const serverURL = await config.get("url");
+        const uriTiddlerTitle = encodeURIComponent(tiddlerTitle);
+        let url = this.joinURL(serverURL, ENDPOINTS.GET_SINGLE_TIDDLER);
+        url = this.joinURL(url, uriTiddlerTitle);
+
         return await this.get(url);
     }
 }
