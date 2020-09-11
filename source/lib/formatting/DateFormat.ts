@@ -1,4 +1,5 @@
 import moment from "moment";
+import _ from "lodash";
 
 import { IFormatMap } from "../../types";
 /**
@@ -52,7 +53,8 @@ export default function dateformat(text: string) {
 
     const now = moment();
     for (let key of tdKeys) {
-        const D = "{[D|" + key + "]}";
+        // prettier-ignore
+        const D = new RegExp(_.escapeRegExp("{[D|" + key + "]}"));
 
         const idx = text.search(D);
         if (idx > -1) {
