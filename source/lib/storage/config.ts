@@ -25,12 +25,12 @@ class Config extends AbstractStorage<ISettings> {
             username: "",
             password: "",
             inbox_tiddler_title: "Inbox",
-            inbox_text_prefix: "\n\n",
-            inbox_text_suffix: "\n\n",
+            inbox_text_prefix: "{[F|BR]}{[F|BR]}",
+            inbox_text_suffix: "{[F|BR]}{[F|BR]}",
             journal_tiddler_title: "Journal",
             journal_tiddler_tags: "journal",
-            journal_text_prefix: "\n\n",
-            journal_text_suffix: "\n\n",
+            journal_text_prefix: "{[F|BR]}{[F|BR]}",
+            journal_text_suffix: "{[F|BR]}{[F|BR]}",
             context_menu_visibility: "on",
         };
 
@@ -85,6 +85,7 @@ class Config extends AbstractStorage<ISettings> {
             }
 
             // Populate from the stored settings
+
             $input.value = settings[inputID];
 
             // Setup the event listeners
