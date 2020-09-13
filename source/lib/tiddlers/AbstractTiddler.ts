@@ -2,21 +2,19 @@ import { API_Result, IFullTiddler } from "../../types";
 import api from "../api";
 abstract class AbstractTiddler {
     protected _tiddlerTitle: string;
-    protected _tiddlerText: string;
     protected _tiddler: IFullTiddler;
     protected abstract _populateTitle(): void;
     protected abstract addText(text: string): void;
 
     constructor() {
         this._tiddlerTitle = "";
-        this._tiddlerText = "";
         this._tiddler = {
             title: "",
             text: "",
         };
     }
 
-    protected async initialize() {
+    async initialize() {
         await this._populateTitle();
         await this._populateTiddler();
     }
@@ -32,14 +30,16 @@ abstract class AbstractTiddler {
         } catch (err) {
             throw err;
         }
-        if (res.status === 404) {
+        if (!res.ok && res.status === 404) {
             // The tiddler was not found, so set this one to blank
             this._tiddler.title = this._tiddlerTitle;
-        } else if (res.status === 200) {
+        } else if (res.ok) {
             this._tiddler = <IFullTiddler>res.data;
+            console.log("_popuplateTiddler :: this._tiddler", this._tiddler);
         } else {
+            console.error(res);
             throw new Error(
-                `AbstractTiddler :: _populateCurrent() :: API returned unhandled status ${res.status}`
+                `AbstractTiddler :: _populateTiddler() :: API returned unhandled`
             );
         }
     }
@@ -47,9 +47,28 @@ abstract class AbstractTiddler {
     /**
      * Send the Tiddler to the server
      */
-    submit() {}
+    async submit() {
+        try {
+            console.log("About to submit", this._tiddler);
+            await api.putTiddler(this._tiddler);
+        } catch (err) {
+            throw err;
+        }
+    }
+
+    /**
+     * Get the tiddler
+     */
     getTiddler(): IFullTiddler {
         return this._tiddler;
+    }
+
+    getTiddlerText(): string {
+        return this._tiddler.text;
+    }
+
+    setTiddlerText(text: string) {
+        this._tiddler.text = text;
     }
 
     jsonify() {}
