@@ -43,7 +43,8 @@ class API {
                 .get(url)
                 .withCredentials()
                 .auth(options.username, options.password)
-                .set("Accept", "application/json");
+                .set("Accept", "application/json")
+                .type("json");
         } catch (err) {
             return {
                 ok: false,
@@ -99,13 +100,13 @@ class API {
         try {
             response = await superagent
                 .put(url)
+                .send(tiddler)
                 .withCredentials()
                 .auth(conf.username, conf.password)
+                .type("json")
                 .set("Accept", "application/json")
                 .set("X-Requested-With", "TiddlyWiki");
-            console.log("API :: putTiddler() :: ", response);
         } catch (err) {
-            console.log(err);
             return {
                 ok: false,
                 message:
