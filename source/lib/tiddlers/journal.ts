@@ -5,6 +5,7 @@ class Journal extends AbstractTiddler {
     async _populateTitle() {
         const title = await config.get("journal_tiddler_title");
         this._tiddlerTitle = formatit(title);
+        console.log("Journal :: " + this._tiddlerTitle);
     }
 
     async addText(text: string) {
@@ -14,7 +15,9 @@ class Journal extends AbstractTiddler {
         let newText =
             formatit(text_prefix) + formatit(text) + formatit(text_suffix);
 
-        console.log("Journal :: " + newText);
+        let tiddlerText = this.getTiddlerText();
+        tiddlerText = tiddlerText + newText;
+        this.setTiddlerText(tiddlerText);
     }
 }
 export default new Journal();
