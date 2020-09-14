@@ -12,22 +12,38 @@ class Messenger {
         browser.runtime.onMessage.addListener(async (data, sender) => {
             if (data.dispatch === "tiddler") {
                 switch (data.type) {
-                    case "journal":
+                    case "journal": {
                         await journal.initialize();
                         await journal.addText(data.packet.text);
-                        await journal.submit();
-                        return Promise.resolve({
-                            ok: true,
-                            message: "Journal submitted.",
-                        });
-                    case "inbox":
+                        const res = await journal.submit();
+                        if (res.ok) {
+                            return Promise.resolve({
+                                ok: true,
+                                message: "Journal text added.",
+                            });
+                        } else {
+                            return Promise.reject({
+                                ok: false,
+                                message: "Failed to add the Journal text.",
+                            });
+                        }
+                    }
+                    case "inbox": {
                         await inbox.initialize();
                         await inbox.addText(data.packet.text);
-                        await inbox.submit();
-                        return Promise.resolve({
-                            ok: true,
-                            message: "Inbox submitted.",
-                        });
+                        const res = await inbox.submit();
+                        if (res.ok) {
+                            return Promise.resolve({
+                                ok: true,
+                                message: "Inbox text added.",
+                            });
+                        } else {
+                            return Promise.reject({
+                                ok: false,
+                                message: "Failed to add the Inbox text.",
+                            });
+                        }
+                    }
                 }
             }
             return Promise.reject({
