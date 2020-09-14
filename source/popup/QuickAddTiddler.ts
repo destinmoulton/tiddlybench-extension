@@ -7,11 +7,13 @@ import messenger from "../lib/messenger";
 class QuickAddTiddler extends HTMLTemplate {
     $container: HTMLElement | null;
     $textarea: HTMLInputElement | null;
+    $type: HTMLInputElement | null;
 
     constructor() {
         super();
         this.$container = null;
         this.$textarea = null;
+        this.$type = null;
     }
 
     display() {
@@ -20,11 +22,15 @@ class QuickAddTiddler extends HTMLTemplate {
         console.log(html);
         this._append(html);
 
+        // Get the main container
         this.$container = <HTMLElement>dom("#tb-popup-quickadd-box");
 
         // Focus on the textarea
         this.$textarea = <HTMLInputElement>dom("#tb-popup-quickadd-contents");
         this.$textarea.focus();
+
+        // Get the select box element
+        this.$type = <HTMLInputElement>dom("#tb-popup-quickadd-type");
 
         // Setup the handler
         const $submit = <HTMLElement>dom("#tb-popup-quickadd-submit-button");
@@ -39,14 +45,20 @@ class QuickAddTiddler extends HTMLTemplate {
                 const text = this.$textarea ? this.$textarea.value : "";
                 this.$container.innerHTML = animation;
                 try {
-                    messenger.send(
-                        {
-                            dispatch: "tiddler",
-                            type: "journal",
-                            packet: { text },
-                        },
-                        this.handleSubmitResponse.bind(this)
-                    );
+                    if (this.$type) {
+                        messenger.send(
+                            {
+                                dispatch: "tiddler",
+                                type: this.$type.value,
+                                packet: { text },
+                            },
+                            this.handleSubmitResponse.bind(this)
+                        );
+                    } else {
+                        console.error(
+                            "No Quick Add type value found in the dropdown select."
+                        );
+                    }
                     // await browser.notifications.create({
                     //     type: "basic",
                     //     iconUrl: "../icon.png",
