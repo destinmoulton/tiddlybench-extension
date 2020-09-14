@@ -1,6 +1,7 @@
 import { browser } from "webextension-polyfill-ts";
 
 import journal from "../lib/tiddlers/journal";
+import inbox from "../lib/tiddlers/inbox";
 
 class Messenger {
     setupListener() {
@@ -10,13 +11,23 @@ class Messenger {
          */
         browser.runtime.onMessage.addListener(async (data, sender) => {
             if (data.dispatch === "tiddler") {
-                if (data.type === "journal") {
-                    await journal.initialize();
-                    await journal.addText(data.packet.text);
-                    await journal.submit();
-                    return Promise.resolve({
-                        message: "Journal submitted.",
-                    });
+                switch (data.type) {
+                    case "journal":
+                        await journal.initialize();
+                        await journal.addText(data.packet.text);
+                        await journal.submit();
+                        return Promise.resolve({
+                            ok: true,
+                            message: "Journal submitted.",
+                        });
+                    case "inbox":
+                        await inbox.initialize();
+                        await inbox.addText(data.packet.text);
+                        await inbox.submit();
+                        return Promise.resolve({
+                            ok: true,
+                            message: "Inbox submitted.",
+                        });
                 }
             }
             return Promise.reject({
