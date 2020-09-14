@@ -49,8 +49,7 @@ abstract class AbstractTiddler {
      */
     async submit() {
         try {
-            console.log("About to submit", this._tiddler);
-            await api.putTiddler(this._tiddler);
+            return await api.putTiddler(this._tiddler);
         } catch (err) {
             throw err;
         }
