@@ -1,5 +1,6 @@
-import tiddlybench from "./tiddlybench";
+import TiddlyBench from "./TiddlyBench";
 
 (async function() {
-    tiddlybench.initialize();
+    const tiddlyBench = new TiddlyBench();
+    await tiddlyBench.initialize();
 })();
