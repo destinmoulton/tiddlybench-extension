@@ -1,13 +1,16 @@
 import { browser } from "webextension-polyfill-ts";
 
+import API from "./API";
 import ConfigStorage from "./storage/ConfigStorage";
 import Journal from "./tiddlers/Journal";
 import Inbox from "./tiddlers/Inbox";
 
 class Messenger {
+    _api: API;
     _configStorage: ConfigStorage;
 
-    constructor(configStorage: ConfigStorage) {
+    constructor(api: API, configStorage: ConfigStorage) {
+        this._api = api;
         this._configStorage = configStorage;
     }
     setupListener() {
@@ -19,7 +22,10 @@ class Messenger {
             if (data.dispatch === "tiddler") {
                 switch (data.type) {
                     case "journal": {
-                        const journal = new Journal(this._configStorage);
+                        const journal = new Journal(
+                            this._configStorage,
+                            this._api
+                        );
                         await journal.initialize();
                         await journal.addText(data.packet.text);
                         const res = await journal.submit();
@@ -36,7 +42,7 @@ class Messenger {
                         }
                     }
                     case "inbox": {
-                        const inbox = new Inbox(this._configStorage);
+                        const inbox = new Inbox(this._configStorage, this._api);
                         await inbox.initialize();
                         await inbox.addText(data.packet.text);
                         const res = await inbox.submit();
