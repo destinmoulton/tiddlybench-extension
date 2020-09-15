@@ -8,40 +8,30 @@
  * system.
  */
 
+import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import TestConnection from "./sections/TestConnection";
-import dom from "../lib/dom";
+import ResetOptionsForm from "./sections/ResetOptionsForm";
+//import dom from "../lib/dom";
 //import logger from "../lib/logger";
 
 class OptionsForm {
+    _api: API;
     _configStorage: ConfigStorage;
     _testConnection: TestConnection;
-    $resetFormButton: HTMLElement | null;
+    _resetOptionsForm: ResetOptionsForm;
 
-    constructor(configStorage: ConfigStorage) {
+    constructor(api: API, configStorage: ConfigStorage) {
+        this._api = api;
         this._configStorage = configStorage;
-        this._testConnection = new TestConnection();
-        this.$resetFormButton = null;
+        this._testConnection = new TestConnection(this._api);
+        this._resetOptionsForm = new ResetOptionsForm(configStorage);
     }
 
     initialize() {
         this._testConnection.initialize();
-        this.$resetFormButton = <HTMLElement>dom("#reset-settings");
-        this.$resetFormButton.addEventListener(
-            "click",
-            this.handleResetForm.bind(this)
-        );
+        this._resetOptionsForm.initialize();
         this._configStorage.syncForm("options-form");
-    }
-
-    async handleResetForm() {
-        const isOk = confirm(
-            "Are you sure you want reset the settings back to default?"
-        );
-
-        if (isOk) {
-            await this._configStorage.reset("options-form");
-        }
     }
 }
 
