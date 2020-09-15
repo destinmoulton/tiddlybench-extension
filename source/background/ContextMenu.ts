@@ -1,20 +1,28 @@
 import { browser } from "webextension-polyfill-ts";
 import _ from "lodash";
-import config from "../lib/storage/config";
+import ConfigStorage from "../lib/storage/ConfigStorage";
 import editortabs from "../lib/editortabs";
 //import api from "../lib/api";
 //import messenger from "../lib/messenger";
 //import logger from "../lib/logger";
 class ContextMenu {
+    _configStorage: ConfigStorage;
     isContextMenuEnabled: string = "off";
     doesContextMenuExist: boolean = false;
+
+    constructor(configStorage: ConfigStorage) {
+        this._configStorage = configStorage;
+    }
 
     async initialize() {
         await this.reconfigure();
     }
+
     // Called by config when the config values are changed
     async reconfigure() {
-        const shouldBeEnabled = await config.get("context_menu_visibility");
+        const shouldBeEnabled = await this._configStorage.get(
+            "context_menu_visibility"
+        );
         if (shouldBeEnabled !== this.isContextMenuEnabled) {
             this.isContextMenuEnabled = shouldBeEnabled;
         }
@@ -93,4 +101,4 @@ class ContextMenu {
     }
 }
 
-export default new ContextMenu();
+export default ContextMenu;
