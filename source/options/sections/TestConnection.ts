@@ -8,16 +8,18 @@
  * or success messages.
  */
 
-import api from "../../lib/api";
+import API from "../../lib/API";
 import dom from "../../lib/dom";
 import logger from "../../lib/logger";
 import { API_Result } from "../../types";
 class TestConnection {
+    _api: API;
     $testConnectionButton: HTMLElement | null;
     $testConnectionSuccessMessage: HTMLElement | null;
     $testConnectionErrorMessage: HTMLElement | null;
 
-    constructor() {
+    constructor(api: API) {
+        this._api = api;
         this.$testConnectionButton = null;
         this.$testConnectionSuccessMessage = null;
         this.$testConnectionErrorMessage = null;
@@ -39,7 +41,7 @@ class TestConnection {
     }
 
     async testConnectionOptions(): Promise<API_Result> {
-        const res = await api.getStatus();
+        const res = await this._api.getStatus();
         if (res.ok) {
             this._showSuccessMessage();
         } else {
