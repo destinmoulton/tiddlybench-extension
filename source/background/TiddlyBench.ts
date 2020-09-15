@@ -2,20 +2,22 @@ import { browser } from "webextension-polyfill-ts";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenu from "./ContextMenu";
 //import config from "../lib/config";
-import messenger from "../lib/messenger";
+import Messenger from "../lib/Messenger";
 import logger from "../lib/logger";
 class TiddlyBench {
     _contextMenu: ContextMenu;
     _configStorage: ConfigStorage;
+    _messenger: Messenger;
 
     constructor() {
         this._configStorage = new ConfigStorage();
         this._contextMenu = new ContextMenu(this._configStorage);
+        this._messenger = new Messenger(this._configStorage);
     }
 
     async initialize() {
         logger.log("TiddlyBench :: intitialze() called");
-        messenger.setupListener();
+        this._messenger.setupListener();
 
         await this._contextMenu.initialize();
         this.setupListeners();
