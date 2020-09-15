@@ -1,15 +1,18 @@
 import { API_Result, IFullTiddler } from "../../types";
 import ConfigStorage from "../storage/ConfigStorage";
-import api from "../api";
+import API from "../API";
 abstract class AbstractTiddler {
     protected _configStorage: ConfigStorage;
+    protected _api: API;
     protected _tiddlerTitle: string;
     protected _tiddler: IFullTiddler;
     protected abstract _populateTitle(): void;
     protected abstract addText(text: string): void;
 
-    constructor(configStorage: ConfigStorage) {
+    constructor(configStorage: ConfigStorage, api: API) {
         this._configStorage = configStorage;
+        this._api = api;
+
         this._tiddlerTitle = "";
         this._tiddler = {
             title: "",
@@ -29,7 +32,7 @@ abstract class AbstractTiddler {
     protected async _populateTiddler(): Promise<void> {
         let res: API_Result;
         try {
-            res = await api.getTiddler(this._tiddlerTitle);
+            res = await this._api.getTiddler(this._tiddlerTitle);
         } catch (err) {
             throw err;
         }
@@ -52,7 +55,7 @@ abstract class AbstractTiddler {
      */
     async submit() {
         try {
-            return await api.putTiddler(this._tiddler);
+            return await this._api.putTiddler(this._tiddler);
         } catch (err) {
             throw err;
         }
