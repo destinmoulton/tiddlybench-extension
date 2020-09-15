@@ -1,12 +1,15 @@
 import { API_Result, IFullTiddler } from "../../types";
+import ConfigStorage from "../storage/ConfigStorage";
 import api from "../api";
 abstract class AbstractTiddler {
+    protected _configStorage: ConfigStorage;
     protected _tiddlerTitle: string;
     protected _tiddler: IFullTiddler;
     protected abstract _populateTitle(): void;
     protected abstract addText(text: string): void;
 
-    constructor() {
+    constructor(configStorage: ConfigStorage) {
+        this._configStorage = configStorage;
         this._tiddlerTitle = "";
         this._tiddler = {
             title: "",
