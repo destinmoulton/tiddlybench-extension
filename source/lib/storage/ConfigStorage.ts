@@ -14,7 +14,7 @@ interface ISettings extends StorageElement {
     journal_text_suffix: string;
     context_menu_visibility: string;
 }
-class Config extends AbstractStorage<ISettings> {
+class ConfigStorage extends AbstractStorage<ISettings> {
     _storageDefaults: ISettings;
     _storageKey: string;
 
@@ -127,4 +127,4 @@ class Config extends AbstractStorage<ISettings> {
     }
 }
 
-export default new Config();
+export default ConfigStorage;
