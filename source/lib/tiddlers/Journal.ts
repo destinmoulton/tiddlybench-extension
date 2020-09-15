@@ -1,5 +1,5 @@
 import AbstractTiddler from "./AbstractTiddler";
-import config from "../storage/config";
+import config from "../storage/ConfigStorage";
 import formatit from "../formatting/formatit";
 class Journal extends AbstractTiddler {
     async _populateTitle() {
@@ -9,8 +9,12 @@ class Journal extends AbstractTiddler {
     }
 
     async addText(text: string) {
-        const text_prefix = await config.get("journal_text_prefix");
-        const text_suffix = await config.get("journal_text_suffix");
+        const text_prefix = await this._configStorage.get(
+            "journal_text_prefix"
+        );
+        const text_suffix = await this._configStorage.get(
+            "journal_text_suffix"
+        );
 
         let newText =
             formatit(text_prefix) + formatit(text) + formatit(text_suffix);
@@ -20,4 +24,4 @@ class Journal extends AbstractTiddler {
         this.setTiddlerText(tiddlerText);
     }
 }
-export default new Journal();
+export default Journal;
