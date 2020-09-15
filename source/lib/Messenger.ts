@@ -1,9 +1,15 @@
 import { browser } from "webextension-polyfill-ts";
 
-import journal from "../lib/tiddlers/journal";
-import inbox from "../lib/tiddlers/inbox";
+import ConfigStorage from "./storage/ConfigStorage";
+import Journal from "./tiddlers/Journal";
+import Inbox from "./tiddlers/Inbox";
 
 class Messenger {
+    _configStorage: ConfigStorage;
+
+    constructor(configStorage: ConfigStorage) {
+        this._configStorage = configStorage;
+    }
     setupListener() {
         /**
          * The addListener event handler MUST return a
@@ -13,6 +19,7 @@ class Messenger {
             if (data.dispatch === "tiddler") {
                 switch (data.type) {
                     case "journal": {
+                        const journal = new Journal(this._configStorage);
                         await journal.initialize();
                         await journal.addText(data.packet.text);
                         const res = await journal.submit();
@@ -29,6 +36,7 @@ class Messenger {
                         }
                     }
                     case "inbox": {
+                        const inbox = new Inbox(this._configStorage);
                         await inbox.initialize();
                         await inbox.addText(data.packet.text);
                         const res = await inbox.submit();
@@ -71,4 +79,4 @@ class Messenger {
         console.error("Messenger :: _handleError", error);
     }
 }
-export default new Messenger();
+export default Messenger;
