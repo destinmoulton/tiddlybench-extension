@@ -29,7 +29,7 @@ class API {
     }
 
     async _getAuthorizationHeaders(): Promise<Headers> {
-        const options = await config.getAll();
+        const options = await this._configStorage.getAll();
 
         return new Headers({
             Authorization: `Basic ${base64.encode(
@@ -40,7 +40,7 @@ class API {
 
     async get(url: string): Promise<API_Result> {
         let response;
-        const options = await config.getAll();
+        const options = await this._configStorage.getAll();
         //const headers = await this._getAuthorizationHeaders();
         try {
             response = await superagent
