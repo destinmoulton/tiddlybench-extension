@@ -1,4 +1,3 @@
-import config from "./storage/ConfigStorage";
 import base64 from "base-64";
 import superagent from "superagent";
 
