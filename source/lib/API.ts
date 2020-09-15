@@ -1,7 +1,8 @@
-import config from "./storage/config";
+import config from "./storage/ConfigStorage";
 import base64 from "base-64";
 import superagent from "superagent";
 
+import ConfigStorage from "./storage/ConfigStorage";
 //import logger from "../lib/logger";
 import { API_Result, ITiddlerItem, IFullTiddler } from "../types";
 export const ENDPOINTS = {
@@ -13,7 +14,10 @@ export const ENDPOINTS = {
 };
 
 class API {
-    constructor() {
+    _configStorage: ConfigStorage;
+
+    constructor(configStorage: ConfigStorage) {
+        this._configStorage = configStorage;
         this.joinURL = this.joinURL.bind(this);
     }
 
@@ -91,7 +95,7 @@ class API {
                 "API :: putTiddler() :: You must include a title in the tiddler."
             );
         }
-        const conf = await config.getAll();
+        const conf = await this._configStorage.getAll();
         let response;
         //const headers = await this._getAuthorizationHeaders();
         const uriTitle = encodeURIComponent(tiddler.title);
@@ -146,13 +150,13 @@ class API {
      * Get the /status of the server
      */
     async getStatus(): Promise<API_Result> {
-        const options = await config.getAll();
+        const options = await this._configStorage.getAll();
         const url = this.joinURL(options.url, ENDPOINTS.STATUS);
         return await this.get(url);
     }
 
     async getTiddler(tiddlerTitle: string): Promise<API_Result> {
-        const serverURL = await config.get("url");
+        const serverURL = await this._configStorage.get("url");
         const uriTiddlerTitle = encodeURIComponent(tiddlerTitle);
         let url = this.joinURL(serverURL, ENDPOINTS.GET_SINGLE_TIDDLER);
         url = this.joinURL(url, uriTiddlerTitle);
@@ -161,4 +165,4 @@ class API {
     }
 }
 
-export default new API();
+export default API;
