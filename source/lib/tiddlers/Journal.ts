@@ -1,9 +1,8 @@
 import AbstractTiddler from "./AbstractTiddler";
-import config from "../storage/ConfigStorage";
 import formatit from "../formatting/formatit";
 class Journal extends AbstractTiddler {
     async _populateTitle() {
-        const title = await config.get("journal_tiddler_title");
+        const title = await this._configStorage.get("journal_tiddler_title");
         this._tiddlerTitle = formatit(title);
         console.log("Journal :: " + this._tiddlerTitle);
     }
