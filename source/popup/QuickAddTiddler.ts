@@ -1,16 +1,18 @@
 import HTMLTemplate from "./HTMLTemplate";
+import Messenger from "../lib/Messenger";
 //import formatit from "../lib/formatting/formatit";
 //import config from "../lib/storage/config";
 import dom from "../lib/dom";
 //import { browser } from "webextension-polyfill-ts";
-import messenger from "../lib/messenger";
 class QuickAddTiddler extends HTMLTemplate {
+    _messenger: Messenger;
     $container: HTMLElement | null;
     $textarea: HTMLInputElement | null;
     $type: HTMLInputElement | null;
 
-    constructor() {
+    constructor(messenger: Messenger) {
         super();
+        this._messenger = messenger;
         this.$container = null;
         this.$textarea = null;
         this.$type = null;
@@ -46,7 +48,7 @@ class QuickAddTiddler extends HTMLTemplate {
                 this.$container.innerHTML = animation;
                 try {
                     if (this.$type) {
-                        messenger.send(
+                        this._messenger.send(
                             {
                                 dispatch: "tiddler",
                                 type: this.$type.value,
@@ -89,4 +91,4 @@ class QuickAddTiddler extends HTMLTemplate {
     }
 }
 
-export default new QuickAddTiddler();
+export default QuickAddTiddler;
