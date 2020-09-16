@@ -1,9 +1,6 @@
 import HTMLTemplate from "./HTMLTemplate";
 import Messenger from "../lib/Messenger";
-//import formatit from "../lib/formatting/formatit";
-//import config from "../lib/storage/config";
 import dom from "../lib/dom";
-//import { browser } from "webextension-polyfill-ts";
 class QuickAddTiddler extends HTMLTemplate {
     _messenger: Messenger;
     $container: HTMLElement | null;
@@ -19,9 +16,7 @@ class QuickAddTiddler extends HTMLTemplate {
     }
 
     display() {
-        console.log("running display");
         const html = this._compile("tmpl-quickadd-tiddler", {});
-        console.log(html);
         this._append(html);
 
         // Get the main container
