@@ -10,7 +10,7 @@
  */
 //import { browser } from "webextension-polyfill-ts";
 
-import { browser } from "webextension-polyfill-ts";
+//import { browser } from "webextension-polyfill-ts";
 import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import Journal from "../lib/tiddlers/Journal";
@@ -92,14 +92,9 @@ class BackgroundActions {
                 break;
             case "tb-ctxt-add-to-inbox":
                 try {
-                    this._messenger.send(
-                        {
-                            dispatch: "tiddler",
-                            type: "inbox",
-                            packet: { text: info.selectionText },
-                        },
-                        () => {}
-                    );
+                    if (info.selectionText && info.selectionText !== "") {
+                        await this.addTextToInbox(info.selectionText);
+                    }
                 } catch (err) {
                     throw err;
                 }
