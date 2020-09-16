@@ -1,18 +1,26 @@
 import { browser } from "webextension-polyfill-ts";
+import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenu from "./ContextMenu";
 //import config from "../lib/config";
 import Messenger from "../lib/Messenger";
 import logger from "../lib/logger";
 class TiddlyBench {
+    _api: API;
     _contextMenu: ContextMenu;
     _configStorage: ConfigStorage;
     _messenger: Messenger;
 
-    constructor() {
-        this._configStorage = new ConfigStorage();
-        this._contextMenu = new ContextMenu(this._configStorage);
-        this._messenger = new Messenger(this._configStorage);
+    constructor(
+        api: API,
+        configStorage: ConfigStorage,
+        contextMenu: ContextMenu,
+        messenger: Messenger
+    ) {
+        this._api = api;
+        this._configStorage = configStorage;
+        this._contextMenu = contextMenu;
+        this._messenger = messenger;
     }
 
     async initialize() {
