@@ -8,7 +8,7 @@ import QuickAddTiddler from "./QuickAddTiddler";
 window.addEventListener("load", function() {
     const configStorage = new ConfigStorage();
     const api = new API(configStorage);
-    const messenger = new Messenger(configStorage);
+    const messenger = new Messenger(api, configStorage);
     const quickAddTiddler = new QuickAddTiddler(messenger);
     const popup = new Popup(api, quickAddTiddler);
     popup.initialize();
