@@ -1,25 +1,36 @@
 import { browser } from "webextension-polyfill-ts";
 import _ from "lodash";
 import ConfigStorage from "../lib/storage/ConfigStorage";
-import editortabs from "../lib/editortabs";
-//import api from "../lib/api";
-//import messenger from "../lib/messenger";
-//import logger from "../lib/logger";
+import Messenger from "../lib/Messenger";
+
+type ContextMenuClickHandler = (
+    info: browser.contextMenus.OnClickData,
+    tab: browser.tabs.Tab | undefined
+) => void;
+
 class ContextMenu {
     _configStorage: ConfigStorage;
+    _messenger: Messenger;
+    _handleClickContextMenu: ContextMenuClickHandler;
     isContextMenuEnabled: string = "off";
     doesContextMenuExist: boolean = false;
 
-    constructor(configStorage: ConfigStorage) {
+    constructor(
+        configStorage: ConfigStorage,
+        messenger: Messenger,
+        handleContextMenuClick: ContextMenuClickHandler
+    ) {
         this._configStorage = configStorage;
+        this._messenger = messenger;
+        this._handleClickContextMenu = handleContextMenuClick;
     }
 
     async initialize() {
-        await this.reconfigure();
+        await this.configure();
     }
 
     // Called by config when the config values are changed
-    async reconfigure() {
+    async configure() {
         const shouldBeEnabled = await this._configStorage.get(
             "context_menu_visibility"
         );
@@ -37,39 +48,11 @@ class ContextMenu {
         // Setup the context menu event listeners
         if (
             !browser.contextMenus.onClicked.hasListener(
-                this._onContextMenuClicked.bind(this)
+                this._handleClickContextMenu
             )
         ) {
         } else {
             console.log("context menu is already created");
-        }
-    }
-
-    async _onContextMenuClicked(
-        info: browser.contextMenus.OnClickData,
-        tab: browser.tabs.Tab | undefined
-    ) {
-        switch (info.menuItemId) {
-            case "tb-ctxt-add-to-tiddler":
-                if (tab && info.pageUrl && tab.title && info.selectionText) {
-                    editortabs.create(
-                        info.pageUrl,
-                        tab.title,
-                        info.selectionText
-                    );
-                }
-                break;
-            case "tb-ctxt-add-to-inbox":
-                try {
-                    await browser.notifications.create({
-                        type: "basic",
-                        title: "TiddlyBench",
-                        message: "Added selection to Inbox.",
-                    });
-                } catch (err) {
-                    throw err;
-                }
-                break;
         }
     }
 
@@ -92,7 +75,7 @@ class ContextMenu {
         );
         this.doesContextMenuExist = true;
         browser.contextMenus.onClicked.addListener(
-            this._onContextMenuClicked.bind(this)
+            this._handleClickContextMenu
         );
     }
 
