@@ -5,8 +5,7 @@ const urls = {
     settings: "options/options.html",
 };
 
-async function openSettingsTab() {
-    console.log("openSettingsTab running");
+export async function openSettingsTab() {
     return browser.tabs.create({ url: urls.settings });
 }
 export default {
