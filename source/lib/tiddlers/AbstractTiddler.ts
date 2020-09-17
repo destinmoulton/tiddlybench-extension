@@ -7,7 +7,10 @@ abstract class AbstractTiddler {
     protected _tiddlerTitle: string;
     protected _tiddler: IFullTiddler;
     protected abstract _populateTitle(): void;
-    protected abstract addText(text: string): void;
+    protected abstract addText(
+        text: string,
+        tab: browser.tabs.Tab | undefined
+    ): void;
 
     constructor(configStorage: ConfigStorage, api: API) {
         this._configStorage = configStorage;

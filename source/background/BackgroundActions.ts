@@ -40,7 +40,10 @@ class BackgroundActions {
         if (data.dispatch === "tiddler") {
             switch (data.type) {
                 case "journal": {
-                    const res = await this.addTextToJournal(data.packet.text);
+                    const res = await this.addTextToJournal(
+                        data.packet.text,
+                        undefined
+                    );
                     if (res.ok) {
                         return Promise.resolve({
                             ok: true,
@@ -54,7 +57,10 @@ class BackgroundActions {
                     }
                 }
                 case "inbox": {
-                    const res = await this.addTextToInbox(data.packet.text);
+                    const res = await this.addTextToInbox(
+                        data.packet.text,
+                        undefined
+                    );
                     if (res.ok) {
                         return Promise.resolve({
                             ok: true,
@@ -93,7 +99,7 @@ class BackgroundActions {
             case "tb-ctxt-add-to-inbox":
                 try {
                     if (info.selectionText && info.selectionText !== "") {
-                        await this.addTextToInbox(info.selectionText);
+                        await this.addTextToInbox(info.selectionText, tab);
                     }
                 } catch (err) {
                     throw err;
@@ -102,17 +108,17 @@ class BackgroundActions {
         }
     }
 
-    async addTextToJournal(text: string) {
+    async addTextToJournal(text: string, tab: browser.tabs.Tab | undefined) {
         const journal = new Journal(this._configStorage, this._api);
         await journal.initialize();
-        await journal.addText(text);
+        await journal.addText(text, tab);
         return await journal.submit();
     }
 
-    async addTextToInbox(text: string) {
+    async addTextToInbox(text: string, tab: browser.tabs.Tab | undefined) {
         const inbox = new Inbox(this._configStorage, this._api);
         await inbox.initialize();
-        await inbox.addText(text);
+        await inbox.addText(text, tab);
         return await inbox.submit();
     }
 }
