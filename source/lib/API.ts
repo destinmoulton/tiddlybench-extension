@@ -2,7 +2,7 @@ import base64 from "base-64";
 import superagent from "superagent";
 
 import ConfigStorage from "./storage/ConfigStorage";
-//import logger from "../lib/logger";
+import { openSettingsTab } from "../lib/extensionurls";
 import { API_Result, ITiddlerItem, IFullTiddler } from "../types";
 export const ENDPOINTS = {
     BASE: "/",
@@ -44,16 +44,23 @@ class API {
         try {
             response = await superagent
                 .get(url)
-                .withCredentials()
                 .auth(options.username, options.password)
                 .set("Accept", "application/json")
                 .type("json");
+            console.log("API :: get() :: response", response);
         } catch (err) {
+            if (err.status === 401) {
+                return {
+                    ok: false,
+                    status: err.status,
+                    message: "The Username or Password is not valid.",
+                };
+            }
             return {
                 ok: false,
                 status: err.status,
                 message:
-                    "Failed to connect. Check the URL. Make sure you include http:// or https://.",
+                    "Failed to connect. Check the settings. Make sure you include http:// or https:// in the URL.",
             };
         }
 
@@ -66,23 +73,6 @@ class API {
             };
         }
 
-        if (response.status === 404) {
-            return {
-                ok: false,
-                status: 404,
-                message:
-                    "Unable to find that URL. Make sure you include http:// or https://.",
-                response,
-            };
-        }
-
-        if (response.status === 401) {
-            return {
-                ok: false,
-                message: "The username or password is invalid.",
-                response,
-            };
-        }
         const data: ITiddlerItem[] = await response.body;
 
         return { ok: true, data };
@@ -104,7 +94,6 @@ class API {
             response = await superagent
                 .put(url)
                 .send(tiddler)
-                .withCredentials()
                 .auth(conf.username, conf.password)
                 .type("json")
                 .set("Accept", "application/json")
@@ -122,23 +111,6 @@ class API {
                 ok: false,
                 message:
                     "Failed to connect to that server. Check the URL. Make sure you include http:// or https://.",
-                response,
-            };
-        }
-
-        if (response.status === 404) {
-            return {
-                ok: false,
-                message:
-                    "Unable to find that URL. Make sure you include http:// or https://.",
-                response,
-            };
-        }
-
-        if (response.status === 401) {
-            return {
-                ok: false,
-                message: "The username or password is invalid.",
                 response,
             };
         }
@@ -161,6 +133,21 @@ class API {
         url = this.joinURL(url, uriTiddlerTitle);
 
         return await this.get(url);
+    }
+
+    /**
+     * Check if the server is up.
+     *
+     * If the server is not up, open the config tab.
+     */
+    async isServerUp(): Promise<boolean> {
+        const status = await this.getStatus();
+        if (status.ok) {
+            return true;
+        }
+
+        await openSettingsTab();
+        return false;
     }
 }
 
