@@ -54,7 +54,7 @@ export default function dateformat(text: string) {
     const now = moment();
     for (let key of tdKeys) {
         // prettier-ignore
-        const D = new RegExp(_.escapeRegExp("{[D|" + key + "]}"));
+        const D = new RegExp(_.escapeRegExp("{[D|" + key + "]}"), "g");
 
         const idx = text.search(D);
         if (idx > -1) {
@@ -63,7 +63,7 @@ export default function dateformat(text: string) {
             if (momentFmtString !== "") {
                 momentFormattedSubstring = now.format(momentFmtString);
             }
-            text = text.replace(D, momentFormattedSubstring);
+            text = text.replaceAll(D, momentFormattedSubstring);
         }
     }
     return text;

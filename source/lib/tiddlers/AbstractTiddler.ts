@@ -1,11 +1,14 @@
-import { API_Result, IFullTiddler } from "../../types";
 import ConfigStorage from "../storage/ConfigStorage";
 import API from "../API";
+import { API_Result, IFullTiddler } from "../../types";
+import { ETiddlerSource } from "../../enums";
+
 abstract class AbstractTiddler {
     protected _configStorage: ConfigStorage;
     protected _api: API;
     protected _tiddlerTitle: string;
     protected _tiddler: IFullTiddler;
+    protected _tiddlerSource: ETiddlerSource;
     protected abstract _populateTitle(): void;
     protected abstract addText(
         text: string,
@@ -15,6 +18,7 @@ abstract class AbstractTiddler {
     constructor(configStorage: ConfigStorage, api: API) {
         this._configStorage = configStorage;
         this._api = api;
+        this._tiddlerSource = ETiddlerSource.FromUnknown;
 
         this._tiddlerTitle = "";
         this._tiddler = {
@@ -23,7 +27,8 @@ abstract class AbstractTiddler {
         };
     }
 
-    async initialize() {
+    async initialize(tiddlerSource: ETiddlerSource) {
+        this._tiddlerSource = tiddlerSource;
         await this._populateTitle();
         await this._populateTiddler();
     }

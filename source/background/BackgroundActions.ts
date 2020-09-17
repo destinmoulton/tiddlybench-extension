@@ -10,13 +10,14 @@
  */
 //import { browser } from "webextension-polyfill-ts";
 
-//import { browser } from "webextension-polyfill-ts";
 import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import Journal from "../lib/tiddlers/Journal";
 import Inbox from "../lib/tiddlers/Inbox";
 import Messenger from "../lib/Messenger";
 import editortabs from "../lib/editortabs";
+import { ETiddlerSource } from "../enums";
+
 class BackgroundActions {
     _api: API;
     _configStorage: ConfigStorage;
@@ -41,6 +42,7 @@ class BackgroundActions {
             switch (data.type) {
                 case "journal": {
                     const res = await this.addTextToJournal(
+                        ETiddlerSource.FromQuickAdd,
                         data.packet.text,
                         undefined
                     );
@@ -58,6 +60,7 @@ class BackgroundActions {
                 }
                 case "inbox": {
                     const res = await this.addTextToInbox(
+                        ETiddlerSource.FromQuickAdd,
                         data.packet.text,
                         undefined
                     );
@@ -99,7 +102,11 @@ class BackgroundActions {
             case "tb-ctxt-add-to-inbox":
                 try {
                     if (info.selectionText && info.selectionText !== "") {
-                        await this.addTextToInbox(info.selectionText, tab);
+                        await this.addTextToInbox(
+                            ETiddlerSource.FromContextMenu,
+                            info.selectionText,
+                            tab
+                        );
                     }
                 } catch (err) {
                     throw err;
@@ -108,16 +115,24 @@ class BackgroundActions {
         }
     }
 
-    async addTextToJournal(text: string, tab: browser.tabs.Tab | undefined) {
+    async addTextToJournal(
+        source: ETiddlerSource,
+        text: string,
+        tab: browser.tabs.Tab | undefined
+    ) {
         const journal = new Journal(this._configStorage, this._api);
-        await journal.initialize();
+        await journal.initialize(source);
         await journal.addText(text, tab);
         return await journal.submit();
     }
 
-    async addTextToInbox(text: string, tab: browser.tabs.Tab | undefined) {
+    async addTextToInbox(
+        source: ETiddlerSource,
+        text: string,
+        tab: browser.tabs.Tab | undefined
+    ) {
         const inbox = new Inbox(this._configStorage, this._api);
-        await inbox.initialize();
+        await inbox.initialize(source);
         await inbox.addText(text, tab);
         return await inbox.submit();
     }
