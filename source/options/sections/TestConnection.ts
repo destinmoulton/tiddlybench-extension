@@ -11,25 +11,31 @@
 import API from "../../lib/API";
 import dom from "../../lib/dom";
 import logger from "../../lib/logger";
-import { API_Result } from "../../types";
+//import { API_Result } from "../../types";
 class TestConnection {
     _api: API;
     $testConnectionButton: HTMLElement | null;
     $testConnectionSuccessMessage: HTMLElement | null;
     $testConnectionErrorMessage: HTMLElement | null;
+    $url: HTMLInputElement | null;
+    $username: HTMLInputElement | null;
+    $password: HTMLInputElement | null;
 
     constructor(api: API) {
         this._api = api;
         this.$testConnectionButton = null;
         this.$testConnectionSuccessMessage = null;
         this.$testConnectionErrorMessage = null;
+        this.$url = null;
+        this.$username = null;
+        this.$password = null;
     }
 
     initialize() {
         this.$testConnectionButton = <HTMLElement>dom("#tb-test-connection");
         this.$testConnectionButton.addEventListener(
             "click",
-            this.testConnectionOptions.bind(this)
+            this.handleClickTestConnectionButton.bind(this)
         );
 
         this.$testConnectionSuccessMessage = <HTMLElement>(
@@ -38,16 +44,48 @@ class TestConnection {
         this.$testConnectionErrorMessage = <HTMLElement>(
             dom("#tb-connection-error-message")
         );
+
+        this.$url = <HTMLInputElement>dom("#url");
+        this.$username = <HTMLInputElement>dom("#username");
+        this.$password = <HTMLInputElement>dom("#password");
     }
 
-    async testConnectionOptions(): Promise<API_Result> {
-        const res = await this._api.getStatus();
-        if (res.ok) {
-            this._showSuccessMessage();
-        } else {
-            this._showErrorMessage(<string>res.message);
+    async handleClickTestConnectionButton(): Promise<boolean> {
+        if (this._validate()) {
+            const res = await this._api.getStatus();
+            if (res.ok) {
+                this._showSuccessMessage();
+                return true;
+            } else {
+                this._showErrorMessage(<string>res.message);
+            }
         }
-        return res;
+        return false;
+    }
+
+    private _validate() {
+        if (this.$url) {
+            const url = this.$url.value;
+            if (url.trim() === "") {
+                this._showErrorMessage("You must include a URL");
+                return false;
+            }
+        }
+        if (this.$username) {
+            const username = this.$username.value;
+            if (username.trim() === "") {
+                this._showErrorMessage("You must include a username.");
+                return false;
+            }
+        }
+        if (this.$password) {
+            const username = this.$password.value;
+            if (username.trim() === "") {
+                this._showErrorMessage("You must include a password.");
+                return false;
+            }
+        }
+        return true;
     }
 
     private _showSuccessMessage() {
