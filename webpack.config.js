@@ -14,7 +14,7 @@ module.exports = {
         background: "./source/background/background.ts",
         options: "./source/options/options.ts",
         popup: "./source/popup/popup.ts",
-        editor: "./source/editor/editor.ts",
+        tiddlerform: "./source/tabs/tabs.ts",
     },
     output: {
         path: path.join(__dirname, "distribution"),
