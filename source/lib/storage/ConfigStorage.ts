@@ -6,12 +6,16 @@ interface ISettings extends StorageElement {
     username: string;
     password: string;
     inbox_tiddler_title: string;
-    inbox_text_prefix: string;
-    inbox_text_suffix: string;
     journal_tiddler_title: string;
     journal_tiddler_tags: string;
-    journal_text_prefix: string;
-    journal_text_suffix: string;
+    quickadd_inbox_text_prefix: string;
+    quickadd_inbox_text_suffix: string;
+    quickadd_journal_text_prefix: string;
+    quickadd_journal_text_suffix: string;
+    selection_inbox_text_prefix: string;
+    selection_inbox_text_suffix: string;
+    selection_journal_text_prefix: string;
+    selection_journal_text_suffix: string;
     context_menu_visibility: string;
 }
 class ConfigStorage extends AbstractStorage<ISettings> {
@@ -25,12 +29,18 @@ class ConfigStorage extends AbstractStorage<ISettings> {
             username: "",
             password: "",
             inbox_tiddler_title: "Inbox",
-            inbox_text_prefix: "{[F|BR]}{[F|BR]}",
-            inbox_text_suffix: "{[F|BR]}{[F|BR]}",
             journal_tiddler_title: "Journal",
             journal_tiddler_tags: "journal",
-            journal_text_prefix: "{[F|BR]}{[F|BR]}",
-            journal_text_suffix: "{[F|BR]}{[F|BR]}",
+            quickadd_inbox_text_prefix: "{[F|BR]}{[F|BR]}",
+            quickadd_inbox_text_suffix: "{[F|BR]}{[F|BR]}",
+            quickadd_journal_text_prefix: "{[F|BR]}{[F|BR]}",
+            quickadd_journal_text_suffix: "{[F|BR]}{[F|BR]}",
+            selection_inbox_text_prefix: "{[F|BR]}{[F|BR]}<<<{[F|BR]}",
+            selection_inbox_text_suffix:
+                "{[F|BR]}<<<{[T|SOURCE_LINK]}{[F|BR]}{[F|BR]}",
+            selection_journal_text_prefix: "{[F|BR]}{[F|BR]}<<<{[F|BR]}",
+            selection_journal_text_suffix:
+                "{[F|BR]}<<<{[T|SOURCE_LINK]}{[F|BR]}{[F|BR]}",
             context_menu_visibility: "on",
         };
 
