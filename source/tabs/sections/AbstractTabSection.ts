@@ -11,7 +11,7 @@ import dom from "../../lib/dom";
 abstract class AbstractTabSection {
     protected _$root: HTMLElement | null;
     protected _api: API;
-    protected abstract display: () => void;
+    abstract display(): void;
     protected _loadingAnimationOldHTML: string;
     constructor(api: API) {
         this._api = api;
@@ -19,9 +19,10 @@ abstract class AbstractTabSection {
         this._loadingAnimationOldHTML = "";
     }
 
-    _setRoot(rootID: string) {
-        this._$root = <HTMLElement>dom("#" + rootID);
+    initialize(rootElementID: string) {
+        this._$root = <HTMLElement>dom("#" + rootElementID);
     }
+
     _compile(templateID: string, data: any): string {
         const $tmpl = <HTMLElement>dom("#" + templateID);
 
