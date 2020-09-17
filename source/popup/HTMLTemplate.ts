@@ -1,3 +1,4 @@
+import compiletemplate from "../lib/helpers/compiletemplate";
 import logger from "../lib/logger";
 class HTMLTemplate {
     _$root: HTMLElement;
@@ -24,21 +25,7 @@ class HTMLTemplate {
         if (!$tmpl) {
             throw new Error("Unable to find the template " + templateID);
         }
-        var tmplTxt = $tmpl.innerText;
-
-        const keys = Object.keys(data);
-
-        keys.forEach((key) => {
-            // prettier-ignore
-            const rgx = new RegExp('{{\\s*' + key + '\\s*}}', "g");
-            logger.log(rgx);
-            if (tmplTxt.search(rgx) >= 0) {
-                logger.log("PopupTemplate :: _compile :: search found");
-                tmplTxt = tmplTxt.replace(rgx, data[key]);
-            }
-        });
-
-        return tmplTxt;
+        return compiletemplate($tmpl.innerText, data);
     }
 
     _render(html: string) {
