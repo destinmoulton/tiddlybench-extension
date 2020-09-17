@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="stylesheet" href="../../css/pure-min.css" />
+        <link rel="stylesheet" href="../../css/tiddlybench.css" />
+        <title>TiddlyBench Editor</title>
+    </head>
+
+    <body class="tb-tabs-body">
+        <div class="tb-tabs-wrapper">
+            <div class="tb-tabs-content">
+                <div class="tb-tabs-title-container">
+                    <img class="tb-tabs-title-icon" src="../../icon.png" />
+                    <div class="tb-tabs-title">TiddlyBench</div>
+                </div>
+                <div id="tb-tabs-root"></div>
+            </div>
+        </div>
+
+        <!-- Partials (gulp task compiles these)-->
+        <partial src="loading-animation.html"></partial>
+        <partial src="tiddler-form.html"></partial>
+        <partial src="list-tiddlers.html"></partial>
+
+        <script src="../lodash.min.js"></script>
+        <script src="tabs.js"></script>
+    </body>
+</html>
