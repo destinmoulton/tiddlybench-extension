@@ -1,26 +1,35 @@
 //import editortabs from "../lib/editortabs";
 //import editorcache from "../lib/storage/tiddlerdrafts";
-
+import API from "../lib/API";
+import ConfigStorage from "../lib/storage/ConfigStorage";
+import ListTiddlers from "./sections/ListTiddlers";
 window.addEventListener("load", () => {
-    const editor = new Tabs();
-    editor.initialize();
+    const configStorage = new ConfigStorage();
+    const api = new API(configStorage);
+    const listTiddlers = new ListTiddlers(api);
+    const tabs = new Tabs(listTiddlers);
+    tabs.initialize();
 });
-const TEMP;
+
 class Tabs {
+    _listTiddlers: ListTiddlers;
     _activeSection: string;
 
-    constructor() {
+    constructor(listTiddlers: ListTiddlers) {
+        this._listTiddlers = listTiddlers;
         this._activeSection = "";
     }
 
     initialize() {
         this._activeSection = this._getActiveSection();
+        this._listTiddlers.initialize("tb-tabs-root");
         this._display();
     }
 
     _display() {
         switch (this._activeSection) {
             case "choose_tiddler": {
+                this._listTiddlers.display();
                 break;
             }
         }
