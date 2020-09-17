@@ -135,11 +135,15 @@ class API {
         return await this.get(url);
     }
 
-    async getAllTiddlers(): Promise<API_Result> {
+    async getAllTiddlers(): Promise<ITiddlerItem[]> {
         const serverURL = await this._configStorage.get("url");
         let url = this.joinURL(serverURL, ENDPOINTS.GET_ALL);
 
-        return await this.get(url);
+        const res = await this.get(url);
+        if (res.data && res.data.length > 0) {
+            return <ITiddlerItem[]>res.data;
+        }
+        return [];
     }
     /**
      * Check if the server is up.
