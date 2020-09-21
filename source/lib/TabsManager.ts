@@ -15,6 +15,12 @@ const EXTENSION_URL = {
     [EExtensionURL.ChooseTiddler]: "tabs/tabs.html#section=choose_tiddler",
 };
 export default class TabsManager {
+    async openChooseTiddlerTab() {
+        return await this.openTab(EExtensionURL.ChooseTiddler);
+    }
+    async openSettingsTab() {
+        return await this.openTab(EExtensionURL.Settings);
+    }
     async openTab(urlKey: EExtensionURL) {
         if (!EXTENSION_URL.hasOwnProperty(urlKey)) {
             throw new Error(
