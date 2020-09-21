@@ -15,18 +15,25 @@ import ConfigStorage from "../lib/storage/ConfigStorage";
 import Journal from "../lib/tiddlers/Journal";
 import Inbox from "../lib/tiddlers/Inbox";
 import Messenger from "../lib/Messenger";
-import editortabs from "../lib/editortabs";
+import TabsManager from "../lib/TabsManager";
 import { ETiddlerSource } from "../enums";
 
 class BackgroundActions {
     _api: API;
     _configStorage: ConfigStorage;
     _messenger: Messenger;
+    _tabsManager: TabsManager;
 
-    constructor(api: API, configStorage: ConfigStorage, messenger: Messenger) {
+    constructor(
+        api: API,
+        configStorage: ConfigStorage,
+        messenger: Messenger,
+        tabsManager: TabsManager
+    ) {
         this._api = api;
         this._configStorage = configStorage;
         this._messenger = messenger;
+        this._tabsManager = tabsManager;
     }
 
     /**
@@ -90,13 +97,18 @@ class BackgroundActions {
         tab: browser.tabs.Tab | undefined
     ) {
         switch (info.menuItemId) {
+            case "tb-ctxt-configure": {
+                await this._tabsManager.openSettingsTab();
+                break;
+            }
             case "tb-ctxt-add-to-tiddler":
                 if (tab && info.pageUrl && tab.title && info.selectionText) {
-                    editortabs.create(
+                    await this._tabsManager.openChooseTiddlerTab();
+                    /**editortabs.create(
                         info.pageUrl,
                         tab.title,
                         info.selectionText
-                    );
+                    );**/
                 }
                 break;
             case "tb-ctxt-add-to-inbox":
