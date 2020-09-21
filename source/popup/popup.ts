@@ -1,50 +1,48 @@
-import HTMLTemplate from "./HTMLTemplate";
-import mainmenu from "./MainMenu";
+import PopupTemplate from "./PopupTemplate";
+import MainMenu from "./MainMenu";
 import API from "../lib/API";
-import extensionurls from "../lib/extensionurls";
-import Messenger from "../lib/Messenger";
 import ConfigStorage from "../lib/storage/ConfigStorage";
+import Messenger from "../lib/Messenger";
 import QuickAddTiddler from "./QuickAddTiddler";
+import TabsManager from "../lib/TabsManager";
 window.addEventListener("load", function() {
     const configStorage = new ConfigStorage();
+    const tabsManager = new TabsManager();
     const api = new API(configStorage);
     const messenger = new Messenger(api, configStorage);
     const quickAddTiddler = new QuickAddTiddler(messenger);
-    const popup = new Popup(api, quickAddTiddler);
+    const mainMenu = new MainMenu(tabsManager);
+    const popup = new Popup(api, mainMenu, quickAddTiddler, tabsManager);
     popup.initialize();
 });
 
-class Popup extends HTMLTemplate {
+class Popup extends PopupTemplate {
     _api: API;
+    _mainMenu: MainMenu;
     _quickAddTiddler: QuickAddTiddler;
-    constructor(api: API, quickAddTiddler: QuickAddTiddler) {
+    _tabsManager: TabsManager;
+
+    constructor(
+        api: API,
+        mainMenu: MainMenu,
+        quickAddTiddler: QuickAddTiddler,
+        tabsManager: TabsManager
+    ) {
         super();
         this._api = api;
+        this._mainMenu = mainMenu;
         this._quickAddTiddler = quickAddTiddler;
+        this._tabsManager = tabsManager;
     }
     async initialize() {
-        this._loadingAnimation("Checking server status...");
         const status = await this._api.getStatus();
 
         console.log(status);
-        if (!status.ok) {
-            const html = this._compile("tmpl-not-connected", {});
-
-            this._render(html);
-
-            const $button = document.getElementById(
-                "tb-popup-configure-button"
-            );
-
-            if ($button) {
-                $button.addEventListener(
-                    "click",
-                    extensionurls.openSettingsTab
-                );
-            }
+        if (!(await this._api.isServerUp())) {
+            await this._tabsManager.openSettingsTab();
         } else {
-            mainmenu.show();
             this._quickAddTiddler.display();
+            this._mainMenu.display();
         }
     }
 }

@@ -1,6 +1,6 @@
 import compiletemplate from "../lib/helpers/compiletemplate";
 import logger from "../lib/logger";
-class HTMLTemplate {
+class PopupTemplate {
     _$root: HTMLElement;
     _loadingAnimationOldHTML: string = "";
 
@@ -57,4 +57,4 @@ class HTMLTemplate {
     }
 }
 
-export default HTMLTemplate;
+export default PopupTemplate;

@@ -1,7 +1,7 @@
-import HTMLTemplate from "./HTMLTemplate";
+import PopupTemplate from "./PopupTemplate";
 import Messenger from "../lib/Messenger";
 import dom from "../lib/dom";
-class QuickAddTiddler extends HTMLTemplate {
+class QuickAddTiddler extends PopupTemplate {
     _messenger: Messenger;
     $container: HTMLElement | null;
     $textarea: HTMLInputElement | null;
