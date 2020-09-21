@@ -47,6 +47,19 @@ class ConfigStorage extends AbstractStorage<ISettings> {
         this._storageKey = "settings";
     }
 
+    async isServerConfigured(): Promise<boolean> {
+        const config = await this.getAll();
+
+        if (
+            config.url !== "" &&
+            config.username !== "" &&
+            config.password !== ""
+        ) {
+            return true;
+        }
+        return false;
+    }
+
     async reset(formID: string) {
         const $form = document.getElementById(formID);
         if (!$form) {
