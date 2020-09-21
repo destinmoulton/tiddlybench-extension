@@ -1,8 +1,14 @@
 <script type="text/template" id="tmpl-list-tiddlers">
+    <div class="tb-tabs-tiddlers-list-container">
     <input type="text" id="tb-tabs-list-filter" placeholder="Filter...">
     <ul id="tb-tabs-list-tiddlers">{{tiddlers}}</ul>
+    </div>
 </script>
 
 <script type="text/template" id="tmpl-list-tiddlers-item">
-    <li>{{tiddler_title}}</li>
+    <li id="tb-tabs-list-tiddler-{{id}}" class="tb-tabs-tiddlers-list-item">{{tiddler_title}}</li>
+</script>
+
+<script type="text/template" id="tmpl-list-add-new-tiddler-item">
+    <li id="tb-tabs-list-add-new-tiddler-item" class="tb-tabs-tiddlers-list-item">{{tiddler_title}}</li>
 </script>

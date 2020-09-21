@@ -1,31 +1,75 @@
-.tb-tabs-content {
-    width: 100%;
-    background-color: #f4f4f4;
+.tb-tabs-body {
     height: 100%;
+    width: 100%;
+    margin: 0 0;
+    padding: 0 0;
 }
+.tb-tabs-wrapper {
+    width: 100%;
+    height: 100%;
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+    .tb-tabs-content {
+        margin: 0 auto;
+        background-color: white;
+        width: 600px;
+        padding: 20px;
+        box-sizing: border-box;
 
-.tb-tabs-editor-container {
-    width: 600px;
-    min-height: 100px;
-    background-color: white;
-    padding: 42px;
-    margin: 20px auto;
-    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
+        .tb-tabs-title-container {
+            line-height: 48px;
+            img.tb-tabs-title-icon {
+                display: inline-block;
+                width: 48px;
+                height: 48px;
+            }
+            .tb-tabs-title {
+                margin-left: 10px;
+                display: inline-block;
+                font-size: 2em;
+                font-weight: bold;
+            }
+        }
+        .tb-tabs-editor-container {
+            background-color: white;
+            padding: 42px;
+            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.3);
 
-    input.tb-edit-text {
-        box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.15);
-        width: 100%;
-        padding: 3px 3px 3px 3px;
-        background-color: #f8f8f8;
-        line-height: 1.3em;
-        font-size: 2.35em;
-        font-weight: 300;
-    }
+            input.tb-edit-text {
+                box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.15);
+                width: 100%;
+                padding: 3px 3px 3px 3px;
+                background-color: #f8f8f8;
+                line-height: 1.3em;
+                font-size: 2.35em;
+                font-weight: 300;
+            }
 
-    textarea.tb-edit-textarea {
-        width: 100%;
-        min-height: 100px;
-        font-size: 1.8em;
-        font-family: monospace;
+            textarea.tb-edit-textarea {
+                width: 100%;
+                min-height: 100px;
+                font-size: 1.8em;
+                font-family: monospace;
+            }
+        }
+
+        .tb-tabs-tiddlers-list-container {
+            #tb-tabs-list-filter {
+                width: 300px;
+                font-size: 1.3em;
+            }
+            ul {
+                list-style: none;
+                margin: 0 0;
+                padding: 0 0;
+
+                li {
+                    margin: 0 0;
+                    padding: 8px 5px;
+                    border: 1px solid black;
+                    box-sizing: border-box;
+                }
+            }
+        }
     }
 }
