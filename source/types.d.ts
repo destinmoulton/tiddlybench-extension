@@ -10,6 +10,8 @@ export interface ITiddlerItem {
     revision: number;
     title: string;
     type: string;
+    filterable?: string; // This is added occasionally to filter the tiddlers
+    id?: number; // This is added to identify the tiddlers sometimes
 }
 
 // A full tiddler
