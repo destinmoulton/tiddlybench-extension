@@ -2,7 +2,6 @@ import base64 from "base-64";
 import superagent from "superagent";
 
 import ConfigStorage from "./storage/ConfigStorage";
-import TabsManager from "../lib/TabsManager";
 import { API_Result, ITiddlerItem, IFullTiddler } from "../types";
 export const ENDPOINTS = {
     BASE: "/",
@@ -14,11 +13,9 @@ export const ENDPOINTS = {
 
 class API {
     _configStorage: ConfigStorage;
-    _tabsManager: TabsManager;
 
-    constructor(configStorage: ConfigStorage, tabsManager: TabsManager) {
+    constructor(configStorage: ConfigStorage) {
         this._configStorage = configStorage;
-        this._tabsManager = tabsManager;
         this.joinURL = this.joinURL.bind(this);
     }
 
@@ -153,7 +150,7 @@ class API {
      *
      * If the server is not up, open the config tab.
      */
-    async isServerUp(shouldOpenConfigTab: boolean = false): Promise<boolean> {
+    async isServerUp(): Promise<boolean> {
         if (await this._configStorage.isServerConfigured()) {
             const status = await this.getStatus();
             if (status.ok) {
@@ -161,9 +158,6 @@ class API {
             }
         }
 
-        if (shouldOpenConfigTab) {
-            await this._tabsManager.openSettingsTab();
-        }
         return false;
     }
 }
