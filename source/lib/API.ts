@@ -150,13 +150,15 @@ class API {
      *
      * If the server is not up, open the config tab.
      */
-    async isServerUp(): Promise<boolean> {
+    async isServerUp(shouldOpenConfigTab: boolean = false): Promise<boolean> {
         const status = await this.getStatus();
         if (status.ok) {
             return true;
         }
 
-        await openSettingsTab();
+        if (shouldOpenConfigTab) {
+            await openSettingsTab();
+        }
         return false;
     }
 }
