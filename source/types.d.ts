@@ -1,3 +1,9 @@
+/**
+ * types.d.ts
+ *
+ * Shared type definitions for TiddlyBench
+ */
+import dayjs from "dayjs";
 import OptionsSync from "webext-options-sync";
 import { Response } from "superagent";
 
@@ -53,14 +59,15 @@ export interface IOptions {
     is_context_menu_enabled: boolean;
 }
 
-export interface ITiddlerDraft {
-    tab_id: string;
-    draft_id: string;
-    url: string;
+export interface ICustomDestination {
     title: string;
-    tags: string;
-    content: string;
+    last_addition_time: dayjs;
     [key: string]: string;
+}
+
+export interface ISelectionCache {
+    page_url: string;
+    page_title: string;
 }
 
 interface IFormatMap {
