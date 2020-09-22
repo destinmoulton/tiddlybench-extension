@@ -2,6 +2,7 @@ import { browser } from "webextension-polyfill-ts";
 import _ from "lodash";
 import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
+import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import Messenger from "../lib/Messenger";
 
 type ContextMenuClickHandler = (
@@ -12,6 +13,7 @@ type ContextMenuClickHandler = (
 class ContextMenu {
     _api: API;
     _configStorage: ConfigStorage;
+    _contextMenuStorage: ContextMenuStorage;
     _messenger: Messenger;
     _handleClickContextMenu: ContextMenuClickHandler;
     isContextMenuEnabled: string = "off";
@@ -20,11 +22,13 @@ class ContextMenu {
     constructor(
         api: API,
         configStorage: ConfigStorage,
+        contextMenuStorage: ContextMenuStorage,
         messenger: Messenger,
         handleContextMenuClick: ContextMenuClickHandler
     ) {
         this._api = api;
         this._configStorage = configStorage;
+        this._contextMenuStorage = contextMenuStorage;
         this._messenger = messenger;
         this._handleClickContextMenu = handleContextMenuClick;
     }
@@ -62,6 +66,7 @@ class ContextMenu {
 
     async enableContextMenu() {
         if (!(await this._api.isServerUp())) {
+            browser.contextMenus.removeAll();
             browser.contextMenus.create(
                 {
                     id: "tb-ctxt-configure",
@@ -71,22 +76,45 @@ class ContextMenu {
                 this._onContextMenuCreated.bind(this)
             );
         } else {
-            browser.contextMenus.create(
-                {
-                    id: "tb-ctxt-add-to-tiddler",
-                    title: "Create new Tiddler from selection.",
-                    contexts: ["selection"],
-                },
-                this._onContextMenuCreated.bind(this)
+            const destinationTiddlers = await this._contextMenuStorage.getAllCustomDestinations();
+            console.log(
+                "setting up context menus. destinationTiddlers = ",
+                destinationTiddlers
             );
-            browser.contextMenus.create(
-                {
-                    id: "tb-ctxt-add-to-inbox",
-                    title: "Add selection to Inbox Tiddler.",
+            browser.contextMenus.removeAll();
+            browser.contextMenus.create({
+                id: "tb-ctxt-add-to-inbox",
+                title: "Add selection to Inbox Tiddler >>",
+                contexts: ["selection"],
+            });
+            browser.contextMenus.create({
+                id: "tb-ctxt-add-to-journal",
+                title: "Add selection to Journal Tiddler >>",
+                contexts: ["selection"],
+            });
+            browser.contextMenus.create({
+                id: "tb-ctxt-choose-tiddler",
+                title: "Add selection to... Custom Tiddler",
+                contexts: ["selection"],
+            });
+
+            if (destinationTiddlers.length > 0) {
+                browser.contextMenus.create({
+                    id: "tb-tiddler-destination-prefix-separator",
+                    type: "separator",
                     contexts: ["selection"],
-                },
-                this._onContextMenuCreated.bind(this)
-            );
+                });
+                for (let dest of destinationTiddlers) {
+                    browser.contextMenus.create({
+                        id: "tb-ctxt-add-to-destination|" + dest.tiddler.tb_id,
+                        title:
+                            "Add selection to '" +
+                            dest.tiddler.title.substring(0, 20) +
+                            "...'",
+                        contexts: ["selection"],
+                    });
+                }
+            }
         }
         this.doesContextMenuExist = true;
         browser.contextMenus.onClicked.addListener(

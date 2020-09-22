@@ -16,8 +16,8 @@ export interface ITiddlerItem {
     revision: number;
     title: string;
     type: string;
-    filterable?: string; // This is added occasionally to filter the tiddlers
-    id?: number; // This is added to identify the tiddlers sometimes
+    tb_filterable_title?: string; // This is added occasionally to filter the tiddlers
+    tb_id?: string; // This is added to identify the tiddlers sometimes
 }
 
 // A full tiddler
@@ -60,14 +60,14 @@ export interface IOptions {
 }
 
 export interface ICustomDestination {
-    title: string;
-    last_addition_time: dayjs;
-    [key: string]: string;
+    tiddler: ITiddlerItem;
+    last_addition_time: dayjs.Dayjs;
 }
 
 export interface ISelectionCache {
     page_url: string;
     page_title: string;
+    selected_text: string;
 }
 
 interface IFormatMap {

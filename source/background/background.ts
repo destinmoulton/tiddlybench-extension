@@ -2,24 +2,28 @@ import API from "../lib/API";
 import BackgroundActions from "./BackgroundActions";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenu from "./ContextMenu";
+import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import Messenger from "../lib/Messenger";
 import TabsManager from "../lib/TabsManager";
 import TiddlyBench from "./TiddlyBench";
 
 (async function() {
     const configStorage = new ConfigStorage();
+    const contextMenuStorage = new ContextMenuStorage(configStorage);
     const tabsmanager = new TabsManager();
     const api = new API(configStorage);
     const messenger = new Messenger(api, configStorage);
     const backgroundActions = new BackgroundActions(
         api,
         configStorage,
+        contextMenuStorage,
         messenger,
         tabsmanager
     );
     const contextMenu = new ContextMenu(
         api,
         configStorage,
+        contextMenuStorage,
         messenger,
         backgroundActions.handleContextMenuClicks.bind(backgroundActions)
     );

@@ -2,11 +2,15 @@
 //import editorcache from "../lib/storage/tiddlerdrafts";
 import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
+import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import ListTiddlers from "./sections/ListTiddlers";
+//import TabsManager from "../lib/TabsManager";
 window.addEventListener("load", () => {
     const configStorage = new ConfigStorage();
+    const contextMenuStorage = new ContextMenuStorage(configStorage);
+    //const tabsManager = new TabsManager();
     const api = new API(configStorage);
-    const listTiddlers = new ListTiddlers(api);
+    const listTiddlers = new ListTiddlers(api, contextMenuStorage);
     const tabs = new Tabs(listTiddlers);
     tabs.initialize();
 });

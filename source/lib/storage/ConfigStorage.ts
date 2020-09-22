@@ -17,6 +17,7 @@ interface ISettings extends StorageElement {
     selection_journal_text_prefix: string;
     selection_journal_text_suffix: string;
     context_menu_visibility: string;
+    context_menu_num_custom_destinations: string;
 }
 class ConfigStorage extends AbstractStorage<ISettings> {
     _storageDefaults: ISettings;
@@ -42,6 +43,7 @@ class ConfigStorage extends AbstractStorage<ISettings> {
             selection_journal_text_suffix:
                 "{[F|BR]}<<<{[T|SOURCE_LINK]}{[F|BR]}{[F|BR]}",
             context_menu_visibility: "on",
+            context_menu_num_custom_destinations: "3",
         };
 
         this._storageKey = "settings";

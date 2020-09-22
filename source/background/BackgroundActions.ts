@@ -12,6 +12,7 @@
 
 import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
+import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import Journal from "../lib/tiddlers/Journal";
 import Inbox from "../lib/tiddlers/Inbox";
 import Messenger from "../lib/Messenger";
@@ -21,17 +22,20 @@ import { ETiddlerSource } from "../enums";
 class BackgroundActions {
     _api: API;
     _configStorage: ConfigStorage;
+    _contextMenuStorage: ContextMenuStorage;
     _messenger: Messenger;
     _tabsManager: TabsManager;
 
     constructor(
         api: API,
         configStorage: ConfigStorage,
+        contextMenuStorage: ContextMenuStorage,
         messenger: Messenger,
         tabsManager: TabsManager
     ) {
         this._api = api;
         this._configStorage = configStorage;
+        this._contextMenuStorage = contextMenuStorage;
         this._messenger = messenger;
         this._tabsManager = tabsManager;
     }
@@ -96,19 +100,22 @@ class BackgroundActions {
         info: browser.contextMenus.OnClickData,
         tab: browser.tabs.Tab | undefined
     ) {
-        switch (info.menuItemId) {
+        // The context menu id might be separated by |
+        const [menuPrefix, menuSuffix] = (<string>info.menuItemId).split("|");
+
+        switch (menuPrefix) {
             case "tb-ctxt-configure": {
                 await this._tabsManager.openSettingsTab();
                 break;
             }
-            case "tb-ctxt-add-to-tiddler":
+            case "tb-ctxt-choose-tiddler":
                 if (tab && info.pageUrl && tab.title && info.selectionText) {
-                    await this._tabsManager.openChooseTiddlerTab();
-                    /**editortabs.create(
+                    await this._contextMenuStorage.addSelectionCache(
                         info.pageUrl,
                         tab.title,
                         info.selectionText
-                    );**/
+                    );
+                    await this._tabsManager.openChooseTiddlerTab();
                 }
                 break;
             case "tb-ctxt-add-to-inbox":
@@ -124,6 +131,23 @@ class BackgroundActions {
                     throw err;
                 }
                 break;
+            case "tb-ctxt-add-to-journal":
+                try {
+                    if (info.selectionText && info.selectionText !== "") {
+                        await this.addTextToJournal(
+                            ETiddlerSource.FromContextMenu,
+                            info.selectionText,
+                            tab
+                        );
+                    }
+                } catch (err) {
+                    throw err;
+                }
+                break;
+            case "tb-ctxt-add-to-destination": {
+                console.log("add to destination", menuSuffix);
+                break;
+            }
         }
     }
 
