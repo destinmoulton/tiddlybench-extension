@@ -19,7 +19,7 @@ interface IContextMenuCache extends StorageElement {
     destinations: ICustomDestination[];
     selection_cache: ISelectionCache | null;
 }
-class ContextMenusStorage extends AbstractStorage<IContextMenuCache> {
+class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
     _configStorage: ConfigStorage;
     _storageDefaults: IContextMenuCache;
     _storageKey: string;
@@ -54,4 +54,4 @@ class ContextMenusStorage extends AbstractStorage<IContextMenuCache> {
     async addCustomDestination(tiddlerTitle: string) {}
 }
 
-export default ContextMenusStorage;
+export default ContextMenuStorage;
