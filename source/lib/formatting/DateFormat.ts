@@ -1,4 +1,4 @@
-import moment from "moment";
+import dayjs from "dayjs";
 import _ from "lodash";
 
 import { IFormatMap } from "../../types";
@@ -51,19 +51,19 @@ const DATE_FORMAT_MAP: IFormatMap = {
 export default function dateformat(text: string) {
     const tdKeys = Object.keys(DATE_FORMAT_MAP);
 
-    const now = moment();
+    const now = dayjs();
     for (let key of tdKeys) {
         // prettier-ignore
         const D = new RegExp(_.escapeRegExp("{[D|" + key + "]}"), "g");
 
         const idx = text.search(D);
         if (idx > -1) {
-            const momentFmtString = DATE_FORMAT_MAP[key];
-            let momentFormattedSubstring = "";
-            if (momentFmtString !== "") {
-                momentFormattedSubstring = now.format(momentFmtString);
+            const timeformat = DATE_FORMAT_MAP[key];
+            let formatted = "";
+            if (timeformat !== "") {
+                formatted = now.format(timeformat);
             }
-            text = text.replaceAll(D, momentFormattedSubstring);
+            text = text.replaceAll(D, formatted);
         }
     }
     return text;
