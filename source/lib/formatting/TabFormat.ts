@@ -11,7 +11,7 @@ const TAB_FORMAT_MAP: IFormatMap = {
  */
 export default function tabformat(
     inputString: string,
-    tab: ITabInfo | undefined
+    tabInfo: ITabInfo | undefined
 ) {
     const formatKeys = Object.keys(TAB_FORMAT_MAP);
 
@@ -24,19 +24,23 @@ export default function tabformat(
             // If there is no tab, then replace the
             // tab T tag with a blank string
             let replacement = "";
-            if (tab) {
+            if (tabInfo) {
                 switch (key) {
                     case "SOURCE_LINK": {
-                        if (tab.url && tab.url !== "") {
-                            if (tab.title && tab.title !== "") {
+                        if (tabInfo.url && tabInfo.url !== "") {
+                            if (tabInfo.title && tabInfo.title !== "") {
                                 replacement =
-                                    "[[" + tab.title + "|" + tab.url + "]]";
+                                    "[[" +
+                                    tabInfo.title +
+                                    "|" +
+                                    tabInfo.url +
+                                    "]]";
                             } else {
-                                replacement = "[[Source|" + tab.url + "]]";
+                                replacement = "[[Source|" + tabInfo.url + "]]";
                             }
                         } else {
-                            if (tab.title && tab.title !== "") {
-                                replacement = tab.title;
+                            if (tabInfo.title && tabInfo.title !== "") {
+                                replacement = tabInfo.title;
                             } else {
                                 replacement = "Unknown Source";
                             }
