@@ -1,5 +1,5 @@
 import _ from "lodash";
-import { IFormatMap } from "../../types";
+import { IFormatMap, ITabInfo } from "../../types";
 const TAB_FORMAT_MAP: IFormatMap = {
     SOURCE_LINK: "SOURCE_LINK",
 };
@@ -11,7 +11,7 @@ const TAB_FORMAT_MAP: IFormatMap = {
  */
 export default function tabformat(
     inputString: string,
-    tab: browser.tabs.Tab | undefined
+    tab: ITabInfo | undefined
 ) {
     const formatKeys = Object.keys(TAB_FORMAT_MAP);
 

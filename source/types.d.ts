@@ -73,3 +73,8 @@ export interface ISelectionCache {
 interface IFormatMap {
     [key: string]: string;
 }
+
+interface ITabInfo {
+    title: string;
+    url: string;
+}
