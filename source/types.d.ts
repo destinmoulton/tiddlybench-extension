@@ -75,6 +75,6 @@ interface IFormatMap {
 }
 
 interface ITabInfo {
-    title: string;
-    url: string;
+    title: string | undefined;
+    url: string | undefined;
 }
