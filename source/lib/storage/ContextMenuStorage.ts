@@ -101,6 +101,13 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
             (dest: ICustomDestination) => dest.tiddler.title === tiddlerTitle
         );
     }
+    async findDestinationById(id: string) {
+        const destinations = await this.getAllCustomDestinations();
+
+        return destinations.find(
+            (dest: ICustomDestination) => dest.tiddler.tb_id === id
+        );
+    }
 
     /**
      * Return a list of the custom destinations
