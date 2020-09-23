@@ -61,7 +61,7 @@ export interface IOptions {
 
 export interface ICustomDestination {
     tiddler: ITiddlerItem;
-    last_addition_time: dayjs.Dayjs;
+    last_addition_time: number;
 }
 
 export interface ISelectionCache {

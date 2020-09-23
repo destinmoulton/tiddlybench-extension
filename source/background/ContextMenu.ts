@@ -94,7 +94,7 @@ class ContextMenu {
             });
             browser.contextMenus.create({
                 id: "tb-ctxt-choose-tiddler",
-                title: "Add selection to... Custom Tiddler",
+                title: "Add selection to... Choose Tiddler",
                 contexts: ["selection"],
             });
 

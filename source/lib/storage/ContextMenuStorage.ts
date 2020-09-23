@@ -68,7 +68,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
     async addCustomDestination(tiddler: ITiddlerItem) {
         const destination: ICustomDestination = {
             tiddler,
-            last_addition_time: dayjs(),
+            last_addition_time: dayjs().unix(),
         };
 
         // Check if the destination already exists
@@ -112,11 +112,11 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
         );
 
         return dests.sort((a: ICustomDestination, b: ICustomDestination) => {
-            if (a.last_addition_time.isBefore(b.last_addition_time)) {
+            if (a.last_addition_time < b.last_addition_time) {
                 return -1;
             }
 
-            if (a.last_addition_time.isAfter(b.last_addition_time)) {
+            if (a.last_addition_time > b.last_addition_time) {
                 return -1;
             }
             return 0;
