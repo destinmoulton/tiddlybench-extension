@@ -2,6 +2,8 @@ import dateformat from "./DateFormat";
 import textformat from "./TextFormat";
 import tabformat from "./TabFormat";
 
+import { ITabInfo } from "../../types";
+
 /**
  * Format strings are in the format {[<type>|<format>]}
  *
@@ -9,12 +11,14 @@ import tabformat from "./TabFormat";
  */
 export default function formatit(
     text: string,
-    tab: browser.tabs.Tab | undefined
+    tabInfo: ITabInfo | undefined
 ): string {
     // Run the formatters
     text = dateformat(text);
     text = textformat(text);
-    text = tabformat(text, tab);
+    if (tabInfo) {
+        text = tabformat(text, tabInfo);
+    }
 
     return text;
 }
