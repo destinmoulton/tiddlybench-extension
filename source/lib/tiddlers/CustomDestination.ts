@@ -1,11 +1,12 @@
 import AbstractTiddler from "./AbstractTiddler";
 import formatit from "../formatting/formatit";
 import { ETiddlerSource } from "../../enums";
+import { ITabInfo } from "../../types";
 class CustomDestination extends AbstractTiddler {
-    setupTiddler(source: ETiddlerSource, title: string) {
+    async setupCustomTiddler(source: ETiddlerSource, title: string) {
         this._tiddlerSource = source;
         this._tiddlerTitle = title;
-        this._populateTiddler();
+        await this._populateTiddler();
     }
 
     _populateTitle() {
@@ -13,14 +14,18 @@ class CustomDestination extends AbstractTiddler {
         // setupTiddler (a custom method)
     }
 
-    async addText(text: string, tab: browser.tabs.Tab | undefined) {
-        const text_prefix = await this._configStorage.get("inbox_text_prefix");
-        const text_suffix = await this._configStorage.get("inbox_text_suffix");
+    async addText(text: string, tabInfo: ITabInfo | undefined) {
+        const text_prefix = await this._configStorage.get(
+            "selection_customdestination_text_prefix"
+        );
+        const text_suffix = await this._configStorage.get(
+            "selection_customdestination_text_suffix"
+        );
 
         let newText =
-            formatit(text_prefix, tab) +
-            formatit(text, tab) +
-            formatit(text_suffix, tab);
+            formatit(text_prefix, tabInfo) +
+            formatit(text, tabInfo) +
+            formatit(text_suffix, tabInfo);
 
         let tiddlerText = this.getTiddlerText();
         tiddlerText = tiddlerText + newText;

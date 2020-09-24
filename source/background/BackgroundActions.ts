@@ -13,11 +13,13 @@
 import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
+import CustomDestination from "../lib/tiddlers/CustomDestination";
 import Journal from "../lib/tiddlers/Journal";
 import Inbox from "../lib/tiddlers/Inbox";
 import Messenger from "../lib/Messenger";
 import TabsManager from "../lib/TabsManager";
 import { ETiddlerSource } from "../enums";
+import { ITabInfo } from "../types";
 
 class BackgroundActions {
     _api: API;
@@ -120,11 +122,19 @@ class BackgroundActions {
                 break;
             case "tb-ctxt-add-to-inbox":
                 try {
-                    if (info.selectionText && info.selectionText !== "") {
+                    if (
+                        tab &&
+                        info.selectionText &&
+                        info.selectionText !== ""
+                    ) {
+                        const tabInfo: ITabInfo = {
+                            title: tab.title,
+                            url: tab.url,
+                        };
                         await this.addTextToInbox(
                             ETiddlerSource.FromContextMenu,
                             info.selectionText,
-                            tab
+                            tabInfo
                         );
                     }
                 } catch (err) {
@@ -133,11 +143,19 @@ class BackgroundActions {
                 break;
             case "tb-ctxt-add-to-journal":
                 try {
-                    if (info.selectionText && info.selectionText !== "") {
+                    if (
+                        tab &&
+                        info.selectionText &&
+                        info.selectionText !== ""
+                    ) {
+                        const tabInfo: ITabInfo = {
+                            title: tab.title,
+                            url: tab.url,
+                        };
                         await this.addTextToJournal(
                             ETiddlerSource.FromContextMenu,
                             info.selectionText,
-                            tab
+                            tabInfo
                         );
                     }
                 } catch (err) {
@@ -145,7 +163,18 @@ class BackgroundActions {
                 }
                 break;
             case "tb-ctxt-add-to-destination": {
-                console.log("add to destination", menuSuffix);
+                if (tab && info.selectionText && info.selectionText !== "") {
+                    const tabInfo: ITabInfo = {
+                        title: tab.title,
+                        url: tab.url,
+                    };
+                    this.addTextToCustomDestination(
+                        ETiddlerSource.FromContextMenu,
+                        info.selectionText,
+                        menuSuffix,
+                        tabInfo
+                    );
+                }
                 break;
             }
         }
@@ -154,23 +183,56 @@ class BackgroundActions {
     async addTextToJournal(
         source: ETiddlerSource,
         text: string,
-        tab: browser.tabs.Tab | undefined
+        tab: ITabInfo | undefined
     ) {
+        let tabInfo = undefined;
+
+        if (tab) {
+            tabInfo = {
+                title: tab.title,
+                url: tab.url,
+            };
+        }
         const journal = new Journal(this._configStorage, this._api);
         await journal.initialize(source);
-        await journal.addText(text, tab);
+        await journal.addText(text, tabInfo);
         return await journal.submit();
     }
 
     async addTextToInbox(
         source: ETiddlerSource,
         text: string,
-        tab: browser.tabs.Tab | undefined
+        tab: ITabInfo | undefined
     ) {
         const inbox = new Inbox(this._configStorage, this._api);
         await inbox.initialize(source);
         await inbox.addText(text, tab);
         return await inbox.submit();
+    }
+
+    async addTextToCustomDestination(
+        source: ETiddlerSource,
+        text: string,
+        id: string,
+        tab: ITabInfo | undefined
+    ) {
+        const destination = await this._contextMenuStorage.findDestinationById(
+            id
+        );
+        if (destination && destination.tiddler) {
+            const custom = new CustomDestination(
+                this._configStorage,
+                this._api
+            );
+            console.log(
+                "BackgroundActions :: destination details",
+                destination
+            );
+            await custom.setupCustomTiddler(source, destination.tiddler.title);
+            await custom.addText(text, tab);
+            return await custom.submit();
+        }
+        return;
     }
 }
 export default BackgroundActions;

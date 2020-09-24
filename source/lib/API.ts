@@ -79,6 +79,7 @@ class API {
 
     async putTiddler(tiddler: IFullTiddler): Promise<API_Result> {
         if (!tiddler.title || tiddler.title === "") {
+            console.error("putTiddler() :: tiddler", tiddler);
             throw new Error(
                 "API :: putTiddler() :: You must include a title in the tiddler."
             );

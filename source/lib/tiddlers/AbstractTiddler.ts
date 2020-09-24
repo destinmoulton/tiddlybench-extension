@@ -1,6 +1,6 @@
 import ConfigStorage from "../storage/ConfigStorage";
 import API from "../API";
-import { API_Result, IFullTiddler } from "../../types";
+import { API_Result, IFullTiddler, ITabInfo } from "../../types";
 import { ETiddlerSource } from "../../enums";
 
 abstract class AbstractTiddler {
@@ -10,10 +10,7 @@ abstract class AbstractTiddler {
     protected _tiddler: IFullTiddler;
     protected _tiddlerSource: ETiddlerSource;
     protected abstract _populateTitle(): void;
-    protected abstract addText(
-        text: string,
-        tab: browser.tabs.Tab | undefined
-    ): void;
+    protected abstract addText(text: string, tab: ITabInfo | undefined): void;
 
     constructor(configStorage: ConfigStorage, api: API) {
         this._configStorage = configStorage;

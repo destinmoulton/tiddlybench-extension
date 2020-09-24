@@ -21,7 +21,7 @@ export default function tabformat(
 
     let newString = inputString;
     for (let key of formatKeys) {
-        const T = new RegExp(_.escapeRegExp("{[T|" + key + "]}"), "g");
+        const T = new RegExp(_.escapeRegExp("{[P|" + key + "]}"), "g");
 
         const idx = newString.search(T);
         if (idx > -1) {
