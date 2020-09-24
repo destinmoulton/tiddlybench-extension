@@ -4,11 +4,24 @@ import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import Messenger from "../lib/Messenger";
+import { EContextMenuBlockType } from "../enums";
 
 type ContextMenuClickHandler = (
     info: browser.contextMenus.OnClickData,
     tab: browser.tabs.Tab | undefined
 ) => void;
+
+// interface IBlockTypes {
+//     [key: EContextMenuBlockType]: string;
+// }
+
+const BLOCK_TYPES = {
+    [EContextMenuBlockType.QUOTE]: "Quotation Block",
+    [EContextMenuBlockType.CODE]: "Code Block",
+    [EContextMenuBlockType.PARAGRAPH]: "Paragraph",
+    [EContextMenuBlockType.ULITEM]: "Unordered List Item",
+    [EContextMenuBlockType.OLITEM]: "Ordered List Item",
+};
 
 class ContextMenu {
     _api: API;
@@ -67,21 +80,32 @@ class ContextMenu {
     async enableContextMenu() {
         if (!(await this._api.isServerUp())) {
             browser.contextMenus.removeAll();
-            browser.contextMenus.create(
-                {
-                    id: "tb-ctxt-configure",
-                    title: "Configure TiddlyBench.",
-                    contexts: ["all"],
-                },
-                this._onContextMenuCreated.bind(this)
-            );
+            browser.contextMenus.create({
+                id: "tb-ctxt-configure",
+                title: "Configure TiddlyBench.",
+                contexts: ["all"],
+            });
         } else {
+            const selectedBlockType = await this._contextMenuStorage.getSelectedBlockType();
             const destinationTiddlers = await this._contextMenuStorage.getAllCustomDestinations();
-            console.log(
-                "setting up context menus. destinationTiddlers = ",
-                destinationTiddlers
-            );
             browser.contextMenus.removeAll();
+
+            // Setup the block types radio options
+            for (let type in BLOCK_TYPES) {
+                const checked = type === selectedBlockType;
+                browser.contextMenus.create({
+                    id: "tb-ctxt-change-blocktype|" + type,
+                    title: BLOCK_TYPES[<EContextMenuBlockType>type],
+                    type: "radio",
+                    checked,
+                    contexts: ["selection"],
+                });
+            }
+            browser.contextMenus.create({
+                id: "tb-top-separator",
+                type: "separator",
+                contexts: ["selection"],
+            });
             browser.contextMenus.create({
                 id: "tb-ctxt-add-to-inbox",
                 title: "Add selection to Inbox Tiddler >>",

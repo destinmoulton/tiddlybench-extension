@@ -110,6 +110,10 @@ class BackgroundActions {
                 await this._tabsManager.openSettingsTab();
                 break;
             }
+            case "tb-ctxt-change-blocktype": {
+                await this._contextMenuStorage.setSelectedBlockType(menuSuffix);
+                break;
+            }
             case "tb-ctxt-choose-tiddler":
                 if (tab && info.pageUrl && tab.title && info.selectionText) {
                     await this._contextMenuStorage.addSelectionCache(

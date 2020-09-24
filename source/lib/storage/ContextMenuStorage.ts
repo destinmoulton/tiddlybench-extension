@@ -13,31 +13,39 @@ import _ from "lodash";
 import dayjs from "dayjs";
 import AbstractStorage, { StorageElement } from "./AbstractStorage";
 import ConfigStorage from "./ConfigStorage";
+import { EContextMenuBlockType, EContextMenuStorageKeys } from "../../enums";
 import { ICustomDestination, ISelectionCache, ITiddlerItem } from "../../types";
 //import { v4 } from "uuid";
 
 interface IContextMenuCache extends StorageElement {
-    destinations: ICustomDestination[];
-    selection_cache: ISelectionCache | null;
+    [EContextMenuStorageKeys.DESTINATIONS]: ICustomDestination[];
+    [EContextMenuStorageKeys.SELECTION_CACHE]: ISelectionCache | null;
+    [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]: string;
 }
 class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
     _configStorage: ConfigStorage;
     _storageDefaults: IContextMenuCache;
     _storageKey: string;
-    _cacheKey: string;
-    _destinationsKey: string;
 
     constructor(configStorage: ConfigStorage) {
         super();
         this._configStorage = configStorage;
-        this._cacheKey = "selection_cache";
-        this._destinationsKey = "destinations";
+
         this._storageDefaults = {
-            destinations: [],
-            selection_cache: null,
+            [EContextMenuStorageKeys.DESTINATIONS]: [],
+            [EContextMenuStorageKeys.SELECTION_CACHE]: null,
+            [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]:
+                EContextMenuBlockType.QUOTE,
         };
 
         this._storageKey = "context_menu_cache";
+    }
+    async setSelectedBlockType(type: string) {
+        await this.set(EContextMenuStorageKeys.SELECTED_BLOCK_TYPE, type);
+    }
+
+    async getSelectedBlockType() {
+        return await this.get(EContextMenuStorageKeys.SELECTED_BLOCK_TYPE);
     }
 
     async addSelectionCache(
@@ -50,11 +58,11 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
             page_title: pageTitle,
             selected_text: selectedText,
         };
-        await this.set(this._cacheKey, cache);
+        await this.set(EContextMenuStorageKeys.SELECTION_CACHE, cache);
     }
 
     async getSelectionCache() {
-        return await this.get(this._cacheKey);
+        return await this.get(EContextMenuStorageKeys.SELECTION_CACHE);
     }
 
     /**
@@ -62,7 +70,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
      * soon after retrieval.
      */
     async clearSelectionCache() {
-        return await this.set(this._cacheKey, null);
+        return await this.set(EContextMenuStorageKeys.SELECTION_CACHE, null);
     }
 
     async addCustomDestination(tiddler: ITiddlerItem) {
@@ -90,7 +98,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
             if (currentDestinations.length >= numAllowedCurrent) {
                 currentDestinations.pop();
             }
-            this.set(this._destinationsKey, currentDestinations);
+            this.set(EContextMenuStorageKeys.DESTINATIONS, currentDestinations);
         }
     }
 
@@ -115,7 +123,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
      */
     async getAllCustomDestinations(): Promise<ICustomDestination[]> {
         const dests = <ICustomDestination[]>(
-            await this.get(this._destinationsKey)
+            await this.get(EContextMenuStorageKeys.DESTINATIONS)
         );
 
         return dests.sort((a: ICustomDestination, b: ICustomDestination) => {
