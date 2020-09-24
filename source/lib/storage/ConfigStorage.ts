@@ -1,59 +1,37 @@
 import _ from "lodash";
-import AbstractStorage, { StorageElement } from "./AbstractStorage";
+import AbstractStorage from "./AbstractStorage";
+import { EConfigKey } from "../../enums";
 
-interface ISettings extends StorageElement {
-    url: string;
-    username: string;
-    password: string;
-    inbox_tiddler_title: string;
-    journal_tiddler_title: string;
-    journal_tiddler_tags: string;
-    bookmark_prefix: string;
-    bookmark_suffix: string;
-    quickadd_inbox_text_prefix: string;
-    quickadd_inbox_text_suffix: string;
-    quickadd_journal_text_prefix: string;
-    quickadd_journal_text_suffix: string;
-    selection_inbox_text_prefix: string;
-    selection_inbox_text_suffix: string;
-    selection_journal_text_prefix: string;
-    selection_journal_text_suffix: string;
-    selection_customdestination_text_prefix: string;
-    selection_customdestination_text_suffix: string;
-    context_menu_visibility: string;
-    context_menu_num_custom_destinations: string;
-}
-class ConfigStorage extends AbstractStorage<ISettings> {
-    _storageDefaults: ISettings;
+type TSettings = {
+    [key in EConfigKey]: string;
+};
+class ConfigStorage extends AbstractStorage<TSettings> {
+    _storageDefaults: TSettings;
     _storageKey: string;
 
     constructor() {
         super();
         this._storageDefaults = {
-            url: "",
-            username: "",
-            password: "",
-            inbox_tiddler_title: "Inbox",
-            journal_tiddler_title: "Journal",
-            journal_tiddler_tags: "journal",
-            bookmark_prefix: "{[T|BR]}{[T|BR]}",
-            bookmark_suffix: "{[T|BR]}{[T|BR]}",
-            quickadd_inbox_text_prefix: "{[T|BR]}{[T|BR]}",
-            quickadd_inbox_text_suffix: "{[T|BR]}{[T|BR]}",
-            quickadd_journal_text_prefix: "{[T|BR]}{[T|BR]}",
-            quickadd_journal_text_suffix: "{[T|BR]}{[T|BR]}",
-            selection_inbox_text_prefix: "{[T|BR]}{[T|BR]}<<<{[T|BR]}",
-            selection_inbox_text_suffix:
+            [EConfigKey.SERVER_URL]: "",
+            [EConfigKey.SERVER_USERNAME]: "",
+            [EConfigKey.SERVER_PASSWORD]: "",
+            [EConfigKey.TIDDLER_INBOX_TITLE]: "Inbox",
+            [EConfigKey.TIDDLER_JOURNAL_TITLE]: "Journal",
+            [EConfigKey.TIDDLER_JOURNAL_TAGS]: "journal",
+            [EConfigKey.BOOKMARK_PREFIX]: "{[T|BR]}{[T|BR]}",
+            [EConfigKey.BOOKMARK_SUFFIX]: "{[T|BR]}{[T|BR]}",
+            [EConfigKey.BLOCK_QUOTE_PREFIX]: "{[T|BR]}{[T|BR]}<<<{[T|BR]}",
+            [EConfigKey.BLOCK_QUOTE_SUFFIX]:
                 "{[T|BR]}<<<{[P|SOURCE_LINK]}{[T|BR]}{[T|BR]}",
-            selection_journal_text_prefix: "{[T|BR]}{[T|BR]}<<<{[T|BR]}",
-            selection_journal_text_suffix:
-                "{[T|BR]}<<<{[P|SOURCE_LINK]}{[T|BR]}{[T|BR]}",
-            selection_customdestination_text_prefix:
-                "{[T|BR]}{[T|BR]}<<<{[T|BR]}",
-            selection_customdestination_text_suffix:
-                "{[T|BR]}<<<{[P|SOURCE_LINK]}{[T|BR]}{[T|BR]}",
-            context_menu_visibility: "on",
-            context_menu_num_custom_destinations: "3",
+            [EConfigKey.BLOCK_CODE_PREFIX]: "{[T|BR]}{[T|BR]}```{[T|BR]}",
+            [EConfigKey.BLOCK_CODE_SUFFIX]: "{[T|BR]}{[T|BR]}```{[T|BR]}",
+            [EConfigKey.BLOCK_PARAGRAPH_PREFIX]: "{[T|BR]}{[T|BR]}",
+            [EConfigKey.BLOCK_PARAGRAPH_SUFFIX]: "{[T|BR]}{[T|BR]}",
+            [EConfigKey.BLOCK_ULITEM_PREFIX]: "{[T|BR]}*{[T|SP]}{[T|SP]}",
+            [EConfigKey.BLOCK_ULITEM_SUFFIX]: "{[T|BR]}{[T|BR]}",
+            [EConfigKey.BLOCK_OLITEM_PREFIX]: "{[T|BR]}#{[T|SP]}{[T|SP]}",
+            [EConfigKey.BLOCK_OLITEM_SUFFIX]: "{[T|BR]}{[T|BR]}",
+            [EConfigKey.CONTEXTMENU_NUM_CUSTOM_DESTINATIONS]: "3",
         };
 
         this._storageKey = "settings";
@@ -63,9 +41,9 @@ class ConfigStorage extends AbstractStorage<ISettings> {
         const config = await this.getAll();
 
         if (
-            config.url !== "" &&
-            config.username !== "" &&
-            config.password !== ""
+            config[EConfigKey.SERVER_URL] !== "" &&
+            config[EConfigKey.SERVER_USERNAME] !== "" &&
+            config[EConfigKey.SERVER_PASSWORD] !== ""
         ) {
             return true;
         }
@@ -121,7 +99,7 @@ class ConfigStorage extends AbstractStorage<ISettings> {
 
             // Populate from the stored settings
 
-            $input.value = settings[inputID];
+            $input.value = settings[<EConfigKey>inputID];
 
             // Setup the event listeners
             if (
@@ -157,7 +135,7 @@ class ConfigStorage extends AbstractStorage<ISettings> {
             const id = (<HTMLInputElement>e.target).id;
             const val = (<HTMLInputElement>e.target).value;
 
-            return this.set(id, val);
+            return this.set(<EConfigKey>id, val);
         }
     }
 }
