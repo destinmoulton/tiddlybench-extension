@@ -8,6 +8,8 @@ interface ISettings extends StorageElement {
     inbox_tiddler_title: string;
     journal_tiddler_title: string;
     journal_tiddler_tags: string;
+    bookmark_prefix: string;
+    bookmark_suffix: string;
     quickadd_inbox_text_prefix: string;
     quickadd_inbox_text_suffix: string;
     quickadd_journal_text_prefix: string;
@@ -16,6 +18,8 @@ interface ISettings extends StorageElement {
     selection_inbox_text_suffix: string;
     selection_journal_text_prefix: string;
     selection_journal_text_suffix: string;
+    selection_customdestination_text_prefix: string;
+    selection_customdestination_text_suffix: string;
     context_menu_visibility: string;
     context_menu_num_custom_destinations: string;
 }
@@ -32,16 +36,22 @@ class ConfigStorage extends AbstractStorage<ISettings> {
             inbox_tiddler_title: "Inbox",
             journal_tiddler_title: "Journal",
             journal_tiddler_tags: "journal",
-            quickadd_inbox_text_prefix: "{[F|BR]}{[F|BR]}",
-            quickadd_inbox_text_suffix: "{[F|BR]}{[F|BR]}",
-            quickadd_journal_text_prefix: "{[F|BR]}{[F|BR]}",
-            quickadd_journal_text_suffix: "{[F|BR]}{[F|BR]}",
-            selection_inbox_text_prefix: "{[F|BR]}{[F|BR]}<<<{[F|BR]}",
+            bookmark_prefix: "{[T|BR]}{[T|BR]}",
+            bookmark_suffix: "{[T|BR]}{[T|BR]}",
+            quickadd_inbox_text_prefix: "{[T|BR]}{[T|BR]}",
+            quickadd_inbox_text_suffix: "{[T|BR]}{[T|BR]}",
+            quickadd_journal_text_prefix: "{[T|BR]}{[T|BR]}",
+            quickadd_journal_text_suffix: "{[T|BR]}{[T|BR]}",
+            selection_inbox_text_prefix: "{[T|BR]}{[T|BR]}<<<{[T|BR]}",
             selection_inbox_text_suffix:
-                "{[F|BR]}<<<{[T|SOURCE_LINK]}{[F|BR]}{[F|BR]}",
-            selection_journal_text_prefix: "{[F|BR]}{[F|BR]}<<<{[F|BR]}",
+                "{[T|BR]}<<<{[P|SOURCE_LINK]}{[T|BR]}{[T|BR]}",
+            selection_journal_text_prefix: "{[T|BR]}{[T|BR]}<<<{[T|BR]}",
             selection_journal_text_suffix:
-                "{[F|BR]}<<<{[T|SOURCE_LINK]}{[F|BR]}{[F|BR]}",
+                "{[T|BR]}<<<{[P|SOURCE_LINK]}{[T|BR]}{[T|BR]}",
+            selection_customdestination_text_prefix:
+                "{[T|BR]}{[T|BR]}<<<{[T|BR]}",
+            selection_customdestination_text_suffix:
+                "{[T|BR]}<<<{[P|SOURCE_LINK]}{[T|BR]}{[T|BR]}",
             context_menu_visibility: "on",
             context_menu_num_custom_destinations: "3",
         };
