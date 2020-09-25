@@ -1,21 +1,30 @@
 import ConfigStorage from "../storage/ConfigStorage";
 import API from "../API";
+import formatit from "../formatting/formatit";
 import { API_Result, IFullTiddler, ITabInfo } from "../../types";
 import { ETiddlerSource } from "../../enums";
+import ContextMenuStorage from "../storage/ContextMenuStorage";
 
 abstract class AbstractTiddler {
-    protected _configStorage: ConfigStorage;
     protected _api: API;
+    protected _configStorage: ConfigStorage;
+    protected _contextMenuStorage: ContextMenuStorage;
+    protected _blockType: string;
     protected _tiddlerTitle: string;
     protected _tiddler: IFullTiddler;
     protected _tiddlerSource: ETiddlerSource;
     protected abstract _populateTitle(): void;
-    protected abstract addText(text: string, tab: ITabInfo | undefined): void;
 
-    constructor(configStorage: ConfigStorage, api: API) {
-        this._configStorage = configStorage;
+    constructor(
+        api: API,
+        configStorage: ConfigStorage,
+        contextMenuStorage: ContextMenuStorage
+    ) {
         this._api = api;
+        this._configStorage = configStorage;
+        this._contextMenuStorage = contextMenuStorage;
         this._tiddlerSource = ETiddlerSource.FromUnknown;
+        this._blockType = "";
 
         this._tiddlerTitle = "";
         this._tiddler = {
@@ -28,6 +37,29 @@ abstract class AbstractTiddler {
         this._tiddlerSource = tiddlerSource;
         await this._populateTitle();
         await this._populateTiddler();
+    }
+
+    async getBlockTypePrefixSuffix() {
+        const blockType = await this._contextMenuStorage.getSelectedBlockType();
+        const prefix = await this._configStorage.get(
+            "block_" + blockType + "_prefix"
+        );
+        const suffix = await this._configStorage.get(
+            "block_" + blockType + "_suffix"
+        );
+
+        return [prefix, suffix];
+    }
+
+    async addText(text: string, tab: ITabInfo | undefined) {
+        const [prefix, suffix] = await this.getBlockTypePrefixSuffix();
+
+        let newText =
+            formatit(prefix, tab) + formatit(text, tab) + formatit(suffix, tab);
+
+        let tiddlerText = this.getTiddlerText();
+        tiddlerText = tiddlerText + newText;
+        this.setTiddlerText(tiddlerText);
     }
 
     /**

@@ -197,7 +197,11 @@ class BackgroundActions {
                 url: tab.url,
             };
         }
-        const journal = new Journal(this._configStorage, this._api);
+        const journal = new Journal(
+            this._api,
+            this._configStorage,
+            this._contextMenuStorage
+        );
         await journal.initialize(source);
         await journal.addText(text, tabInfo);
         return await journal.submit();
@@ -208,7 +212,11 @@ class BackgroundActions {
         text: string,
         tab: ITabInfo | undefined
     ) {
-        const inbox = new Inbox(this._configStorage, this._api);
+        const inbox = new Inbox(
+            this._api,
+            this._configStorage,
+            this._contextMenuStorage
+        );
         await inbox.initialize(source);
         await inbox.addText(text, tab);
         return await inbox.submit();
@@ -225,8 +233,9 @@ class BackgroundActions {
         );
         if (destination && destination.tiddler) {
             const custom = new CustomDestination(
+                this._api,
                 this._configStorage,
-                this._api
+                this._contextMenuStorage
             );
             console.log(
                 "BackgroundActions :: destination details",

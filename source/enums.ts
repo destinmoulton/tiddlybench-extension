@@ -23,8 +23,8 @@ export enum EContextMenuBlockType {
     QUOTE = "quote",
     CODE = "code",
     PARAGRAPH = "paragraph",
-    ULITEM = "unordered_list_item",
-    OLITEM = "ordered_list_item",
+    ULITEM = "ulitem",
+    OLITEM = "olitem",
 }
 
 /**

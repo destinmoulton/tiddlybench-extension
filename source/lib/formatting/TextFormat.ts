@@ -2,6 +2,7 @@ import { IFormatMap } from "../../types";
 const TEXT_FORMAT_MAP: IFormatMap = {
     LINE_BREAK: "\n",
     BR: "\n",
+    SP: " ",
 };
 
 export default function textformat(inputString: string): string {
