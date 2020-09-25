@@ -13,7 +13,11 @@ import _ from "lodash";
 import dayjs from "dayjs";
 import AbstractStorage, { StorageElement } from "./AbstractStorage";
 import ConfigStorage from "./ConfigStorage";
-import { EContextMenuBlockType, EContextMenuStorageKeys } from "../../enums";
+import {
+    EContextMenuBlockType,
+    EContextMenuStorageKeys,
+    EConfigKey,
+} from "../../enums";
 import { ICustomDestination, ISelectionCache, ITiddlerItem } from "../../types";
 //import { v4 } from "uuid";
 
@@ -89,7 +93,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
             // context menu
             const numAllowedCurrent = parseInt(
                 await this._configStorage.get(
-                    "context_menu_num_custom_destinations"
+                    EConfigKey.CONTEXTMENU_NUM_CUSTOM_DESTINATIONS
                 )
             );
 

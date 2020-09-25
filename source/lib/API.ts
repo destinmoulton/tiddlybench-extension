@@ -127,7 +127,7 @@ class API {
     }
 
     async getTiddler(tiddlerTitle: string): Promise<API_Result> {
-        const serverURL = await this._configStorage.get("url");
+        const serverURL = await this._configStorage.get(EConfigKey.SERVER_URL);
         const uriTiddlerTitle = encodeURIComponent(tiddlerTitle);
         let url = this.joinURL(serverURL, ENDPOINTS.GET_SINGLE_TIDDLER);
         url = this.joinURL(url, uriTiddlerTitle);
@@ -136,7 +136,7 @@ class API {
     }
 
     async getAllTiddlers(): Promise<ITiddlerItem[]> {
-        const serverURL = await this._configStorage.get("url");
+        const serverURL = await this._configStorage.get(EConfigKey.SERVER_URL);
         let url = this.joinURL(serverURL, ENDPOINTS.GET_ALL);
 
         const res = await this.get(url);
