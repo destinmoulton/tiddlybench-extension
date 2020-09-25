@@ -1,9 +1,9 @@
 import _ from "lodash";
 import { IFormatMap, ITabInfo } from "../../types";
 const TAB_FORMAT_MAP: IFormatMap = {
-    LINK: "SOURCE_LINK",
-    URL: "PAGE_URL",
-    TITLE: "PAGE_TITLE",
+    LINK: "LINK",
+    URL: "URL",
+    TITLE: "TITLE",
 };
 /**
  * Tab format options.
@@ -28,8 +28,7 @@ export default function tabformat(
             let replacement = "";
             if (tabInfo) {
                 switch (key) {
-                    case "SOURCE_LINK":
-                    case "BOOKMARK": {
+                    case "LINK": {
                         if (tabInfo.url && tabInfo.url !== "") {
                             if (tabInfo.title && tabInfo.title !== "") {
                                 replacement =
@@ -50,7 +49,7 @@ export default function tabformat(
                         }
                         break;
                     }
-                    case "PAGE_URL": {
+                    case "URL": {
                         if (tabInfo.url && tabInfo.url !== "") {
                             replacement = tabInfo.url;
                         } else {
@@ -58,7 +57,7 @@ export default function tabformat(
                         }
                         break;
                     }
-                    case "PAGE_TITLE": {
+                    case "TITLE": {
                         if (tabInfo.title && tabInfo.title !== "") {
                             replacement = tabInfo.title;
                         } else {
