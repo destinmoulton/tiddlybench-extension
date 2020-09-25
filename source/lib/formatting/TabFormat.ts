@@ -1,11 +1,9 @@
 import _ from "lodash";
 import { IFormatMap, ITabInfo } from "../../types";
 const TAB_FORMAT_MAP: IFormatMap = {
-    SOURCE_LINK: "SOURCE_LINK",
-    BOOKMARK: "BOOKMARK",
-
-    PAGE_URL: "PAGE_URL",
-    PAGE_TITLE: "PAGE_TITLE",
+    LINK: "SOURCE_LINK",
+    URL: "PAGE_URL",
+    TITLE: "PAGE_TITLE",
 };
 /**
  * Tab format options.
@@ -21,7 +19,7 @@ export default function tabformat(
 
     let newString = inputString;
     for (let key of formatKeys) {
-        const T = new RegExp(_.escapeRegExp("{[P|" + key + "]}"), "g");
+        const T = new RegExp(_.escapeRegExp("{[" + key + "]}"), "g");
 
         const idx = newString.search(T);
         if (idx > -1) {

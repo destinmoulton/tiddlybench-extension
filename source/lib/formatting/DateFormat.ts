@@ -54,7 +54,7 @@ export default function dateformat(text: string) {
     const now = dayjs();
     for (let key of tdKeys) {
         // prettier-ignore
-        const D = new RegExp(_.escapeRegExp("{[D|" + key + "]}"), "g");
+        const D = new RegExp(_.escapeRegExp("{[" + key + "]}"), "g");
 
         const idx = text.search(D);
         if (idx > -1) {
