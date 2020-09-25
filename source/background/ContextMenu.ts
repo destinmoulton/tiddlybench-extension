@@ -29,7 +29,6 @@ class ContextMenu {
     _contextMenuStorage: ContextMenuStorage;
     _messenger: Messenger;
     _handleClickContextMenu: ContextMenuClickHandler;
-    isContextMenuEnabled: string = "off";
     doesContextMenuExist: boolean = false;
 
     constructor(
@@ -52,17 +51,7 @@ class ContextMenu {
 
     // Called by config when the config values are changed
     async configure() {
-        const shouldBeEnabled = await this._configStorage.get(
-            "context_menu_visibility"
-        );
-        if (shouldBeEnabled !== this.isContextMenuEnabled) {
-            this.isContextMenuEnabled = shouldBeEnabled;
-        }
-        if (this.isContextMenuEnabled === "on") {
-            await this.enableContextMenu();
-        } else {
-            this.disableContextMenu();
-        }
+        await this.setupContextMenu();
     }
 
     _onContextMenuCreated() {
@@ -77,7 +66,7 @@ class ContextMenu {
         }
     }
 
-    async enableContextMenu() {
+    async setupContextMenu() {
         if (!(await this._api.isServerUp())) {
             browser.contextMenus.removeAll();
             browser.contextMenus.create({
@@ -144,10 +133,6 @@ class ContextMenu {
         browser.contextMenus.onClicked.addListener(
             this._handleClickContextMenu
         );
-    }
-
-    disableContextMenu() {
-        browser.contextMenus.removeAll();
     }
 }
 

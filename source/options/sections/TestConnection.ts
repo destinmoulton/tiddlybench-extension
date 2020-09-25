@@ -11,6 +11,7 @@
 import API from "../../lib/API";
 import dom from "../../lib/dom";
 import logger from "../../lib/logger";
+import { EConfigKey } from "../../enums";
 //import { API_Result } from "../../types";
 class TestConnection {
     _api: API;
@@ -45,9 +46,13 @@ class TestConnection {
             dom("#tb-connection-error-message")
         );
 
-        this.$url = <HTMLInputElement>dom("#url");
-        this.$username = <HTMLInputElement>dom("#username");
-        this.$password = <HTMLInputElement>dom("#password");
+        this.$url = <HTMLInputElement>dom("#" + EConfigKey.SERVER_URL);
+        this.$username = <HTMLInputElement>(
+            dom("#" + EConfigKey.SERVER_USERNAME)
+        );
+        this.$password = <HTMLInputElement>(
+            dom("#" + EConfigKey.SERVER_PASSWORD)
+        );
     }
 
     async handleClickTestConnectionButton(): Promise<boolean> {
