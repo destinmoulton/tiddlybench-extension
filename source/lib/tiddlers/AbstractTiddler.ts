@@ -111,6 +111,10 @@ abstract class AbstractTiddler {
         return this._tiddler.text;
     }
 
+    getTiddlerTitle(): string {
+        return this._tiddlerTitle;
+    }
+
     setTiddlerText(text: string) {
         this._tiddler.text = text;
     }
