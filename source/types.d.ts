@@ -70,11 +70,19 @@ export interface ISelectionCache {
     selected_text: string;
 }
 
-interface IFormatMap {
-    [key: string]: string;
-}
-
 interface ITabInfo {
     title: string | undefined;
     url: string | undefined;
+}
+
+interface ICodeMap {
+    [key: string]: string | ((data: IRecodeData) => string);
+}
+
+/**
+ * Data for the recoder
+ */
+interface IRecodeData {
+    text: string;
+    tabInfo?: ITabInfo;
 }

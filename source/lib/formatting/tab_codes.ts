@@ -1,4 +1,3 @@
-import { replace } from "lodash";
 /**
  * tabcodes.ts
  *
@@ -6,9 +5,13 @@ import { replace } from "lodash";
  * for browser tab data (title, url, link)
  */
 
-import { ITabInfo } from "../../types";
+import { IRecodeData } from "../../types";
 const TAB_CODES = {
-    LINK: (tabInfo: ITabInfo) => {
+    LINK: (data: IRecodeData) => {
+        if (!data.tabInfo) {
+            throw new Error("tabInfo is not defined");
+        }
+        let tabInfo = data.tabInfo;
         let replacement = "";
         if (tabInfo.url && tabInfo.url !== "") {
             if (tabInfo.title && tabInfo.title !== "") {
@@ -25,7 +28,11 @@ const TAB_CODES = {
         }
         return replacement;
     },
-    URL: (tabInfo: ITabInfo) => {
+    URL: (data: IRecodeData) => {
+        if (!data.tabInfo) {
+            throw new Error("tabInfo is not defined");
+        }
+        let tabInfo = data.tabInfo;
         let replacement = "";
         if (tabInfo.url && tabInfo.url !== "") {
             replacement = tabInfo.url;
@@ -34,7 +41,11 @@ const TAB_CODES = {
         }
         return replacement;
     },
-    TITLE: (tabInfo: ITabInfo) => {
+    TITLE: (data: IRecodeData) => {
+        if (!data.tabInfo) {
+            throw new Error("tabInfo is not defined");
+        }
+        let tabInfo = data.tabInfo;
         let replacement = "";
         if (tabInfo.title && tabInfo.title !== "") {
             replacement = tabInfo.title;
