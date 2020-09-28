@@ -20,6 +20,7 @@ import Messenger from "../lib/Messenger";
 import TabsManager from "../lib/TabsManager";
 import { ETiddlerSource } from "../enums";
 import { ITabInfo } from "../types";
+import notify from "../lib/notify";
 
 class BackgroundActions {
     _api: API;
@@ -237,7 +238,12 @@ class BackgroundActions {
         );
         await journal.initialize(source);
         await journal.addText(text, tabInfo);
-        return await journal.submit();
+        const response = await journal.submit();
+        const tiddlerTitle = journal.getTiddlerTitle();
+        if (response.ok) {
+            await notify(`Selected text has been added to ${tiddlerTitle}`);
+        }
+        return response;
     }
 
     async addTextToInbox(
@@ -252,7 +258,12 @@ class BackgroundActions {
         );
         await inbox.initialize(source);
         await inbox.addText(text, tab);
-        return await inbox.submit();
+        const response = await inbox.submit();
+        const tiddlerTitle = inbox.getTiddlerTitle();
+        if (response.ok) {
+            await notify(`Selected text has been added to ${tiddlerTitle}`);
+        }
+        return response;
     }
 
     async addTextToCustomDestination(
@@ -270,13 +281,14 @@ class BackgroundActions {
                 this._configStorage,
                 this._contextMenuStorage
             );
-            console.log(
-                "BackgroundActions :: destination details",
-                destination
-            );
             await custom.setupCustomTiddler(source, destination.tiddler.title);
             await custom.addText(text, tab);
-            return await custom.submit();
+            const response = await custom.submit();
+            const tiddlerTitle = custom.getTiddlerTitle();
+            if (response.ok) {
+                await notify(`Selected text has been added to ${tiddlerTitle}`);
+            }
+            return response;
         }
         return { ok: false };
     }

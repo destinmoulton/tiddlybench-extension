@@ -2,7 +2,7 @@ import { browser } from "webextension-polyfill-ts";
 
 import API from "./API";
 import ConfigStorage from "./storage/ConfigStorage";
-
+import notify from "./notify";
 class Messenger {
     _api: API;
     _configStorage: ConfigStorage;
@@ -26,14 +26,23 @@ class Messenger {
 
     async send(
         message: any,
-        responseHandler: (message: any) => any,
+        responseHandler?: (message: any) => any,
         errorHandler?: () => any
     ) {
         const sending = browser.runtime.sendMessage(message);
         if (responseHandler && errorHandler) {
             return sending.then(responseHandler, errorHandler);
-        } else {
+        } else if (responseHandler) {
             return sending.then(responseHandler, this._handleError);
+        } else {
+            return sending.then(this._handleSuccess, this._handleError);
+        }
+    }
+
+    _handleSuccess(response: any) {
+        if (response.message) {
+            // Notify the user
+            notify(response.message);
         }
     }
 
