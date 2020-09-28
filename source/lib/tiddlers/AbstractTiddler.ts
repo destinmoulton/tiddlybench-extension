@@ -1,6 +1,6 @@
 import ConfigStorage from "../storage/ConfigStorage";
 import API from "../API";
-import formatit from "../formatting/formatit";
+import recoder from "../formatting/recoder";
 import { API_Result, IFullTiddler, ITabInfo } from "../../types";
 import { ETiddlerSource } from "../../enums";
 import ContextMenuStorage from "../storage/ContextMenuStorage";
@@ -55,7 +55,9 @@ abstract class AbstractTiddler {
         const [prefix, suffix] = await this.getBlockTypePrefixSuffix();
 
         let newText =
-            formatit(prefix, tab) + formatit(text, tab) + formatit(suffix, tab);
+            recoder({ text: prefix, tabInfo: tab }) +
+            recoder({ text, tabInfo: tab }) +
+            recoder({ text: suffix, tabInfo: tab });
 
         let tiddlerText = this.getTiddlerText();
         tiddlerText = tiddlerText + newText;

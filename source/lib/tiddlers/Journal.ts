@@ -1,13 +1,12 @@
 import AbstractTiddler from "./AbstractTiddler";
-import formatit from "../formatting/formatit";
+import recoder from "../formatting/recoder";
 import { EConfigKey } from "../../enums";
 class Journal extends AbstractTiddler {
     async _populateTitle() {
         const title = await this._configStorage.get(
             EConfigKey.TIDDLER_JOURNAL_TITLE
         );
-        this._tiddlerTitle = formatit(title, undefined);
-        console.log("Journal :: " + this._tiddlerTitle);
+        this._tiddlerTitle = recoder({ text: title });
     }
 }
 export default Journal;
