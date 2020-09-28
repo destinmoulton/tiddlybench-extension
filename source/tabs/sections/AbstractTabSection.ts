@@ -60,5 +60,9 @@ abstract class AbstractTabSection {
             this._$root.innerHTML = this._loadingAnimationOldHTML;
         }
     }
+
+    _getHashParams() {
+        return new URLSearchParams(window.location.hash.substr(1));
+    }
 }
 export default AbstractTabSection;

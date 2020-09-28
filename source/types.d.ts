@@ -65,6 +65,7 @@ export interface ICustomDestination {
 }
 
 export interface ISelectionCache {
+    cache_id: string;
     page_url: string;
     page_title: string;
     selected_text: string;

@@ -97,23 +97,28 @@ class ContextMenu {
             });
             browser.contextMenus.create({
                 id: "tb-ctxt-add-to-inbox",
-                title: "Add selection to Inbox Tiddler >>",
+                title: "Add Selection to Inbox Tiddler",
                 contexts: ["selection"],
             });
             browser.contextMenus.create({
                 id: "tb-ctxt-add-to-journal",
-                title: "Add selection to Journal Tiddler >>",
+                title: "Add Selection to Journal Tiddler",
+                contexts: ["selection"],
+            });
+            browser.contextMenus.create({
+                id: "tb-separator-other-tiddler-pre",
+                type: "separator",
                 contexts: ["selection"],
             });
             browser.contextMenus.create({
                 id: "tb-ctxt-choose-tiddler",
-                title: "Add selection to... Choose Tiddler",
+                title: "Add Selection to Other Tiddler",
                 contexts: ["selection"],
             });
 
             if (destinationTiddlers.length > 0) {
                 browser.contextMenus.create({
-                    id: "tb-tiddler-destination-prefix-separator",
+                    id: "tb-separator-other-tiddlers-pre",
                     type: "separator",
                     contexts: ["selection"],
                 });

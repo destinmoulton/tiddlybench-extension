@@ -10,6 +10,7 @@
  * are available via the TiddlyBench context menu.
  */
 import _ from "lodash";
+import { v1 as uuidv1 } from "uuid";
 import dayjs from "dayjs";
 import AbstractStorage, { StorageElement } from "./AbstractStorage";
 import ConfigStorage from "./ConfigStorage";
@@ -23,7 +24,7 @@ import { ICustomDestination, ISelectionCache, ITiddlerItem } from "../../types";
 
 interface IContextMenuCache extends StorageElement {
     [EContextMenuStorageKeys.DESTINATIONS]: ICustomDestination[];
-    [EContextMenuStorageKeys.SELECTION_CACHE]: ISelectionCache | null;
+    [EContextMenuStorageKeys.SELECTION_CACHE]: ISelectionCache[];
     [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]: string;
 }
 class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
@@ -37,7 +38,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
 
         this._storageDefaults = {
             [EContextMenuStorageKeys.DESTINATIONS]: [],
-            [EContextMenuStorageKeys.SELECTION_CACHE]: null,
+            [EContextMenuStorageKeys.SELECTION_CACHE]: [],
             [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]:
                 EContextMenuBlockType.QUOTE,
         };
@@ -52,29 +53,57 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
         return await this.get(EContextMenuStorageKeys.SELECTED_BLOCK_TYPE);
     }
 
+    /**
+     *
+     *
+     * @param pageUrl
+     * @param pageTitle
+     * @param selectedText
+     * @returns string ID for selection cache.
+     */
     async addSelectionCache(
         pageUrl: string,
         pageTitle: string,
         selectedText: string
-    ) {
+    ): Promise<string> {
+        const cache_id = uuidv1();
         const cache = {
+            cache_id,
             page_url: pageUrl,
             page_title: pageTitle,
             selected_text: selectedText,
         };
-        await this.set(EContextMenuStorageKeys.SELECTION_CACHE, cache);
+
+        const caches = await this.get(EContextMenuStorageKeys.SELECTION_CACHE);
+        caches.push(cache);
+        await this.set(EContextMenuStorageKeys.SELECTION_CACHE, caches);
+        return cache_id;
     }
 
-    async getSelectionCache() {
-        return await this.get(EContextMenuStorageKeys.SELECTION_CACHE);
+    async removeSelectionCacheByID(cacheID: string) {
+        const caches = <ISelectionCache[]>(
+            await this.get(EContextMenuStorageKeys.SELECTION_CACHE)
+        );
+        const newCaches = caches.filter((cache) => cache.cache_id !== cacheID);
+        return await this.set(
+            EContextMenuStorageKeys.SELECTION_CACHE,
+            newCaches
+        );
+    }
+
+    async getSelectionCacheByID(cacheID: string) {
+        const caches = <ISelectionCache[]>(
+            await this.get(EContextMenuStorageKeys.SELECTION_CACHE)
+        );
+        return caches.find((cache) => cache.cache_id === cacheID);
     }
 
     /**
      * The selection cache should be cleared
      * soon after retrieval.
      */
-    async clearSelectionCache() {
-        return await this.set(EContextMenuStorageKeys.SELECTION_CACHE, null);
+    async clearAllSelectionCache() {
+        return await this.set(EContextMenuStorageKeys.SELECTION_CACHE, []);
     }
 
     async addCustomDestination(tiddler: ITiddlerItem) {

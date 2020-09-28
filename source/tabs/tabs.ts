@@ -4,13 +4,21 @@ import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import ListTiddlers from "./sections/ListTiddlers";
+import Messenger from "../lib/Messenger";
+import TabsManager from "../lib/TabsManager";
 //import TabsManager from "../lib/TabsManager";
 window.addEventListener("load", () => {
     const configStorage = new ConfigStorage();
     const contextMenuStorage = new ContextMenuStorage(configStorage);
-    //const tabsManager = new TabsManager();
+    const tabsManager = new TabsManager();
     const api = new API(configStorage);
-    const listTiddlers = new ListTiddlers(api, contextMenuStorage);
+    const messenger = new Messenger(api, configStorage);
+    const listTiddlers = new ListTiddlers(
+        api,
+        contextMenuStorage,
+        messenger,
+        tabsManager
+    );
     const tabs = new Tabs(listTiddlers);
     tabs.initialize();
 });

@@ -32,6 +32,7 @@ import TiddlyBench from "./TiddlyBench";
         backgroundActions,
         configStorage,
         contextMenu,
+        contextMenuStorage,
         messenger
     );
     await tiddlyBench.initialize();

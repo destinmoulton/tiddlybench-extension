@@ -1,6 +1,7 @@
 import { browser } from "webextension-polyfill-ts";
 import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
+import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import ContextMenu from "./ContextMenu";
 import Messenger from "../lib/Messenger";
 import logger from "../lib/logger";
@@ -9,6 +10,7 @@ class TiddlyBench {
     _api: API;
     _contextMenu: ContextMenu;
     _configStorage: ConfigStorage;
+    _contextMenuStorage: ContextMenuStorage;
     _messenger: Messenger;
     _backgroundActions: BackgroundActions;
 
@@ -17,12 +19,14 @@ class TiddlyBench {
         backgroundActions: BackgroundActions,
         configStorage: ConfigStorage,
         contextMenu: ContextMenu,
+        contextMenuStorage: ContextMenuStorage,
         messenger: Messenger
     ) {
         this._api = api;
         this._backgroundActions = backgroundActions;
         this._configStorage = configStorage;
         this._contextMenu = contextMenu;
+        this._contextMenuStorage = contextMenuStorage;
         this._messenger = messenger;
     }
 
@@ -33,6 +37,9 @@ class TiddlyBench {
                 this._backgroundActions
             )
         );
+
+        // Clear the context menu storage cache
+        await this._contextMenuStorage.clearAllSelectionCache();
 
         await this._contextMenu.initialize();
 

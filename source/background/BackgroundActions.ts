@@ -89,6 +89,39 @@ class BackgroundActions {
                         });
                     }
                 }
+                case "customdestination-from-choose-tiddler-tab": {
+                    const cacheID = data.packet.cache_id;
+                    const cache = await this._contextMenuStorage.getSelectionCacheByID(
+                        cacheID
+                    );
+                    if (cache && cache.selected_text) {
+                        const tabInfo: ITabInfo = {
+                            title: cache.page_title,
+                            url: cache.page_url,
+                        };
+                        const res = await this.addTextToCustomDestination(
+                            ETiddlerSource.FromContextMenu,
+                            cache.selected_text,
+                            data.packet.tiddler_id,
+                            tabInfo
+                        );
+                        const title = data.packet.tiddler_title.substring(
+                            0,
+                            25
+                        );
+                        if (res.ok) {
+                            return Promise.resolve({
+                                ok: true,
+                                message: `Selected text added to ${title}`,
+                            });
+                        } else {
+                            return Promise.reject({
+                                ok: false,
+                                message: `Failed to add selected text to ${title}`,
+                            });
+                        }
+                    }
+                }
             }
         }
         return Promise.reject({
@@ -116,12 +149,12 @@ class BackgroundActions {
             }
             case "tb-ctxt-choose-tiddler":
                 if (tab && info.pageUrl && tab.title && info.selectionText) {
-                    await this._contextMenuStorage.addSelectionCache(
+                    const cacheID = await this._contextMenuStorage.addSelectionCache(
                         info.pageUrl,
                         tab.title,
                         info.selectionText
                     );
-                    await this._tabsManager.openChooseTiddlerTab();
+                    await this._tabsManager.openChooseTiddlerTab(cacheID);
                 }
                 break;
             case "tb-ctxt-add-to-inbox":
@@ -245,7 +278,7 @@ class BackgroundActions {
             await custom.addText(text, tab);
             return await custom.submit();
         }
-        return;
+        return { ok: false };
     }
 }
 export default BackgroundActions;

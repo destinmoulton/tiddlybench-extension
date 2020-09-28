@@ -15,32 +15,24 @@ const EXTENSION_URL = {
     [EExtensionURL.ChooseTiddler]: "tabs/tabs.html#section=choose_tiddler",
 };
 export default class TabsManager {
-    async openChooseTiddlerTab() {
-        return await this.openTab(EExtensionURL.ChooseTiddler);
+    async openChooseTiddlerTab(cacheID: string) {
+        const url =
+            EXTENSION_URL[EExtensionURL.ChooseTiddler] + "&cache_id=" + cacheID;
+        return await this.openTab(url);
     }
     async openSettingsTab() {
-        return await this.openTab(EExtensionURL.Settings);
+        return await this.openTab(EXTENSION_URL[EExtensionURL.Settings]);
     }
-    async openTab(urlKey: EExtensionURL) {
-        if (!EXTENSION_URL.hasOwnProperty(urlKey)) {
-            throw new Error(
-                `Trying to create a tab for a url that has not been defined. ${urlKey} does not exist.`
-            );
-        }
-
+    async openTab(url: string) {
         // We only want one version of a tab existing
-        await this.closeCurrentTabsForURL(urlKey);
+        await this.closeCurrentTabsForURL(url);
 
-        return browser.tabs.create({ url: EXTENSION_URL[urlKey] });
+        return browser.tabs.create({ url });
     }
 
-    async closeCurrentTabsForURL(urlKey: EExtensionURL) {
-        const tabs = await this.findTabsByURL(urlKey);
+    async closeCurrentTabsForURL(url: string) {
+        const tabs = await this.findTabsByURL(url);
 
-        console.log(
-            `Finding tabs to close for ${EXTENSION_URL[urlKey]}...`,
-            tabs
-        );
         let tabsToClose = [];
         for (let tab of tabs) {
             if (!tab.active) {
@@ -52,8 +44,8 @@ export default class TabsManager {
         }
     }
 
-    async findTabsByURL(urlKey: EExtensionURL) {
-        const partial = EXTENSION_URL[urlKey];
+    async findTabsByURL(url: string) {
+        const partial = url;
         const tabs = await this.getAll();
         const foundTabs = [];
         for (let tab of tabs) {
@@ -81,5 +73,12 @@ export default class TabsManager {
             return results.pop();
         }
         return undefined;
+    }
+
+    async closeThisTab() {
+        const tab = await browser.tabs.getCurrent();
+        if (tab && tab.id) {
+            return await browser.tabs.remove(tab.id);
+        }
     }
 }

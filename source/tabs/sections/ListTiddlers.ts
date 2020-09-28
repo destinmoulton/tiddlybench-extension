@@ -11,14 +11,25 @@ import AbstractTabSection from "./AbstractTabSection";
 import API from "../../lib/API";
 import dom from "../../lib/dom";
 import ContextMenuStorage from "../../lib/storage/ContextMenuStorage";
+import Messenger from "../../lib/Messenger";
+import TabsManager from "../../lib/TabsManager";
 import { ITiddlerItem } from "../../types";
 export default class ListTiddlers extends AbstractTabSection {
     _contextMenuStorage: ContextMenuStorage;
+    _messenger: Messenger;
+    _tabsManager: TabsManager;
     _tiddlers: ITiddlerItem[];
 
-    constructor(api: API, contextMenuStorage: ContextMenuStorage) {
+    constructor(
+        api: API,
+        contextMenuStorage: ContextMenuStorage,
+        messenger: Messenger,
+        tabsManager: TabsManager
+    ) {
         super(api);
         this._contextMenuStorage = contextMenuStorage;
+        this._messenger = messenger;
+        this._tabsManager = tabsManager;
         this._tiddlers = [];
     }
 
@@ -72,14 +83,35 @@ export default class ListTiddlers extends AbstractTabSection {
         const $tiddlers = <HTMLElement[]>dom(".tb-tabs-tiddlers-list-item");
 
         for (let $tiddler of $tiddlers) {
-            $tiddler.addEventListener("click", (e: Event) => {
+            $tiddler.addEventListener("click", async (e: Event) => {
                 const id = (<HTMLElement>e.target).getAttribute(
                     "data-tiddler-id"
                 );
-                if (id) {
+                const urlParams = this._getHashParams();
+                const cache_id = urlParams.get("cache_id");
+                if (id && cache_id) {
                     const tiddler = this._getTiddlerById(id);
                     if (tiddler) {
-                        this._contextMenuStorage.addCustomDestination(tiddler);
+                        await this._contextMenuStorage.addCustomDestination(
+                            tiddler
+                        );
+                        const message = {
+                            dispatch: "tiddler",
+                            type: "customdestination-from-choose-tiddler-tab",
+                            packet: {
+                                cache_id: cache_id,
+                                tiddler_id: tiddler.tb_id,
+                                tiddler_title: tiddler.title,
+                            },
+                        };
+                        this._messenger.send(message, async (response) => {
+                            if (response.ok) {
+                                await this._contextMenuStorage.removeSelectionCacheByID(
+                                    cache_id
+                                );
+                                await this._tabsManager.closeThisTab();
+                            }
+                        });
                     } else {
                         throw new Error(`Unable to find tiddler with id ${id}`);
                     }
