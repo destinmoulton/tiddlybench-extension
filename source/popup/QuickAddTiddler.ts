@@ -31,6 +31,10 @@ class QuickAddTiddler extends PopupTemplate {
         // Focus on the textarea
         this.$textarea = <HTMLInputElement>dom("#tb-popup-quickadd-contents");
         this.$textarea.focus();
+        this.$textarea.addEventListener(
+            "keydown",
+            this._handleTextareaKeydown.bind(this)
+        );
 
         // Get the select box element
         this.$type = <HTMLInputElement>dom("#tb-popup-quickadd-type");
@@ -47,8 +51,6 @@ class QuickAddTiddler extends PopupTemplate {
     }
 
     async handleClickSubmit() {
-        const animation = this._getLoadingAnimationHTML("Adding...");
-
         if (
             !this.$container ||
             !this.$textarea ||
@@ -58,12 +60,12 @@ class QuickAddTiddler extends PopupTemplate {
             throw new Error("An element was not found in the dom.");
         }
         if (this.validate()) {
+            const animation = this._getLoadingAnimationHTML("Adding...");
             this.$container.innerHTML = animation;
             try {
                 const blockType = this.$blocktype.value;
                 const text = this.$textarea.value;
                 const type = this.$type.value;
-                console.log("sending message");
                 this._messenger.send(
                     {
                         dispatch: "tiddler",
@@ -75,6 +77,18 @@ class QuickAddTiddler extends PopupTemplate {
             } catch (err) {
                 console.error(err.message);
             }
+        }
+    }
+
+    /**
+     * Disable the Enter key add new line and
+     * instead submit the quick add form.
+     */
+    async _handleTextareaKeydown(e: KeyboardEvent) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            // Fire on Enter, but not on Shift + Enter
+            await this.handleClickSubmit();
         }
     }
 
