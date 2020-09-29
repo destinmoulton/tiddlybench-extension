@@ -103,7 +103,6 @@ class ConfigStorage extends AbstractStorage<TSettings> {
             // Populate from the stored settings
 
             $input.value = settings[<EConfigKey>inputID];
-            console.log(settings[<EConfigKey>inputID]);
 
             // Setup the event listeners
             if (
