@@ -1,0 +1,33 @@
+<script id="tmpl-form-label" type="text/template">
+    <label for="{{id}}">{{label}}</label>
+</script>
+<script id="tmpl-form-input-text" type="text/template">
+    <input type="text" id="{{id}}">
+</script>
+<script id="tmpl-form-input-password" type="text/template">
+    <input type="password" id="{{id}}">
+</script>
+<script id="tmpl-form-input-select" type="text/template">
+    <select id="{{id}}">{{options}}</select>
+</script>
+<script id="tmpl-form-input-select-option" type="text/template">
+    <option value="{{value}}">{{option}}</option>
+</script>
+
+<script id="tmpl-form-section" type="text/template">
+    <div class="tb-options-section">
+        <fieldset>
+            <legend>{{section_title}}</legend>
+            <div class="tb-options-section-subtitle">{{section_subheading}}</div>
+            {{groups}}
+        </fieldset>
+        <div class="pure-form-message tb-options-form-info-box">{{section_notes}}</div>
+    </div>
+</script>
+
+<script id="tmpl-form-group" type="text/template">
+    <div class="pure-control-group">
+        {{label}}
+        {{input}}
+    </div>
+</script>
