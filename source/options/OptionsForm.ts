@@ -107,6 +107,7 @@ class OptionsForm {
                     }
                     case "template": {
                         if (field.template_id) {
+                            label = ""; // no need for label for template
                             const $template = <HTMLElement>(
                                 dom("#" + field.template_id)
                             );
