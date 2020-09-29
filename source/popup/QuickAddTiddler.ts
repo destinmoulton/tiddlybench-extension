@@ -1,21 +1,25 @@
+import ConfigStorage from "../lib/storage/ConfigStorage";
 import PopupTemplate from "./PopupTemplate";
 import Messenger from "../lib/Messenger";
 import dom from "../lib/dom";
 import { BLOCK_TYPES } from "../constants";
-import { EBlockType } from "../enums";
+import { EBlockType, EConfigKey } from "../enums";
 class QuickAddTiddler extends PopupTemplate {
+    _configStorage: ConfigStorage;
     _messenger: Messenger;
+
     $container: HTMLElement | null;
     $textarea: HTMLInputElement | null;
-    $type: HTMLInputElement | null;
+    $destination: HTMLInputElement | null;
     $blocktype: HTMLInputElement | null;
 
-    constructor(messenger: Messenger) {
+    constructor(configStorage: ConfigStorage, messenger: Messenger) {
         super();
+        this._configStorage = configStorage;
         this._messenger = messenger;
         this.$container = null;
         this.$textarea = null;
-        this.$type = null;
+        this.$destination = null;
         this.$blocktype = null;
     }
 
@@ -24,7 +28,13 @@ class QuickAddTiddler extends PopupTemplate {
         this._append(html);
     }
 
-    setup() {
+    async setup() {
+        const defaultDestination = await this._configStorage.get(
+            EConfigKey.QUICKADD_DEFAULT_DESTINATION
+        );
+        const defaultBlockType = await this._configStorage.get(
+            EConfigKey.QUICKADD_DEFAULT_BLOCKTYPE
+        );
         // Get the main container
         this.$container = <HTMLElement>dom("#tb-popup-quickadd-box");
 
@@ -37,11 +47,13 @@ class QuickAddTiddler extends PopupTemplate {
         );
 
         // Get the select box element
-        this.$type = <HTMLInputElement>dom("#tb-popup-quickadd-type");
+        this.$destination = <HTMLInputElement>dom("#tb-popup-quickadd-type");
+        this.$destination.value = defaultDestination;
 
         // Build the block type dropdown
         this.$blocktype = <HTMLInputElement>dom("#tb-popup-quickadd-blocktype");
         this.$blocktype.innerHTML = this._getBlockTypesOptionsHTML();
+        this.$blocktype.value = defaultBlockType;
 
         // Setup the handler
         const $submit = <HTMLInputElement>(
@@ -54,7 +66,7 @@ class QuickAddTiddler extends PopupTemplate {
         if (
             !this.$container ||
             !this.$textarea ||
-            !this.$type ||
+            !this.$destination ||
             !this.$blocktype
         ) {
             throw new Error("An element was not found in the dom.");
@@ -65,7 +77,7 @@ class QuickAddTiddler extends PopupTemplate {
             try {
                 const blockType = this.$blocktype.value;
                 const text = this.$textarea.value;
-                const type = this.$type.value;
+                const type = this.$destination.value;
                 this._messenger.send(
                     {
                         dispatch: "tiddler",

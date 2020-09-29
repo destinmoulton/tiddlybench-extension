@@ -10,7 +10,7 @@ window.addEventListener("load", function() {
     const tabsManager = new TabsManager();
     const api = new API(configStorage);
     const messenger = new Messenger(api, configStorage);
-    const quickAddTiddler = new QuickAddTiddler(messenger);
+    const quickAddTiddler = new QuickAddTiddler(configStorage, messenger);
     const mainMenu = new MainMenu(tabsManager);
     const popup = new Popup(api, mainMenu, quickAddTiddler, tabsManager);
     popup.initialize();
@@ -45,7 +45,7 @@ class Popup extends PopupTemplate {
             this._mainMenu.display();
 
             // setup the functionality
-            this._quickAddTiddler.setup();
+            await this._quickAddTiddler.setup();
             this._mainMenu.setup();
         }
     }
