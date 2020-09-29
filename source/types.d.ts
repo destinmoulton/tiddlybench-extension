@@ -97,3 +97,22 @@ interface IRecodeData {
 interface IBlockTypes {
     [key: EBlockType]: string;
 }
+
+export interface IFormOptionsObj {
+    [key: string]: string;
+}
+
+export type TFormInputOptions = number[] | string[] | IFormOptionsObj;
+export interface IFormField {
+    type: string;
+    label?: string;
+    id?: string;
+    options?: TFormInputOptions;
+    template_id?: string;
+}
+export interface IFormSection {
+    section_title: string;
+    section_subheading: string;
+    section_notes: string[];
+    fields: IFormField[];
+}

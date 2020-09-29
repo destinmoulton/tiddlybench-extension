@@ -50,4 +50,6 @@ export enum EConfigKey {
     BLOCK_OLITEM_PREFIX = "block_olitem_prefix",
     BLOCK_OLITEM_SUFFIX = "block_olitem_suffix",
     CONTEXTMENU_NUM_CUSTOM_DESTINATIONS = "contextmenu_num_custom_destinations",
+    QUICKADD_DEFAULT_DESTINATION = "quickadd_default_destination",
+    QUICKADD_DEFAULT_BLOCKTYPE = "quickadd_default_blocktype",
 }
