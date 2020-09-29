@@ -44,13 +44,17 @@ abstract class AbstractTiddler {
         return [prefix, suffix];
     }
 
-    async addText(text: string, blockType: string, tab: ITabInfo | undefined) {
+    async addText(
+        text: string,
+        blockType: string,
+        tabInfo: ITabInfo | undefined
+    ) {
         const [prefix, suffix] = await this.getBlockTypePrefixSuffix(blockType);
 
         let newText =
-            recoder({ text: prefix, tabInfo: tab }) +
-            recoder({ text, tabInfo: tab }) +
-            recoder({ text: suffix, tabInfo: tab });
+            recoder({ text: prefix, tabInfo }) +
+            recoder({ text, tabInfo }) +
+            recoder({ text: suffix, tabInfo });
 
         let tiddlerText = this.getTiddlerText();
         tiddlerText = tiddlerText + newText;

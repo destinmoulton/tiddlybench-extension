@@ -70,6 +70,7 @@ class BackgroundActions {
                             message: "Failed to add the Journal text.",
                         });
                     }
+                    break;
                 }
                 case "inbox": {
                     const res = await this.addTextToInbox(
@@ -88,6 +89,7 @@ class BackgroundActions {
                             message: "Failed to add the Inbox text.",
                         });
                     }
+                    break;
                 }
                 case "customdestination-from-choose-tiddler-tab": {
                     const cacheID = data.packet.cache_id;
@@ -122,6 +124,7 @@ class BackgroundActions {
                             });
                         }
                     }
+                    break;
                 }
             }
         }

@@ -9,7 +9,7 @@ import { IRecodeData } from "../../types";
 const TAB_CODES = {
     LINK: (data: IRecodeData) => {
         if (!data.tabInfo) {
-            throw new Error("tabInfo is not defined");
+            return "";
         }
         let tabInfo = data.tabInfo;
         let replacement = "";
@@ -30,7 +30,7 @@ const TAB_CODES = {
     },
     URL: (data: IRecodeData) => {
         if (!data.tabInfo) {
-            throw new Error("tabInfo is not defined");
+            return "";
         }
         let tabInfo = data.tabInfo;
         let replacement = "";
@@ -43,7 +43,7 @@ const TAB_CODES = {
     },
     TITLE: (data: IRecodeData) => {
         if (!data.tabInfo) {
-            throw new Error("tabInfo is not defined");
+            return "";
         }
         let tabInfo = data.tabInfo;
         let replacement = "";
