@@ -10,7 +10,9 @@ class MainMenu extends PopupTemplate {
         const html = this._compile("tmpl-main-menu", {});
 
         this._append(html);
+    }
 
+    setup() {
         const $link = document.getElementById("tb-link-configure");
         if ($link) {
             $link.addEventListener(

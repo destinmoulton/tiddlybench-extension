@@ -2,17 +2,14 @@ import ConfigStorage from "../storage/ConfigStorage";
 import API from "../API";
 import recoder from "../formatting/recoder";
 import { API_Result, IFullTiddler, ITabInfo } from "../../types";
-import { ETiddlerSource } from "../../enums";
 import ContextMenuStorage from "../storage/ContextMenuStorage";
 
 abstract class AbstractTiddler {
     protected _api: API;
     protected _configStorage: ConfigStorage;
     protected _contextMenuStorage: ContextMenuStorage;
-    protected _blockType: string;
     protected _tiddlerTitle: string;
     protected _tiddler: IFullTiddler;
-    protected _tiddlerSource: ETiddlerSource;
     protected abstract _populateTitle(): void;
 
     constructor(
@@ -23,8 +20,6 @@ abstract class AbstractTiddler {
         this._api = api;
         this._configStorage = configStorage;
         this._contextMenuStorage = contextMenuStorage;
-        this._tiddlerSource = ETiddlerSource.FromUnknown;
-        this._blockType = "";
 
         this._tiddlerTitle = "";
         this._tiddler = {
@@ -33,14 +28,12 @@ abstract class AbstractTiddler {
         };
     }
 
-    async initialize(tiddlerSource: ETiddlerSource) {
-        this._tiddlerSource = tiddlerSource;
+    async initialize() {
         await this._populateTitle();
         await this._populateTiddler();
     }
 
-    async getBlockTypePrefixSuffix() {
-        const blockType = await this._contextMenuStorage.getSelectedBlockType();
+    async getBlockTypePrefixSuffix(blockType: string) {
         const prefix = await this._configStorage.get(
             "block_" + blockType + "_prefix"
         );
@@ -51,8 +44,8 @@ abstract class AbstractTiddler {
         return [prefix, suffix];
     }
 
-    async addText(text: string, tab: ITabInfo | undefined) {
-        const [prefix, suffix] = await this.getBlockTypePrefixSuffix();
+    async addText(text: string, blockType: string, tab: ITabInfo | undefined) {
+        const [prefix, suffix] = await this.getBlockTypePrefixSuffix(blockType);
 
         let newText =
             recoder({ text: prefix, tabInfo: tab }) +

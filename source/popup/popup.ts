@@ -35,14 +35,18 @@ class Popup extends PopupTemplate {
         this._tabsManager = tabsManager;
     }
     async initialize() {
-        const status = await this._api.getStatus();
+        //const status = await this._api.getStatus();
 
-        console.log(status);
         if (!(await this._api.isServerUp())) {
             await this._tabsManager.openSettingsTab();
         } else {
+            // Add the html
             this._quickAddTiddler.display();
             this._mainMenu.display();
+
+            // setup the functionality
+            this._quickAddTiddler.setup();
+            this._mainMenu.setup();
         }
     }
 }

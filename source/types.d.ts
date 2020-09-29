@@ -6,6 +6,7 @@
 import dayjs from "dayjs";
 import OptionsSync from "webext-options-sync";
 import { Response } from "superagent";
+import { EBlockType } from "./enums";
 
 // The tiddler that is returned by get calls
 export interface ITiddlerItem {
@@ -37,6 +38,11 @@ export interface IFullTiddler {
     type?: string;
     uri?: string;
     [key: string]: string;
+}
+
+export interface IEditTiddlerOptions {
+    text: string;
+    tabInfo: ITabInfo | undefined;
 }
 
 export interface API_Result {
@@ -86,4 +92,8 @@ interface ICodeMap {
 interface IRecodeData {
     text: string;
     tabInfo?: ITabInfo;
+}
+
+interface IBlockTypes {
+    [key: EBlockType]: string;
 }

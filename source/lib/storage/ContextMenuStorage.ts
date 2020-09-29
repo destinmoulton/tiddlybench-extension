@@ -14,11 +14,7 @@ import { v1 as uuidv1 } from "uuid";
 import dayjs from "dayjs";
 import AbstractStorage, { StorageElement } from "./AbstractStorage";
 import ConfigStorage from "./ConfigStorage";
-import {
-    EContextMenuBlockType,
-    EContextMenuStorageKeys,
-    EConfigKey,
-} from "../../enums";
+import { EBlockType, EContextMenuStorageKeys, EConfigKey } from "../../enums";
 import { ICustomDestination, ISelectionCache, ITiddlerItem } from "../../types";
 //import { v4 } from "uuid";
 
@@ -39,8 +35,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
         this._storageDefaults = {
             [EContextMenuStorageKeys.DESTINATIONS]: [],
             [EContextMenuStorageKeys.SELECTION_CACHE]: [],
-            [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]:
-                EContextMenuBlockType.QUOTE,
+            [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]: EBlockType.QUOTE,
         };
 
         this._storageKey = "context_menu_cache";

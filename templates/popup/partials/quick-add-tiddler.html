@@ -16,6 +16,8 @@
                         <option value="journal">Journal</option>
                         <option value="inbox">Inbox</option>
                     </select>
+                    <label for="tb-popup-quickadd-blocktype">As</label>
+                    <select id="tb-popup-quickadd-blocktype"></select>
                     <button type="button"
                             id="tb-popup-quickadd-submit-button"
                             class="pure-button pure-button-primary">Quick Add</button>
@@ -23,4 +25,7 @@
             </fieldset>
         </form>
     </div>
+</script>
+<script id="tmpl-quickadd-blocktype-option" type="text/template">
+    <option value="{{block_type}}">{{block_title}}</option>
 </script>

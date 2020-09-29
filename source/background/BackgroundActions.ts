@@ -18,7 +18,6 @@ import Journal from "../lib/tiddlers/Journal";
 import Inbox from "../lib/tiddlers/Inbox";
 import Messenger from "../lib/Messenger";
 import TabsManager from "../lib/TabsManager";
-import { ETiddlerSource } from "../enums";
 import { ITabInfo } from "../types";
 import notify from "../lib/notify";
 
@@ -56,8 +55,8 @@ class BackgroundActions {
             switch (data.type) {
                 case "journal": {
                     const res = await this.addTextToJournal(
-                        ETiddlerSource.FromQuickAdd,
                         data.packet.text,
+                        data.packet.blockType,
                         undefined
                     );
                     if (res.ok) {
@@ -74,8 +73,8 @@ class BackgroundActions {
                 }
                 case "inbox": {
                     const res = await this.addTextToInbox(
-                        ETiddlerSource.FromQuickAdd,
                         data.packet.text,
+                        data.packet.blockType,
                         undefined
                     );
                     if (res.ok) {
@@ -96,14 +95,15 @@ class BackgroundActions {
                         cacheID
                     );
                     if (cache && cache.selected_text) {
+                        const blockType = await this._contextMenuStorage.getSelectedBlockType();
                         const tabInfo: ITabInfo = {
                             title: cache.page_title,
                             url: cache.page_url,
                         };
                         const res = await this.addTextToCustomDestination(
-                            ETiddlerSource.FromContextMenu,
-                            cache.selected_text,
                             data.packet.tiddler_id,
+                            cache.selected_text,
+                            blockType,
                             tabInfo
                         );
                         const title = data.packet.tiddler_title.substring(
@@ -165,13 +165,14 @@ class BackgroundActions {
                         info.selectionText &&
                         info.selectionText !== ""
                     ) {
+                        const blockType = await this._contextMenuStorage.getSelectedBlockType();
                         const tabInfo: ITabInfo = {
                             title: tab.title,
                             url: tab.url,
                         };
                         await this.addTextToInbox(
-                            ETiddlerSource.FromContextMenu,
                             info.selectionText,
+                            blockType,
                             tabInfo
                         );
                     }
@@ -186,13 +187,14 @@ class BackgroundActions {
                         info.selectionText &&
                         info.selectionText !== ""
                     ) {
+                        const blockType = await this._contextMenuStorage.getSelectedBlockType();
                         const tabInfo: ITabInfo = {
                             title: tab.title,
                             url: tab.url,
                         };
                         await this.addTextToJournal(
-                            ETiddlerSource.FromContextMenu,
                             info.selectionText,
+                            blockType,
                             tabInfo
                         );
                     }
@@ -202,14 +204,15 @@ class BackgroundActions {
                 break;
             case "tb-ctxt-add-to-destination": {
                 if (tab && info.selectionText && info.selectionText !== "") {
+                    const blockType = await this._contextMenuStorage.getSelectedBlockType();
                     const tabInfo: ITabInfo = {
                         title: tab.title,
                         url: tab.url,
                     };
-                    this.addTextToCustomDestination(
-                        ETiddlerSource.FromContextMenu,
+                    await this.addTextToCustomDestination(
+                        menuSuffix, // in this case the menuSuffix is the id of the tiddler
                         info.selectionText,
-                        menuSuffix,
+                        blockType,
                         tabInfo
                     );
                 }
@@ -219,8 +222,8 @@ class BackgroundActions {
     }
 
     async addTextToJournal(
-        source: ETiddlerSource,
         text: string,
+        blockType: string,
         tab: ITabInfo | undefined
     ) {
         let tabInfo = undefined;
@@ -236,19 +239,19 @@ class BackgroundActions {
             this._configStorage,
             this._contextMenuStorage
         );
-        await journal.initialize(source);
-        await journal.addText(text, tabInfo);
+        await journal.initialize();
+        await journal.addText(text, blockType, tabInfo);
         const response = await journal.submit();
         const tiddlerTitle = journal.getTiddlerTitle();
         if (response.ok) {
-            await notify(`Selected text has been added to ${tiddlerTitle}`);
+            await notify(`Text has been added to ${tiddlerTitle}`);
         }
         return response;
     }
 
     async addTextToInbox(
-        source: ETiddlerSource,
         text: string,
+        blockType: string,
         tab: ITabInfo | undefined
     ) {
         const inbox = new Inbox(
@@ -256,20 +259,20 @@ class BackgroundActions {
             this._configStorage,
             this._contextMenuStorage
         );
-        await inbox.initialize(source);
-        await inbox.addText(text, tab);
+        await inbox.initialize();
+        await inbox.addText(text, blockType, tab);
         const response = await inbox.submit();
         const tiddlerTitle = inbox.getTiddlerTitle();
         if (response.ok) {
-            await notify(`Selected text has been added to ${tiddlerTitle}`);
+            await notify(`Text has been added to ${tiddlerTitle}`);
         }
         return response;
     }
 
     async addTextToCustomDestination(
-        source: ETiddlerSource,
-        text: string,
         id: string,
+        text: string,
+        blockType: string,
         tab: ITabInfo | undefined
     ) {
         const destination = await this._contextMenuStorage.findDestinationById(
@@ -281,12 +284,12 @@ class BackgroundActions {
                 this._configStorage,
                 this._contextMenuStorage
             );
-            await custom.setupCustomTiddler(source, destination.tiddler.title);
-            await custom.addText(text, tab);
+            await custom.setupCustomTiddler(destination.tiddler.title);
+            await custom.addText(text, blockType, tab);
             const response = await custom.submit();
             const tiddlerTitle = custom.getTiddlerTitle();
             if (response.ok) {
-                await notify(`Selected text has been added to ${tiddlerTitle}`);
+                await notify(`Text has been added to ${tiddlerTitle}`);
             }
             return response;
         }

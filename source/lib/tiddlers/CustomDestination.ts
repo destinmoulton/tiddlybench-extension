@@ -1,8 +1,6 @@
 import AbstractTiddler from "./AbstractTiddler";
-import { ETiddlerSource } from "../../enums";
 class CustomDestination extends AbstractTiddler {
-    async setupCustomTiddler(source: ETiddlerSource, title: string) {
-        this._tiddlerSource = source;
+    async setupCustomTiddler(title: string) {
         this._tiddlerTitle = title;
         await this._populateTiddler();
     }

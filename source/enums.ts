@@ -1,13 +1,4 @@
 /**
- * Tiddler Sources
- */
-export enum ETiddlerSource {
-    FromUnknown,
-    FromContextMenu,
-    FromQuickAdd,
-}
-
-/**
  * Extension URLS
  */
 export enum EExtensionURL {
@@ -19,7 +10,7 @@ export enum EExtensionURL {
 /**
  * Context Menu Block Types
  */
-export enum EContextMenuBlockType {
+export enum EBlockType {
     QUOTE = "quote",
     CODE = "code",
     PARAGRAPH = "paragraph",

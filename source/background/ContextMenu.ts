@@ -4,7 +4,8 @@ import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import Messenger from "../lib/Messenger";
-import { EContextMenuBlockType } from "../enums";
+import { BLOCK_TYPES } from "../constants";
+import { EBlockType } from "../enums";
 
 type ContextMenuClickHandler = (
     info: browser.contextMenus.OnClickData,
@@ -12,16 +13,8 @@ type ContextMenuClickHandler = (
 ) => void;
 
 // interface IBlockTypes {
-//     [key: EContextMenuBlockType]: string;
+//     [key: EBlockType]: string;
 // }
-
-const BLOCK_TYPES = {
-    [EContextMenuBlockType.QUOTE]: "Quotation Block",
-    [EContextMenuBlockType.CODE]: "Code Block",
-    [EContextMenuBlockType.PARAGRAPH]: "Paragraph",
-    [EContextMenuBlockType.ULITEM]: "Unordered List Item",
-    [EContextMenuBlockType.OLITEM]: "Ordered List Item",
-};
 
 class ContextMenu {
     _api: API;
@@ -84,7 +77,7 @@ class ContextMenu {
                 const checked = type === selectedBlockType;
                 browser.contextMenus.create({
                     id: "tb-ctxt-change-blocktype|" + type,
-                    title: BLOCK_TYPES[<EContextMenuBlockType>type],
+                    title: BLOCK_TYPES[<EBlockType>type],
                     type: "radio",
                     checked,
                     contexts: ["selection"],
