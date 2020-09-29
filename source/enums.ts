@@ -38,6 +38,7 @@ export enum EConfigKey {
     TIDDLER_JOURNAL_TITLE = "tiddler_journal_title",
     TIDDLER_JOURNAL_TAGS = "tiddler_journal_tags",
     BOOKMARK_PREFIX = "bookmark_prefix",
+    BOOKMARK_MARKDOWN = "bookmark_markdown",
     BOOKMARK_SUFFIX = "bookmark_suffix",
     BLOCK_QUOTE_PREFIX = "block_quote_prefix",
     BLOCK_QUOTE_SUFFIX = "block_quote_suffix",

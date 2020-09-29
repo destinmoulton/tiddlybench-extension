@@ -20,6 +20,7 @@ class ConfigStorage extends AbstractStorage<TSettings> {
                 "Journal {[MMM]} {[DD]}, {[YYYY]}",
             [EConfigKey.TIDDLER_JOURNAL_TAGS]: "journal",
             [EConfigKey.BOOKMARK_PREFIX]: "{[BR]}{[BR]}",
+            [EConfigKey.BOOKMARK_MARKDOWN]: "[[{[TITLE]}|{[URL]}]]",
             [EConfigKey.BOOKMARK_SUFFIX]: "{[BR]}{[BR]}",
             [EConfigKey.BLOCK_QUOTE_PREFIX]: "{[BR]}{[BR]}<<<{[BR]}",
             [EConfigKey.BLOCK_QUOTE_SUFFIX]: "{[BR]}<<<{[LINK]}{[BR]}{[BR]}",
@@ -32,6 +33,8 @@ class ConfigStorage extends AbstractStorage<TSettings> {
             [EConfigKey.BLOCK_OLITEM_PREFIX]: "{[BR]}#{[SP]}{[SP]}",
             [EConfigKey.BLOCK_OLITEM_SUFFIX]: "{[BR]}{[BR]}",
             [EConfigKey.CONTEXTMENU_NUM_CUSTOM_DESTINATIONS]: "3",
+            [EConfigKey.QUICKADD_DEFAULT_DESTINATION]: "journal",
+            [EConfigKey.QUICKADD_DEFAULT_BLOCKTYPE]: "ulitem",
         };
 
         this._storageKey = "settings";
@@ -100,6 +103,7 @@ class ConfigStorage extends AbstractStorage<TSettings> {
             // Populate from the stored settings
 
             $input.value = settings[<EConfigKey>inputID];
+            console.log(settings[<EConfigKey>inputID]);
 
             // Setup the event listeners
             if (

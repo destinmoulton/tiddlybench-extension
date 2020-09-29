@@ -118,22 +118,24 @@ const form: IFormSection[] = [
         section_title: "Quick Add Settings",
         section_subheading:
             "The Quick Add box allows you to quickly add text to your Inbox or Journal.",
-        section_notes: [],
+        section_notes: [
+            "The Default Destination and Default Block Type determine what is selected in the dropdowns below the Quick Add text box in the popup when you click the TiddlyBench icon in the browser toolbar.",
+        ],
         fields: [
             {
                 label: "Quick Add Default Destination",
                 id: EConfigKey.QUICKADD_DEFAULT_DESTINATION,
                 type: "select",
-                options: BLOCK_TYPES,
-            },
-            {
-                label: "Quick Addd Default Block Type",
-                id: EConfigKey.TIDDLER_JOURNAL_TITLE,
-                type: "text",
                 options: {
                     journal: "Journal",
                     inbox: "Inbox",
                 },
+            },
+            {
+                label: "Quick Add Default Block Type",
+                id: EConfigKey.QUICKADD_DEFAULT_BLOCKTYPE,
+                type: "select",
+                options: BLOCK_TYPES,
             },
         ],
     },
@@ -149,6 +151,31 @@ const form: IFormSection[] = [
                 id: EConfigKey.CONTEXTMENU_NUM_CUSTOM_DESTINATIONS,
                 type: "select",
                 options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            },
+        ],
+    },
+    {
+        section_title: "Bookmark Settings",
+        section_subheading:
+            "Bookmarks can be added via right clicking on a page with nothing selected.",
+        section_notes: [
+            "You can use {[BR]} to add line breaks, {[SP]} to add spaces, {[Link]} to add a TiddlyWiki markdown link.",
+        ],
+        fields: [
+            {
+                label: "Bookmark Prefix",
+                id: EConfigKey.BOOKMARK_PREFIX,
+                type: "text",
+            },
+            {
+                label: "Bookmark Markdown",
+                id: EConfigKey.BOOKMARK_MARKDOWN,
+                type: "text",
+            },
+            {
+                label: "Bookmark Suffix",
+                id: EConfigKey.BOOKMARK_SUFFIX,
+                type: "text",
             },
         ],
     },

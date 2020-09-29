@@ -14,4 +14,4 @@ const api = new API(configStorage);
 const optionsForm = new OptionsForm(api, configStorage);
 
 // Initialize the OptionsForm
-window.addEventListener("load", optionsForm.initialize.bind(optionsForm));
+window.addEventListener("load", optionsForm.display.bind(optionsForm));
