@@ -6,7 +6,7 @@
 import dayjs from "dayjs";
 import OptionsSync from "webext-options-sync";
 import { Response } from "superagent";
-import { EBlockType } from "./enums";
+import { EBlockType, EContextType } from "./enums";
 
 // The tiddler that is returned by get calls
 export interface ITiddlerItem {
@@ -116,3 +116,7 @@ export interface IFormSection {
     section_notes: string[];
     fields: IFormField[];
 }
+
+export type TContextTypes = {
+    [key in EContextType]: string;
+};

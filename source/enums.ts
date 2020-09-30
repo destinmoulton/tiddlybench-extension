@@ -54,3 +54,10 @@ export enum EConfigKey {
     QUICKADD_DEFAULT_DESTINATION = "quickadd_default_destination",
     QUICKADD_DEFAULT_BLOCKTYPE = "quickadd_default_blocktype",
 }
+
+export enum EContextType {
+    LINK = "link",
+    PAGE = "page",
+    SELECTION = "selection",
+    TAB = "tab",
+}

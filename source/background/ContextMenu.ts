@@ -4,8 +4,9 @@ import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import Messenger from "../lib/Messenger";
-import { BLOCK_TYPES } from "../constants";
-import { EBlockType } from "../enums";
+import { BLOCK_TYPES, CONTEXT_TYPE_TITLES } from "../constants";
+import { EBlockType, EContextType } from "../enums";
+import { ICustomDestination } from "../types";
 
 type ContextMenuClickHandler = (
     info: browser.contextMenus.OnClickData,
@@ -68,69 +69,96 @@ class ContextMenu {
                 contexts: ["all"],
             });
         } else {
-            const selectedBlockType = await this._contextMenuStorage.getSelectedBlockType();
-            const destinationTiddlers = await this._contextMenuStorage.getAllCustomDestinations();
             browser.contextMenus.removeAll();
-
-            // Setup the block types radio options
-            for (let type in BLOCK_TYPES) {
-                const checked = type === selectedBlockType;
-                browser.contextMenus.create({
-                    id: "tb-ctxt-change-blocktype|" + type,
-                    title: BLOCK_TYPES[<EBlockType>type],
-                    type: "radio",
-                    checked,
-                    contexts: ["selection"],
-                });
-            }
-            browser.contextMenus.create({
-                id: "tb-top-separator",
-                type: "separator",
-                contexts: ["selection"],
-            });
-            browser.contextMenus.create({
-                id: "tb-ctxt-add-to-inbox",
-                title: "Add Selection to Inbox Tiddler",
-                contexts: ["selection"],
-            });
-            browser.contextMenus.create({
-                id: "tb-ctxt-add-to-journal",
-                title: "Add Selection to Journal Tiddler",
-                contexts: ["selection"],
-            });
-            browser.contextMenus.create({
-                id: "tb-separator-other-tiddler-pre",
-                type: "separator",
-                contexts: ["selection"],
-            });
-            browser.contextMenus.create({
-                id: "tb-ctxt-choose-tiddler",
-                title: "Add Selection to Other Tiddler",
-                contexts: ["selection"],
-            });
-
-            if (destinationTiddlers.length > 0) {
-                browser.contextMenus.create({
-                    id: "tb-separator-other-tiddlers-pre",
-                    type: "separator",
-                    contexts: ["selection"],
-                });
-                for (let dest of destinationTiddlers) {
-                    browser.contextMenus.create({
-                        id: "tb-ctxt-add-to-destination|" + dest.tiddler.tb_id,
-                        title:
-                            "Add selection to '" +
-                            dest.tiddler.title.substring(0, 20) +
-                            "...'",
-                        contexts: ["selection"],
-                    });
-                }
-            }
+            const destinationTiddlers = <ICustomDestination[]>(
+                await this._contextMenuStorage.getAllCustomDestinations()
+            );
+            await this._setupSelectionContext(destinationTiddlers);
+            this._setupAddContext(EContextType.LINK, destinationTiddlers);
+            this._setupAddContext(EContextType.PAGE, destinationTiddlers);
+            this._setupAddContext(EContextType.TAB, destinationTiddlers);
         }
         this.doesContextMenuExist = true;
         browser.contextMenus.onClicked.addListener(
             this._handleClickContextMenu
         );
+    }
+
+    /**
+     */
+    async _setupSelectionContext(destinationTiddlers: ICustomDestination[]) {
+        const selectedBlockType = await this._contextMenuStorage.getSelectedBlockType();
+
+        // Setup the block types radio options
+        for (let type in BLOCK_TYPES) {
+            const checked = type === selectedBlockType;
+            browser.contextMenus.create({
+                id: "tb-ctxt-change-blocktype|" + type,
+                title: BLOCK_TYPES[<EBlockType>type],
+                type: "radio",
+                checked,
+                contexts: ["selection"],
+            });
+        }
+        browser.contextMenus.create({
+            id: "tb-ctxt-selection-top-separator",
+            type: "separator",
+            contexts: ["selection"],
+        });
+
+        this._setupAddContext(EContextType.SELECTION, destinationTiddlers);
+    }
+
+    /**
+     * The context menu options that appear when
+     * right clicking over a context (link, page, tab, selection, etc...)
+     *
+     * @param destinationTiddlers
+     */
+    _setupAddContext(
+        context: EContextType,
+        destinationTiddlers: ICustomDestination[]
+    ) {
+        const title = CONTEXT_TYPE_TITLES[context];
+        browser.contextMenus.create({
+            id: `tb-ctxt-add-${context}|destination=inbox`,
+            title: `Add ${title} to Inbox Tiddler`,
+            contexts: [context],
+        });
+        browser.contextMenus.create({
+            id: `tb-ctxt-add-${context}|destination=journal`,
+            title: `Add ${title} to Journal Tiddler`,
+            contexts: [context],
+        });
+        browser.contextMenus.create({
+            id: `tb-ctxt-${context}-separator-pre`,
+            type: "separator",
+            contexts: [context],
+        });
+        browser.contextMenus.create({
+            id: `tb-ctxt-choose-tiddler|action=add-${context}`,
+            title: `Add ${title} to Other Tiddler`,
+            contexts: [context],
+        });
+        if (destinationTiddlers.length > 0) {
+            browser.contextMenus.create({
+                id: `tb-ctxt-${context}-separator-post`,
+                type: "separator",
+                contexts: [context],
+            });
+            for (let dest of destinationTiddlers) {
+                browser.contextMenus.create({
+                    id:
+                        `tb-ctxt-add-${context}|destination=` +
+                        dest.tiddler.tb_id,
+                    title:
+                        "Add ${title} to '" +
+                        dest.tiddler.title.substring(0, 20) +
+                        "...'",
+                    contexts: [context],
+                });
+            }
+        }
     }
 }
 
