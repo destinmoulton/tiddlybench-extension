@@ -15,17 +15,21 @@ import dayjs from "dayjs";
 import AbstractStorage, { StorageElement } from "./AbstractStorage";
 import ConfigStorage from "./ConfigStorage";
 import { EBlockType, EContextMenuStorageKeys, EConfigKey } from "../../enums";
-import { ICustomDestination, ISelectionCache, ITiddlerItem } from "../../types";
+import {
+    ICustomDestination,
+    IContextMenuCache,
+    ITiddlerItem,
+} from "../../types";
 //import { v4 } from "uuid";
 
-interface IContextMenuCache extends StorageElement {
+interface IContextMenuStorage extends StorageElement {
     [EContextMenuStorageKeys.DESTINATIONS]: ICustomDestination[];
-    [EContextMenuStorageKeys.SELECTION_CACHE]: ISelectionCache[];
+    [EContextMenuStorageKeys.CACHE]: IContextMenuCache[];
     [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]: string;
 }
-class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
+class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
     _configStorage: ConfigStorage;
-    _storageDefaults: IContextMenuCache;
+    _storageDefaults: IContextMenuStorage;
     _storageKey: string;
 
     constructor(configStorage: ConfigStorage) {
@@ -34,11 +38,11 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
 
         this._storageDefaults = {
             [EContextMenuStorageKeys.DESTINATIONS]: [],
-            [EContextMenuStorageKeys.SELECTION_CACHE]: [],
+            [EContextMenuStorageKeys.CACHE]: [],
             [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]: EBlockType.QUOTE,
         };
 
-        this._storageKey = "context_menu_cache";
+        this._storageKey = "context_menu";
     }
     async setSelectedBlockType(type: string) {
         await this.set(EContextMenuStorageKeys.SELECTED_BLOCK_TYPE, type);
@@ -51,46 +55,42 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
     /**
      *
      *
-     * @param pageUrl
-     * @param pageTitle
-     * @param selectedText
      * @returns string ID for selection cache.
      */
-    async addSelectionCache(
-        pageUrl: string,
-        pageTitle: string,
-        selectedText: string
+    async addCache(
+        context: string,
+        clickData: browser.contextMenus.OnClickData,
+        tabData: browser.tabs.Tab | undefined
     ): Promise<string> {
-        const cache_id = uuidv1();
-        const cache = {
-            cache_id,
-            page_url: pageUrl,
-            page_title: pageTitle,
-            selected_text: selectedText,
+        const cacheID = uuidv1();
+        const cache: IContextMenuCache = {
+            cacheID,
+            context,
+            clickData,
+            tabData,
         };
 
-        const caches = await this.get(EContextMenuStorageKeys.SELECTION_CACHE);
+        const caches = await this.get(EContextMenuStorageKeys.CACHE);
         caches.push(cache);
-        await this.set(EContextMenuStorageKeys.SELECTION_CACHE, caches);
-        return cache_id;
+        await this.set(EContextMenuStorageKeys.CACHE, caches);
+        return cacheID;
     }
 
-    async removeSelectionCacheByID(cacheID: string) {
-        const caches = <ISelectionCache[]>(
-            await this.get(EContextMenuStorageKeys.SELECTION_CACHE)
+    async removeCacheByID(cacheID: string) {
+        const caches = <IContextMenuCache[]>(
+            await this.get(EContextMenuStorageKeys.CACHE)
         );
-        const newCaches = caches.filter((cache) => cache.cache_id !== cacheID);
-        return await this.set(
-            EContextMenuStorageKeys.SELECTION_CACHE,
-            newCaches
-        );
+        const newCaches = caches.filter((cache) => cache.cacheID !== cacheID);
+        return await this.set(EContextMenuStorageKeys.CACHE, newCaches);
     }
 
-    async getSelectionCacheByID(cacheID: string) {
-        const caches = <ISelectionCache[]>(
-            await this.get(EContextMenuStorageKeys.SELECTION_CACHE)
+    async getCacheByID(cacheID: string): Promise<IContextMenuCache> {
+        const caches = <IContextMenuCache[]>(
+            await this.get(EContextMenuStorageKeys.CACHE)
         );
-        return caches.find((cache) => cache.cache_id === cacheID);
+        return <IContextMenuCache>(
+            caches.find((cache) => cache.cacheID === cacheID)
+        );
     }
 
     /**
@@ -98,7 +98,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
      * soon after retrieval.
      */
     async clearAllSelectionCache() {
-        return await this.set(EContextMenuStorageKeys.SELECTION_CACHE, []);
+        return await this.set(EContextMenuStorageKeys.CACHE, []);
     }
 
     async addCustomDestination(tiddler: ITiddlerItem) {
@@ -164,6 +164,11 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuCache> {
             }
             return 0;
         });
+    }
+
+    async getCustomDestinationByID(id: string) {
+        const destinations = await this.getAllCustomDestinations();
+        return destinations.find((dest) => dest.tiddler.tb_id === id);
     }
 }
 
