@@ -10,7 +10,7 @@ abstract class AbstractTiddler {
     protected _contextMenuStorage: ContextMenuStorage;
     protected _tiddlerTitle: string;
     protected _tiddler: IFullTiddler;
-    protected abstract _populateTitle(): void;
+    abstract async populateTitle(...args: any): Promise<void>;
 
     constructor(
         api: API,
@@ -26,11 +26,6 @@ abstract class AbstractTiddler {
             title: "",
             text: "",
         };
-    }
-
-    async initialize() {
-        await this._populateTitle();
-        await this._populateTiddler();
     }
 
     async getBlockTypePrefixSuffix(blockType: string) {
@@ -65,7 +60,7 @@ abstract class AbstractTiddler {
      * Check the API for the tiddler.
      * If it doesn't exist, crea
      */
-    protected async _populateTiddler(): Promise<void> {
+    protected async populateTiddler(): Promise<void> {
         let res: API_Result;
         try {
             res = await this._api.getTiddler(this._tiddlerTitle);

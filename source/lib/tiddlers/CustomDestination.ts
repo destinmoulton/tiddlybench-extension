@@ -1,13 +1,21 @@
+import { IDispatchOptions } from "../../types";
 import AbstractTiddler from "./AbstractTiddler";
 class CustomDestination extends AbstractTiddler {
-    async setupCustomTiddler(title: string) {
-        this._tiddlerTitle = title;
-        await this._populateTiddler();
-    }
+    async populateTitle(options: IDispatchOptions) {
+        if (!options.id) {
+            throw new Error("id is not defined in the options");
+        }
+        const dest = await this._contextMenuStorage.getCustomDestinationByID(
+            options.id
+        );
 
-    _populateTitle() {
-        // do nothing; the title is set via
-        // setupTiddler (a custom method)
+        if (!dest) {
+            throw new Error(
+                `The destination with id=${options.id} could not be found in the ContextMenuStorage`
+            );
+        }
+
+        this._tiddlerTitle = dest.tiddler.title;
     }
 }
 export default CustomDestination;
