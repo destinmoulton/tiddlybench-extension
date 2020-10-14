@@ -23,7 +23,7 @@ export enum EBlockType {
  */
 export enum EContextMenuStorageKeys {
     DESTINATIONS = "destinations",
-    SELECTION_CACHE = "selection_cache",
+    CACHE = "cache",
     SELECTED_BLOCK_TYPE = "selected_block_type",
 }
 
@@ -60,4 +60,11 @@ export enum EContextType {
     PAGE = "page",
     SELECTION = "selection",
     TAB = "tab",
+}
+
+export enum EDestinationTiddler {
+    NONE = "",
+    INBOX = "inbox",
+    JOURNAL = "journal",
+    CUSTOM = "custom",
 }
