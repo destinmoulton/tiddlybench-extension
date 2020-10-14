@@ -6,6 +6,7 @@ import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import Messenger from "../lib/Messenger";
 import TabsManager from "../lib/TabsManager";
 import TiddlyBench from "./TiddlyBench";
+import TiddlerDispatcher from "../lib/tiddlers/TiddlerDispatcher";
 
 (async function() {
     const configStorage = new ConfigStorage();
@@ -13,12 +14,18 @@ import TiddlyBench from "./TiddlyBench";
     const tabsmanager = new TabsManager();
     const api = new API(configStorage);
     const messenger = new Messenger(api, configStorage);
+    const tiddlerDispatcher = new TiddlerDispatcher(
+        api,
+        configStorage,
+        contextMenuStorage
+    );
     const backgroundActions = new BackgroundActions(
         api,
         configStorage,
         contextMenuStorage,
         messenger,
-        tabsmanager
+        tabsmanager,
+        tiddlerDispatcher
     );
     const contextMenu = new ContextMenu(
         api,
