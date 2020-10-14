@@ -6,7 +6,12 @@
 import dayjs from "dayjs";
 import OptionsSync from "webext-options-sync";
 import { Response } from "superagent";
-import { EBlockType, EContextType } from "./enums";
+import {
+    EBlockType,
+    EContextType,
+    EDestinations,
+    EDestinationTiddler,
+} from "./enums";
 
 // The tiddler that is returned by get calls
 export interface ITiddlerItem {
@@ -70,11 +75,11 @@ export interface ICustomDestination {
     last_addition_time: number;
 }
 
-export interface ISelectionCache {
-    cache_id: string;
-    page_url: string;
-    page_title: string;
-    selected_text: string;
+export interface IContextMenuCache {
+    cacheID: string;
+    context: string;
+    clickData: browser.contextMenus.OnClickData;
+    tabData: browser.tabs.Tab | undefined;
 }
 
 interface ITabInfo {
@@ -120,3 +125,11 @@ export interface IFormSection {
 export type TContextTypes = {
     [key in EContextType]: string;
 };
+
+export interface IDispatchOptions {
+    action: string;
+    destination: EDestinationTiddler;
+    context: EContextType;
+    id?: string;
+    blocktype?: string;
+}
