@@ -154,10 +154,10 @@ class ContextMenu {
             for (let dest of destinationTiddlers) {
                 browser.contextMenus.create({
                     id:
-                        `tb-ctxt-action|context=${context}&action=${EDispatchAction.ADD_TEXT}&destination=${EDestinationTiddler.CUSTOM}&id=` +
+                        `tb-ctxt-action|context=${context}&action=${EDispatchAction.ADD_TEXT}&destination=${EDestinationTiddler.CUSTOM}&tiddler_id=` +
                         dest.tiddler.tb_id,
                     title:
-                        "Add ${title} to '" +
+                        `Add ${title} to '` +
                         dest.tiddler.title.substring(0, 20) +
                         "...'",
                     contexts: [context],

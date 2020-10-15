@@ -65,6 +65,7 @@ class TiddlerDispatcher {
 
                 break;
             case EDispatchSource.TAB:
+                console.log("Dispatching TAB messenger event");
                 // Dispatched when a user selects a tiddler from the
                 // TiddlerList component in a tab
 
@@ -120,7 +121,6 @@ class TiddlerDispatcher {
         clickData: browser.contextMenus.OnClickData | undefined,
         tabData: browser.tabs.Tab | undefined
     ) {
-        console.log("dispatching context action", options, clickData, tabData);
         let tabInfo = undefined;
         if (tabData) {
             // Yes this is weird to transform the data

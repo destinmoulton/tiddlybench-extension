@@ -196,9 +196,11 @@ class BackgroundActions {
                                 cache_id: params["cache_id"]
                                     ? params["cache_id"]
                                     : null,
+                                tiddler_id: params["tiddler_id"]
+                                    ? params["tiddler_id"]
+                                    : null,
                             },
                         };
-
                         this._tiddlerDispatcher.dispatchContextAction(
                             options,
                             clickData,
