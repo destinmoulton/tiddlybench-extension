@@ -5,7 +5,12 @@ import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
 import Messenger from "../lib/Messenger";
 import { BLOCK_TYPES, CONTEXT_TYPE_TITLES } from "../constants";
-import { EBlockType, EContextType } from "../enums";
+import {
+    EBlockType,
+    EContextType,
+    EDestinationTiddler,
+    EDispatchAction,
+} from "../enums";
 import { ICustomDestination } from "../types";
 
 type ContextMenuClickHandler = (
@@ -76,7 +81,7 @@ class ContextMenu {
             await this._setupSelectionContext(destinationTiddlers);
             this._setupAddContext(EContextType.LINK, destinationTiddlers);
             this._setupAddContext(EContextType.PAGE, destinationTiddlers);
-            this._setupAddContext(EContextType.TAB, destinationTiddlers);
+            //this._setupAddContext(EContextType.TAB, destinationTiddlers);
         }
         this.doesContextMenuExist = true;
         browser.contextMenus.onClicked.addListener(
@@ -93,7 +98,7 @@ class ContextMenu {
         for (let type in BLOCK_TYPES) {
             const checked = type === selectedBlockType;
             browser.contextMenus.create({
-                id: "tb-ctxt-change-blocktype|" + type,
+                id: `tb-ctxt-action|context=${EContextType.SELECTION}&action=${EDispatchAction.CHANGE_BLOCKTYPE}&blocktype=${type}`,
                 title: BLOCK_TYPES[<EBlockType>type],
                 type: "radio",
                 checked,
@@ -121,12 +126,12 @@ class ContextMenu {
     ) {
         const title = CONTEXT_TYPE_TITLES[context];
         browser.contextMenus.create({
-            id: `tb-ctxt-add-${context}|destination=inbox`,
+            id: `tb-ctxt-action|context=${context}&action=${EDispatchAction.ADD_TEXT}&destination=${EDestinationTiddler.INBOX}`,
             title: `Add ${title} to Inbox Tiddler`,
             contexts: [context],
         });
         browser.contextMenus.create({
-            id: `tb-ctxt-add-${context}|destination=journal`,
+            id: `tb-ctxt-action|context=${context}&action=${EDispatchAction.ADD_TEXT}&destination=${EDestinationTiddler.JOURNAL}`,
             title: `Add ${title} to Journal Tiddler`,
             contexts: [context],
         });
@@ -136,7 +141,7 @@ class ContextMenu {
             contexts: [context],
         });
         browser.contextMenus.create({
-            id: `tb-ctxt-choose-tiddler|action=add-${context}`,
+            id: `tb-ctxt-action|context=${context}&action=${EDispatchAction.CHOOSE_CUSTOM_DESTINATION}`,
             title: `Add ${title} to Other Tiddler`,
             contexts: [context],
         });
@@ -149,7 +154,7 @@ class ContextMenu {
             for (let dest of destinationTiddlers) {
                 browser.contextMenus.create({
                     id:
-                        `tb-ctxt-add-${context}|destination=` +
+                        `tb-ctxt-action|context=${context}&action=${EDispatchAction.ADD_TEXT}&destination=${EDestinationTiddler.CUSTOM}&id=` +
                         dest.tiddler.tb_id,
                     title:
                         "Add ${title} to '" +

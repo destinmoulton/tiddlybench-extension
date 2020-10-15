@@ -1,7 +1,7 @@
 import { IDispatchOptions } from "../../types";
 import AbstractTiddler from "./AbstractTiddler";
 class CustomDestination extends AbstractTiddler {
-    async populateTitle(options: IDispatchOptions) {
+    async configure(options: IDispatchOptions) {
         if (!options.packet.cache_id) {
             throw new Error("id is not defined in the options");
         }
@@ -16,6 +16,7 @@ class CustomDestination extends AbstractTiddler {
         }
 
         this._tiddlerTitle = dest.tiddler.title;
+        return await this.populateTiddler();
     }
 }
 export default CustomDestination;

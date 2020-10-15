@@ -13,7 +13,13 @@ import dom from "../../lib/dom";
 import ContextMenuStorage from "../../lib/storage/ContextMenuStorage";
 import Messenger from "../../lib/Messenger";
 import TabsManager from "../../lib/TabsManager";
-import { ITiddlerItem } from "../../types";
+import { IDispatchOptions, ITiddlerItem } from "../../types";
+import {
+    EContextType,
+    EDestinationTiddler,
+    EDispatchAction,
+    EDispatchSource,
+} from "../../enums";
 export default class ListTiddlers extends AbstractTabSection {
     _contextMenuStorage: ContextMenuStorage;
     _messenger: Messenger;
@@ -95,9 +101,11 @@ export default class ListTiddlers extends AbstractTabSection {
                         await this._contextMenuStorage.addCustomDestination(
                             tiddler
                         );
-                        const message = {
-                            dispatch: "tiddler",
-                            type: "customdestination-from-choose-tiddler-tab",
+                        const message: IDispatchOptions = {
+                            source: EDispatchSource.TAB,
+                            action: EDispatchAction.ADD_TEXT,
+                            destination: EDestinationTiddler.CUSTOM,
+                            context: EContextType.SELECTION,
                             packet: {
                                 cache_id: cache_id,
                                 tiddler_id: tiddler.tb_id,
@@ -106,7 +114,7 @@ export default class ListTiddlers extends AbstractTabSection {
                         };
                         this._messenger.send(message, async (response) => {
                             if (response.ok) {
-                                await this._contextMenuStorage.removeSelectionCacheByID(
+                                await this._contextMenuStorage.removeCacheByID(
                                     cache_id
                                 );
                                 await this._tabsManager.closeThisTab();

@@ -13,13 +13,15 @@
 import API from "../lib/API";
 import ConfigStorage from "../lib/storage/ConfigStorage";
 import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
-import CustomDestination from "../lib/tiddlers/CustomDestination";
-import Journal from "../lib/tiddlers/Journal";
-import Inbox from "../lib/tiddlers/Inbox";
 import Messenger from "../lib/Messenger";
 import TabsManager from "../lib/TabsManager";
-import { ITabInfo } from "../types";
-import notify from "../lib/notify";
+import TiddlerDispatcher from "../lib/tiddlers/TiddlerDispatcher";
+import { IDispatchOptions } from "../types";
+import {
+    EDestinationTiddler,
+    EDispatchAction,
+    EDispatchSource,
+} from "../enums";
 
 class BackgroundActions {
     _api: API;
@@ -27,19 +29,22 @@ class BackgroundActions {
     _contextMenuStorage: ContextMenuStorage;
     _messenger: Messenger;
     _tabsManager: TabsManager;
+    _tiddlerDispatcher: TiddlerDispatcher;
 
     constructor(
         api: API,
         configStorage: ConfigStorage,
         contextMenuStorage: ContextMenuStorage,
         messenger: Messenger,
-        tabsManager: TabsManager
+        tabsManager: TabsManager,
+        tiddlerDispatcher: TiddlerDispatcher
     ) {
         this._api = api;
         this._configStorage = configStorage;
         this._contextMenuStorage = contextMenuStorage;
         this._messenger = messenger;
         this._tabsManager = tabsManager;
+        this._tiddlerDispatcher = tiddlerDispatcher;
     }
 
     /**
@@ -48,13 +53,15 @@ class BackgroundActions {
      * @param sender
      */
     async handleMessengerMessages(
-        data: any,
-        sender: browser.runtime.MessageSender
-    ): Promise<any> {
+        msg: IDispatchOptions
+        //sender: browser.runtime.MessageSender
+    ) {
+        return await this._tiddlerDispatcher.dispatchMessengerAction(msg);
+        /**
         if (data.dispatch === "tiddler") {
             switch (data.type) {
                 case "journal": {
-                    const res = await this.addTextToJournal(
+                    const res = await this._addText(
                         data.packet.text,
                         data.packet.blockType,
                         undefined
@@ -93,18 +100,24 @@ class BackgroundActions {
                 }
                 case "customdestination-from-choose-tiddler-tab": {
                     const cacheID = data.packet.cache_id;
-                    const cache = await this._contextMenuStorage.getSelectionCacheByID(
+                    const cache = await this._contextMenuStorage.getCacheByID(
                         cacheID
                     );
-                    if (cache && cache.selected_text) {
+                    if (
+                        cache &&
+                        cache.clickData.selectionText &&
+                        cache.tabData &&
+                        cache.tabData.title
+                    ) {
                         const blockType = await this._contextMenuStorage.getSelectedBlockType();
+
                         const tabInfo: ITabInfo = {
-                            title: cache.page_title,
-                            url: cache.page_url,
+                            title: cache.tabData.title,
+                            url: cache.tabData.url,
                         };
                         const res = await this.addTextToCustomDestination(
                             data.packet.tiddler_id,
-                            cache.selected_text,
+                            cache.clickData.selectionText,
                             blockType,
                             tabInfo
                         );
@@ -133,170 +146,111 @@ class BackgroundActions {
             sender,
             message: "No dispatch or type parameters provided in the data.",
         });
+        **/
     }
 
     async handleContextMenuClicks(
-        info: browser.contextMenus.OnClickData,
-        tab: browser.tabs.Tab | undefined
+        clickData: browser.contextMenus.OnClickData,
+        tabData: browser.tabs.Tab | undefined
     ) {
-        // The context menu id might be separated by |
-        const [menuPrefix, menuSuffix] = (<string>info.menuItemId).split("|");
-
-        switch (menuPrefix) {
-            case "tb-ctxt-configure": {
-                await this._tabsManager.openSettingsTab();
-                break;
-            }
-            case "tb-ctxt-change-blocktype": {
-                await this._contextMenuStorage.setSelectedBlockType(menuSuffix);
-                break;
-            }
-            case "tb-ctxt-choose-tiddler":
-                if (tab && info.pageUrl && tab.title && info.selectionText) {
-                    const cacheID = await this._contextMenuStorage.addSelectionCache(
-                        info.pageUrl,
-                        tab.title,
-                        info.selectionText
-                    );
-                    await this._tabsManager.openChooseTiddlerTab(cacheID);
-                }
-                break;
-            case "tb-ctxt-add-to-inbox":
-                try {
-                    if (
-                        tab &&
-                        info.selectionText &&
-                        info.selectionText !== ""
-                    ) {
-                        const blockType = await this._contextMenuStorage.getSelectedBlockType();
-                        const tabInfo: ITabInfo = {
-                            title: tab.title,
-                            url: tab.url,
-                        };
-                        await this.addTextToInbox(
-                            info.selectionText,
-                            blockType,
-                            tabInfo
-                        );
-                    }
-                } catch (err) {
-                    throw err;
-                }
-                break;
-            case "tb-ctxt-add-to-journal":
-                try {
-                    if (
-                        tab &&
-                        info.selectionText &&
-                        info.selectionText !== ""
-                    ) {
-                        const blockType = await this._contextMenuStorage.getSelectedBlockType();
-                        const tabInfo: ITabInfo = {
-                            title: tab.title,
-                            url: tab.url,
-                        };
-                        await this.addTextToJournal(
-                            info.selectionText,
-                            blockType,
-                            tabInfo
-                        );
-                    }
-                } catch (err) {
-                    throw err;
-                }
-                break;
-            case "tb-ctxt-add-to-destination": {
-                if (tab && info.selectionText && info.selectionText !== "") {
-                    const blockType = await this._contextMenuStorage.getSelectedBlockType();
-                    const tabInfo: ITabInfo = {
-                        title: tab.title,
-                        url: tab.url,
-                    };
-                    await this.addTextToCustomDestination(
-                        menuSuffix, // in this case the menuSuffix is the id of the tiddler
-                        info.selectionText,
-                        blockType,
-                        tabInfo
-                    );
-                }
-                break;
-            }
-        }
-    }
-
-    async addTextToJournal(
-        text: string,
-        blockType: string,
-        tab: ITabInfo | undefined
-    ) {
-        let tabInfo = undefined;
-
-        if (tab) {
-            tabInfo = {
-                title: tab.title,
-                url: tab.url,
-            };
-        }
-        const journal = new Journal(
-            this._api,
-            this._configStorage,
-            this._contextMenuStorage
+        const [command, params] = this._parseContextID(
+            <string>clickData.menuItemId
         );
-        await journal.initialize();
-        await journal.addText(text, blockType, tabInfo);
-        const response = await journal.submit();
-        const tiddlerTitle = journal.getTiddlerTitle();
-        if (response.ok) {
-            await notify(`Text has been added to ${tiddlerTitle}`);
-        }
-        return response;
-    }
-
-    async addTextToInbox(
-        text: string,
-        blockType: string,
-        tab: ITabInfo | undefined
-    ) {
-        const inbox = new Inbox(
-            this._api,
-            this._configStorage,
-            this._contextMenuStorage
-        );
-        await inbox.initialize();
-        await inbox.addText(text, blockType, tab);
-        const response = await inbox.submit();
-        const tiddlerTitle = inbox.getTiddlerTitle();
-        if (response.ok) {
-            await notify(`Text has been added to ${tiddlerTitle}`);
-        }
-        return response;
-    }
-
-    async addTextToCustomDestination(
-        id: string,
-        text: string,
-        blockType: string,
-        tab: ITabInfo | undefined
-    ) {
-        const destination = await this._contextMenuStorage.findDestinationById(
-            id
-        );
-        if (destination && destination.tiddler) {
-            const custom = new CustomDestination(
-                this._api,
-                this._configStorage,
-                this._contextMenuStorage
+        if (!params["action"]) {
+            throw new Error(
+                "action is not defined for this context menu option"
             );
-            await custom.setupCustomTiddler(destination.tiddler.title);
-            await custom.addText(text, blockType, tab);
-            const response = await custom.submit();
-            const tiddlerTitle = custom.getTiddlerTitle();
-            if (response.ok) {
-                await notify(`Text has been added to ${tiddlerTitle}`);
-            }
-            return response;
         }
-        return { ok: false };
+        switch (command) {
+            case "tb-ctxt-action": {
+                switch (params["action"]) {
+                    case EDispatchAction.CHANGE_BLOCKTYPE: {
+                        if (!params["blocktype"]) {
+                            throw new Error(
+                                "blocktype must be set if change-blocktype action is requested"
+                            );
+                        }
+                        await this._contextMenuStorage.setSelectedBlockType(
+                            params["blocktype"]
+                        );
+                        break;
+                    }
+                    case EDispatchAction.CHOOSE_CUSTOM_DESTINATION: {
+                        const cacheID = await this._contextMenuStorage.addCache(
+                            params["context"],
+                            clickData,
+                            tabData
+                        );
+                        await this._tabsManager.openChooseTiddlerTab(cacheID);
+                        break;
+                    }
+                    case EDispatchAction.ADD_TEXT: {
+                        const options: IDispatchOptions = {
+                            action: params["action"],
+                            context: params["context"],
+                            source: EDispatchSource.CONTEXTMENU,
+                            destination: params["destination"]
+                                ? params["destination"]
+                                : EDestinationTiddler.NONE,
+                            packet: {
+                                cache_id: params["cache_id"]
+                                    ? params["cache_id"]
+                                    : null,
+                            },
+                        };
+
+                        this._tiddlerDispatcher.dispatchContextAction(
+                            options,
+                            clickData,
+                            tabData
+                        );
+                    }
+                }
+                break;
+            }
+        }
+    }
+    /**
+     * The context menu `id` property
+     * is used to pass information to the context menu
+     * handler.
+     *
+     * This is encoded as: <command>|<param1>=<value1>&...<paramN>=<valueN>
+     */
+    _parseContextID(id: string): [string, any] {
+        // The context menu id might be separated by |
+        const [command, suffix] = id.split("|");
+
+        const params: any = {};
+        if (suffix) {
+            //Parameter/value combos are separated by `&`
+            const parts = suffix.split("&");
+            for (let part of parts) {
+                // Try breaking up the parameters
+                const [leftSide, rightSide] = part.split("=");
+                if (leftSide && rightSide) {
+                    params[leftSide] = rightSide;
+                } else {
+                    throw new Error(
+                        "BackgroundActions :: One of the suffix parameters is missing. " +
+                            leftSide
+                    );
+                }
+            }
+        }
+
+        if (!params["action"]) {
+            throw new Error(
+                "action is a required parameter in the context menu option id field."
+            );
+        }
+        if (!params["context"]) {
+            throw new Error(
+                "context is a required parameter in the context menu option id field."
+            );
+        }
+
+        return [command, params];
     }
 }
 export default BackgroundActions;

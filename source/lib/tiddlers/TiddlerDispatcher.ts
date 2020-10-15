@@ -7,6 +7,7 @@ import Inbox from "./Inbox";
 import {
     EContextType,
     EDestinationTiddler,
+    EDispatchAction,
     EDispatchSource,
 } from "../../enums";
 import notify from "../../lib/notify";
@@ -46,6 +47,7 @@ class TiddlerDispatcher {
         let title: string = "";
         switch (msg.source) {
             case EDispatchSource.QUICKADD:
+                console.log("quickadd message being processed");
                 // Quick Add dispatcher
                 if (!msg.packet.text) {
                     throw new Error(`The text in msg.packet.text is not set`);
@@ -53,13 +55,12 @@ class TiddlerDispatcher {
                 if (!msg.packet.blockType) {
                     throw new Error(`The text in msg.packet.text is not set`);
                 }
-                tiddler.populateTitle(msg);
+                await tiddler.configure(msg);
                 tiddler.addText(
                     msg.packet.text,
                     msg.packet.blockType,
                     undefined
                 );
-                res = await tiddler.submit();
                 title = tiddler.getTiddlerTitle();
 
                 break;
@@ -88,18 +89,19 @@ class TiddlerDispatcher {
                         title: cache.tabData.title,
                         url: cache.tabData.url,
                     };
-                    tiddler.populateTitle(msg);
-                    tiddler.addText(
+                    await tiddler.configure(msg);
+                    await tiddler.addText(
                         cache.clickData.selectionText,
                         blockType,
                         tabInfo
                     );
                     let title = tiddler.getTiddlerTitle();
                     title = title.substring(0, 25);
-                    res = tiddler.submit();
                 }
                 break;
         }
+
+        res = await tiddler.submit();
         if (res.ok) {
             return Promise.resolve({
                 ok: true,
@@ -118,6 +120,7 @@ class TiddlerDispatcher {
         clickData: browser.contextMenus.OnClickData | undefined,
         tabData: browser.tabs.Tab | undefined
     ) {
+        console.log("dispatching context action", options, clickData, tabData);
         let tabInfo = undefined;
         if (tabData) {
             // Yes this is weird to transform the data
@@ -133,27 +136,34 @@ class TiddlerDispatcher {
                 `${options.destination} is not an allowed destination.`
             );
         }
+        if (options.action === EDispatchAction.ADD_TEXT) {
+            if (options.destination !== EDestinationTiddler.NONE) {
+                const tiddler = new DESTINATIONS[options.destination](
+                    this._api,
+                    this._configStorage,
+                    this._contextMenuStorage
+                );
+                await tiddler.configure(options);
 
-        if (options.destination !== EDestinationTiddler.NONE) {
-            const tiddler = new DESTINATIONS[options.destination](
-                this._api,
-                this._configStorage,
-                this._contextMenuStorage
-            );
-            tiddler.populateTitle(options);
+                if (options.context === EContextType.SELECTION && clickData) {
+                    if (
+                        clickData.selectionText &&
+                        clickData.selectionText !== ""
+                    ) {
+                        const blockType = await this._contextMenuStorage.getSelectedBlockType();
+                        await tiddler.addText(
+                            clickData.selectionText,
+                            blockType,
+                            tabInfo
+                        );
 
-            if (options.context === EContextType.SELECTION && clickData) {
-                if (clickData.selectionText && clickData.selectionText !== "") {
-                    const blockType = await this._contextMenuStorage.getSelectedBlockType();
-                    tiddler.addText(
-                        clickData.selectionText,
-                        blockType,
-                        tabInfo
-                    );
-                    const response = await tiddler.submit();
-                    if (response.ok) {
-                        const tiddlerTitle = tiddler.getTiddlerTitle();
-                        await notify(`Text has been added to ${tiddlerTitle}`);
+                        const response = await tiddler.submit();
+                        if (response.ok) {
+                            const tiddlerTitle = tiddler.getTiddlerTitle();
+                            await notify(
+                                `Text has been added to ${tiddlerTitle}`
+                            );
+                        }
                     }
                 }
             }

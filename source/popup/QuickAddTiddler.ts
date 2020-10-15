@@ -3,7 +3,15 @@ import PopupTemplate from "./PopupTemplate";
 import Messenger from "../lib/Messenger";
 import dom from "../lib/dom";
 import { BLOCK_TYPES } from "../constants";
-import { EBlockType, EConfigKey } from "../enums";
+import {
+    EBlockType,
+    EConfigKey,
+    EContextType,
+    EDestinationTiddler,
+    EDispatchAction,
+    EDispatchSource,
+} from "../enums";
+import { IDispatchOptions } from "../types";
 class QuickAddTiddler extends PopupTemplate {
     _configStorage: ConfigStorage;
     _messenger: Messenger;
@@ -77,15 +85,18 @@ class QuickAddTiddler extends PopupTemplate {
             try {
                 const blockType = this.$blocktype.value;
                 const text = this.$textarea.value;
-                const type = this.$destination.value;
-                this._messenger.send(
-                    {
-                        dispatch: "tiddler",
-                        type,
-                        packet: { text, blockType },
+                const dest = this.$destination.value;
+                const msg: IDispatchOptions = {
+                    source: EDispatchSource.QUICKADD,
+                    action: EDispatchAction.ADD_TEXT,
+                    destination: <EDestinationTiddler>dest,
+                    context: EContextType.SELECTION,
+                    packet: {
+                        text,
+                        blockType,
                     },
-                    this.handleSubmitResponse.bind(this)
-                );
+                };
+                this._messenger.send(msg);
             } catch (err) {
                 console.error(err.message);
             }

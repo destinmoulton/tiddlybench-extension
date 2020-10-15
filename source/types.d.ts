@@ -11,6 +11,10 @@ import {
     EContextType,
     EDestinations,
     EDestinationTiddler,
+    EDispatchAction,
+    EDispatchSource,
+    EMessengerAction,
+    EMessengerSource,
 } from "./enums";
 
 // The tiddler that is returned by get calls
@@ -126,10 +130,17 @@ export type TContextTypes = {
     [key in EContextType]: string;
 };
 
+export interface IDispatchPacket {
+    text?: string;
+    blockType?: string;
+    tiddler_id?: string;
+    tiddler_title?: string;
+    cache_id?: string;
+}
 export interface IDispatchOptions {
-    action: string;
+    action: EDispatchAction;
     destination: EDestinationTiddler;
     context: EContextType;
-    id?: string;
-    blocktype?: string;
+    source: EDispatchSource;
+    packet: IDispatchPacket;
 }

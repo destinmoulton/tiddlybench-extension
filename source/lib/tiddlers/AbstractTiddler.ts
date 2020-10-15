@@ -10,7 +10,7 @@ abstract class AbstractTiddler {
     protected _contextMenuStorage: ContextMenuStorage;
     protected _tiddlerTitle: string;
     protected _tiddler: IFullTiddler;
-    abstract async populateTitle(...args: any): Promise<void>;
+    abstract async configure(...args: any): Promise<void>;
 
     constructor(
         api: API,
@@ -44,6 +44,11 @@ abstract class AbstractTiddler {
         blockType: string,
         tabInfo: ITabInfo | undefined
     ) {
+        if (this.getTiddlerTitle() === "") {
+            throw new Error(
+                "No tiddler title has been set. Make sure the populateTitle and populateTiddler are called."
+            );
+        }
         const [prefix, suffix] = await this.getBlockTypePrefixSuffix(blockType);
 
         let newText =
@@ -58,7 +63,7 @@ abstract class AbstractTiddler {
 
     /**
      * Check the API for the tiddler.
-     * If it doesn't exist, crea
+     * If it doesn't exist, create it
      */
     protected async populateTiddler(): Promise<void> {
         let res: API_Result;
@@ -86,6 +91,8 @@ abstract class AbstractTiddler {
      */
     async submit() {
         try {
+            console.log("submit() :: ", this._tiddler);
+
             return await this._api.putTiddler(this._tiddler);
         } catch (err) {
             throw err;
