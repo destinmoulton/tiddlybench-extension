@@ -40,6 +40,8 @@ export default class ListTiddlers extends AbstractTabSection {
     }
 
     async display() {
+        console.log("running display() for ListTiddlers");
+
         this._loadingAnimation("Getting Tiddlers...");
         if (!this._api.isServerUp) {
             return;
@@ -77,12 +79,22 @@ export default class ListTiddlers extends AbstractTabSection {
 
         this._setupFilterInput();
         this._setupTiddlerClickHandler();
+        this._setupAddTiddlerClickHandler();
     }
 
     _getTiddlerById(tiddlerId: string): ITiddlerItem | undefined {
         return this._tiddlers.find(
             (el: ITiddlerItem) => el.tb_id === tiddlerId
         );
+    }
+
+    _setupAddTiddlerClickHandler() {
+        const $button = <HTMLElement>dom("#tb-add-tiddler-button");
+        if ($button) {
+            $button.addEventListener("click", () => {
+                this._tabsManager.openTiddlerForm(false);
+            });
+        }
     }
 
     _setupTiddlerClickHandler() {

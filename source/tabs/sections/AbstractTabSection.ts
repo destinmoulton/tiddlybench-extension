@@ -33,8 +33,12 @@ abstract class AbstractTabSection {
     }
 
     _render(html: string) {
+        console.log("About to render", html);
+
         if (this._$root) {
             this._$root.innerHTML = html;
+        } else {
+            throw new Error("root element is not defined");
         }
     }
 

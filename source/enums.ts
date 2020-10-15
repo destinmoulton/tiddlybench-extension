@@ -5,6 +5,7 @@ export enum EExtensionURL {
     Popup,
     Settings,
     ChooseTiddler,
+    TiddlerForm,
 }
 
 /**

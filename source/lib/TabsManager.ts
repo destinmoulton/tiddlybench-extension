@@ -13,12 +13,22 @@ const EXTENSION_URL = {
     [EExtensionURL.Popup]: browser.runtime.getURL("popup/popup.html"),
     [EExtensionURL.Settings]: "options/options.html",
     [EExtensionURL.ChooseTiddler]: "tabs/tabs.html#section=choose_tiddler",
+    [EExtensionURL.TiddlerForm]: "tabs/tabs.html#section=tiddler_form",
 };
 export default class TabsManager {
     async openChooseTiddlerTab(cacheID: string) {
         const url =
             EXTENSION_URL[EExtensionURL.ChooseTiddler] + "&cache_id=" + cacheID;
         return await this.openTab(url);
+    }
+    async openTiddlerForm(newTab: boolean = false) {
+        const url = EXTENSION_URL[EExtensionURL.TiddlerForm];
+        if (newTab) {
+            return await this.openTab(url);
+        } else {
+            window.location.href = "/" + url;
+            return true;
+        }
     }
     async openSettingsTab() {
         return await this.openTab(EXTENSION_URL[EExtensionURL.Settings]);
