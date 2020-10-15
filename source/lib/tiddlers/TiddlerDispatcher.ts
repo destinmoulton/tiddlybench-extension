@@ -56,7 +56,7 @@ class TiddlerDispatcher {
                     throw new Error(`The text in msg.packet.text is not set`);
                 }
                 await tiddler.configure(msg);
-                tiddler.addText(
+                await tiddler.addText(
                     msg.packet.text,
                     msg.packet.blockType,
                     undefined
