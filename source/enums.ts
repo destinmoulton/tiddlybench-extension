@@ -59,7 +59,7 @@ export enum EContextType {
     LINK = "link",
     PAGE = "page",
     SELECTION = "selection",
-    TAB = "tab",
+    TAB = "tab", // This is when you click on a tab
 }
 
 export enum EDestinationTiddler {
@@ -67,4 +67,16 @@ export enum EDestinationTiddler {
     INBOX = "inbox",
     JOURNAL = "journal",
     CUSTOM = "custom",
+}
+
+export enum EDispatchAction {
+    ADD_TEXT = "add_text",
+    CHANGE_BLOCKTYPE = "change_blocktype",
+    CHOOSE_CUSTOM_DESTINATION = "choose_custom_destination",
+}
+
+export enum EDispatchSource {
+    QUICKADD = "messenger",
+    TAB = "tab",
+    CONTEXTMENU = "contextmenu",
 }
