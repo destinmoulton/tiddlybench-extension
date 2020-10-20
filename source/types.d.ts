@@ -135,6 +135,7 @@ export interface IDispatchPacket {
     blockType?: string;
     tiddler_id?: string;
     tiddler_title?: string;
+    tiddler_tags?: string;
     cache_id?: string;
 }
 export interface IDispatchOptions {
