@@ -184,7 +184,7 @@ class BackgroundActions {
                         await this._tabsManager.openChooseTiddlerTab(cacheID);
                         break;
                     }
-                    case EDispatchAction.ADD_TEXT: {
+                    case EDispatchAction.ADD_TEXT_TO_TIDDLER: {
                         const options: IDispatchOptions = {
                             action: params["action"],
                             context: params["context"],

@@ -88,7 +88,7 @@ class QuickAddTiddler extends PopupTemplate {
                 const dest = this.$destination.value;
                 const msg: IDispatchOptions = {
                     source: EDispatchSource.QUICKADD,
-                    action: EDispatchAction.ADD_TEXT,
+                    action: EDispatchAction.ADD_TEXT_TO_TIDDLER,
                     destination: <EDestinationTiddler>dest,
                     context: EContextType.SELECTION,
                     packet: {

@@ -92,7 +92,8 @@ export default class ListTiddlers extends AbstractTabSection {
         const $button = <HTMLElement>dom("#tb-add-tiddler-button");
         if ($button) {
             $button.addEventListener("click", () => {
-                this._tabsManager.openTiddlerForm(false);
+                const params = this._getHashParams();
+                this._tabsManager.openTiddlerForm(<string>params.get("cache_id"), false);
             });
         }
     }
@@ -115,7 +116,7 @@ export default class ListTiddlers extends AbstractTabSection {
                         );
                         const message: IDispatchOptions = {
                             source: EDispatchSource.TAB,
-                            action: EDispatchAction.ADD_TEXT,
+                            action: EDispatchAction.ADD_TEXT_TO_TIDDLER,
                             destination: EDestinationTiddler.CUSTOM,
                             context: EContextType.SELECTION,
                             packet: {

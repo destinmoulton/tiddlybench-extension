@@ -25,6 +25,7 @@ abstract class AbstractTiddler {
         this._tiddler = {
             title: "",
             text: "",
+            tags: ""
         };
     }
 
@@ -90,6 +91,9 @@ abstract class AbstractTiddler {
      * Send the Tiddler to the server
      */
     async submit() {
+        if(this._tiddlerTitle===""){
+            throw new Error("AbstractTiddler :: submit() - The _tiddlerTitle has not been set.");
+        }
         try {
             console.log("submit() :: ", this._tiddler);
 
@@ -114,8 +118,16 @@ abstract class AbstractTiddler {
         return this._tiddlerTitle;
     }
 
+    setTiddlerTitle(tiddlerTitle: string){
+        this._tiddlerTitle = recoder({ text: tiddlerTitle });
+    }
+
     setTiddlerText(text: string) {
         this._tiddler.text = text;
+    }
+
+    setTiddlerTags(tags: string){
+        this._tiddler.tags = tags;
     }
 
     jsonify() {}

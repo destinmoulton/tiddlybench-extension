@@ -71,7 +71,8 @@ export enum EDestinationTiddler {
 }
 
 export enum EDispatchAction {
-    ADD_TEXT = "add_text",
+    ADD_TEXT_TO_TIDDLER = "add_text_to_tiddler",
+    ADD_TIDDLER_WITH_TEXT = "add_tiddler_with_text",
     CHANGE_BLOCKTYPE = "change_blocktype",
     CHOOSE_CUSTOM_DESTINATION = "choose_custom_destination",
 }

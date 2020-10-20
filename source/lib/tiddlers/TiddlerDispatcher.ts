@@ -46,7 +46,7 @@ class TiddlerDispatcher {
         let res: any = null;
         let title: string = "";
         switch (msg.source) {
-            case EDispatchSource.QUICKADD:
+            case EDispatchSource.QUICKADD:{
                 console.log("quickadd message being processed");
                 // Quick Add dispatcher
                 if (!msg.packet.text) {
@@ -55,7 +55,7 @@ class TiddlerDispatcher {
                 if (!msg.packet.blockType) {
                     throw new Error(`The text in msg.packet.text is not set`);
                 }
-                await tiddler.configure(msg);
+                await tiddler.configure();
                 await tiddler.addText(
                     msg.packet.text,
                     msg.packet.blockType,
@@ -64,8 +64,8 @@ class TiddlerDispatcher {
                 title = tiddler.getTiddlerTitle();
 
                 break;
-            case EDispatchSource.TAB:
-                console.log("Dispatching TAB messenger event");
+            }
+            case EDispatchSource.TAB:{
                 // Dispatched when a user selects a tiddler from the
                 // TiddlerList component in a tab
 
@@ -80,26 +80,57 @@ class TiddlerDispatcher {
                 const cache = await this._contextMenuStorage.getCacheByID(
                     cacheID
                 );
-                if (
-                    cache &&
-                    cache.clickData.selectionText &&
-                    cache.tabData &&
-                    cache.tabData.title
-                ) {
-                    const tabInfo: ITabInfo = {
-                        title: cache.tabData.title,
-                        url: cache.tabData.url,
-                    };
-                    await tiddler.configure(msg);
-                    await tiddler.addText(
-                        cache.clickData.selectionText,
-                        blockType,
-                        tabInfo
-                    );
-                    let title = tiddler.getTiddlerTitle();
-                    title = title.substring(0, 25);
+
+                if (!cache || !cache.clickData ||
+                    !cache.clickData.selectionText || !cache.tabData || 
+                    !cache.tabData.title || !cache.tabData.url){
+                    throw new Error("tabData or clickData is not present in the message object");
                 }
+
+                const tabInfo: ITabInfo = {
+                    title: cache.tabData.title,
+                    url: cache.tabData.url,
+                };
+
+                switch(msg.action){
+                    case EDispatchAction.ADD_TEXT_TO_TIDDLER:{
+                        // A Tiddler has been selected from the TiddlerList
+                        if(!msg.packet.tiddler_id){
+                            throw new Error("TiddlerDispatcher :: the msg.packet.tiddler_id is not set.")
+                        }
+                        const dest = await this._contextMenuStorage.getCustomDestinationByID(
+                            msg.packet.tiddler_id
+                        );
+
+                        if(!dest){
+                            throw new Error("TiddlerDispatcher :: The destination was not found in the context menu storage.")
+                        }
+                        tiddler.setTiddlerTitle(dest.tiddler.title);
+                        break;
+                    }
+                    case EDispatchAction.ADD_TIDDLER_WITH_TEXT:{
+                        // The TiddlerForm Tab has been used to create a new tab
+                        if(!msg.packet.tiddler_title || !msg.packet.tiddler_tags){
+                            throw new Error("TiddlerDispatcher :: You must include the tiddler_title and tiddler_tags in the msg.packet.")
+                        }
+                        tiddler.setTiddlerTitle(msg.packet.tiddler_title)
+                        tiddler.setTiddlerTags(msg.packet.tiddler_tags);
+
+                        break;
+                    }
+                }
+                    
+                await tiddler.configure();
+                await tiddler.addText(
+                    cache.clickData.selectionText,
+                    blockType,
+                    tabInfo
+                );
+                let title = tiddler.getTiddlerTitle();
+                title = title.substring(0, 25);
+
                 break;
+            }
         }
 
         res = await tiddler.submit();
@@ -136,14 +167,14 @@ class TiddlerDispatcher {
                 `${options.destination} is not an allowed destination.`
             );
         }
-        if (options.action === EDispatchAction.ADD_TEXT) {
+        if (options.action === EDispatchAction.ADD_TEXT_TO_TIDDLER) {
             if (options.destination !== EDestinationTiddler.NONE) {
                 const tiddler = new DESTINATIONS[options.destination](
                     this._api,
                     this._configStorage,
                     this._contextMenuStorage
                 );
-                await tiddler.configure(options);
+                await tiddler.configure();
 
                 if (options.context === EContextType.SELECTION && clickData) {
                     if (
