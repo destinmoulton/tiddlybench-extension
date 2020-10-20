@@ -21,12 +21,12 @@ export default class TabsManager {
             EXTENSION_URL[EExtensionURL.ChooseTiddler] + "&cache_id=" + cacheID;
         return await this.openTab(url);
     }
-    async openTiddlerForm(newTab: boolean = false) {
+    async openTiddlerForm(contextCacheID: string, newTab: boolean = false) {
         const url = EXTENSION_URL[EExtensionURL.TiddlerForm];
         if (newTab) {
             return await this.openTab(url);
         } else {
-            window.location.href = "/" + url;
+            window.location.href = "/" + url + "&cache_id=" + contextCacheID;
             return true;
         }
     }
