@@ -177,15 +177,19 @@ class TiddlerDispatcher {
                     this._contextMenuStorage
                 );
 
-                if(!options.packet.tiddler_id){
-                    throw new Error("TiddlerDispatcher :: tiddler_id must be included in the options.packet")
-                }
-                const customDestination = await this._contextMenuStorage.getCustomDestinationByID(options.packet.tiddler_id);
-                if(!customDestination){
-                    throw new Error("TiddlerDispatcher :: the customDestination could not be found in the context menu list of possible custom destinations.");
+                if(options.destination === EDestinationTiddler.CUSTOM){
+                    // Set the title for the custom destination tiddler
+                    if(!options.packet.tiddler_id){
+                        throw new Error("TiddlerDispatcher :: tiddler_id must be included in the options.packet")
+                    }
+                    const customDestination = await this._contextMenuStorage.getCustomDestinationByID(options.packet.tiddler_id);
+                    if(!customDestination){
+                        throw new Error("TiddlerDispatcher :: the customDestination could not be found in the context menu list of possible custom destinations.");
+                    }
+
+                    tiddler.setTiddlerTitle(customDestination.tiddler.title);
                 }
 
-                tiddler.setTiddlerTitle(customDestination.tiddler.title);
                 await tiddler.configure();
 
                 if (options.context === EContextType.SELECTION && clickData) {
