@@ -25,9 +25,19 @@ ul.tb-popup-main-menu {
         cursor: pointer;
         background-color: white;
         font-weight: bold;
+        line-height: 1.7em;
 
         &:hover {
             background-color: #f2f7ff;
+        }
+
+        span.jam {
+            font-size: 1.7em;
+            vertical-align: middle;
+        }
+
+        span.menu-item-text {
+            vertical-align: middle;
         }
     }
 }
