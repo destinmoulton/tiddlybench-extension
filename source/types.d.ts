@@ -26,8 +26,6 @@ export interface ITiddlerItem {
     revision: number;
     title: string;
     type: string;
-    tb_filterable_title?: string; // This is added occasionally to filter the tiddlers
-    tb_id?: string; // This is added to identify the tiddlers sometimes
 }
 
 // A full tiddler
@@ -74,8 +72,12 @@ export interface IOptions {
     is_context_menu_enabled: boolean;
 }
 
+export interface ICustomDestinationTiddler {
+    title: string;
+    tb_id: string; // md5 hash of the title
+}
 export interface ICustomDestination {
-    tiddler: ITiddlerItem;
+    tiddler: ICustomDestinationTiddler;
     last_addition_time: number;
 }
 

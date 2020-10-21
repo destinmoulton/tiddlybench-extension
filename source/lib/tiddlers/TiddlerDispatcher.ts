@@ -1,3 +1,5 @@
+import {truncate} from "lodash";
+
 import API from "../API";
 import ConfigStorage from "../storage/ConfigStorage";
 import ContextMenuStorage from "../storage/ContextMenuStorage";
@@ -127,7 +129,7 @@ class TiddlerDispatcher {
                     tabInfo
                 );
                 let title = tiddler.getTiddlerTitle();
-                title = title.substring(0, 25);
+                title = truncate(title,{length:20});
 
                 break;
             }
@@ -137,12 +139,12 @@ class TiddlerDispatcher {
         if (res.ok) {
             return Promise.resolve({
                 ok: true,
-                message: `Added text to ${title}.`,
+                message: `Added text to ${title} tiddler.`,
             });
         } else {
             return Promise.reject({
                 ok: false,
-                message: "Failed to add the text to ${title}.",
+                message: "Failed to add the text to ${title} tiddler.",
             });
         }
     }
@@ -174,6 +176,16 @@ class TiddlerDispatcher {
                     this._configStorage,
                     this._contextMenuStorage
                 );
+
+                if(!options.packet.tiddler_id){
+                    throw new Error("TiddlerDispatcher :: tiddler_id must be included in the options.packet")
+                }
+                const customDestination = await this._contextMenuStorage.getCustomDestinationByID(options.packet.tiddler_id);
+                if(!customDestination){
+                    throw new Error("TiddlerDispatcher :: the customDestination could not be found in the context menu list of possible custom destinations.");
+                }
+
+                tiddler.setTiddlerTitle(customDestination.tiddler.title);
                 await tiddler.configure();
 
                 if (options.context === EContextType.SELECTION && clickData) {

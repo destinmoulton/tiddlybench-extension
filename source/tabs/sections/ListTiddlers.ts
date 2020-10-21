@@ -13,18 +13,28 @@ import dom from "../../lib/dom";
 import ContextMenuStorage from "../../lib/storage/ContextMenuStorage";
 import Messenger from "../../lib/Messenger";
 import TabsManager from "../../lib/TabsManager";
-import { IDispatchOptions, ITiddlerItem } from "../../types";
+import { IDispatchOptions} from "../../types";
 import {
     EContextType,
     EDestinationTiddler,
     EDispatchAction,
     EDispatchSource,
 } from "../../enums";
+import notify from "../../lib/notify";
+
+// Custom interface for each tiddler item
+interface IListTiddlerItem {
+    title: string,
+    tb_id: string;
+
+    tb_filterable_title: string;
+}
+
 export default class ListTiddlers extends AbstractTabSection {
     _contextMenuStorage: ContextMenuStorage;
     _messenger: Messenger;
     _tabsManager: TabsManager;
-    _tiddlers: ITiddlerItem[];
+    _listTiddlers: IListTiddlerItem[];
 
     constructor(
         api: API,
@@ -36,7 +46,7 @@ export default class ListTiddlers extends AbstractTabSection {
         this._contextMenuStorage = contextMenuStorage;
         this._messenger = messenger;
         this._tabsManager = tabsManager;
-        this._tiddlers = [];
+        this._listTiddlers = [];
     }
 
     async display() {
@@ -50,6 +60,7 @@ export default class ListTiddlers extends AbstractTabSection {
         const liTmpl = "tmpl-list-tiddlers-item";
 
         const listItems = [];
+        let listOfTiddlers: IListTiddlerItem[] = [];
         for (let i = 0; i < tiddlers.length; i++) {
             const tiddler = tiddlers[i];
 
@@ -59,8 +70,11 @@ export default class ListTiddlers extends AbstractTabSection {
 
             // Build the filterable string
             let filterable = this._convertToFilterable(tiddler["title"]);
-            tiddlers[i]["tb_id"] = tb_id;
-            tiddlers[i]["tb_filterable_title"] = filterable;
+            listOfTiddlers.push({
+                title: tiddler.title,
+                tb_id,
+                tb_filterable_title: filterable
+            })
 
             // Compile the template
             const cmp = this._compile(liTmpl, {
@@ -74,7 +88,7 @@ export default class ListTiddlers extends AbstractTabSection {
             tiddlers: listItems.join(""),
         });
 
-        this._tiddlers = tiddlers;
+        this._listTiddlers = listOfTiddlers;
         this._render(compiled);
 
         this._setupFilterInput();
@@ -82,9 +96,9 @@ export default class ListTiddlers extends AbstractTabSection {
         this._setupAddTiddlerClickHandler();
     }
 
-    _getTiddlerById(tiddlerId: string): ITiddlerItem | undefined {
-        return this._tiddlers.find(
-            (el: ITiddlerItem) => el.tb_id === tiddlerId
+    _getTiddlerById(tiddlerId: string): IListTiddlerItem | undefined {
+        return this._listTiddlers.find(
+            (el: IListTiddlerItem) => el.tb_id === tiddlerId
         );
     }
 
@@ -112,7 +126,7 @@ export default class ListTiddlers extends AbstractTabSection {
                     const tiddler = this._getTiddlerById(id);
                     if (tiddler) {
                         await this._contextMenuStorage.addCustomDestination(
-                            tiddler
+                            {title: tiddler.title, tb_id: tiddler.tb_id}
                         );
                         const message: IDispatchOptions = {
                             source: EDispatchSource.TAB,
@@ -130,6 +144,7 @@ export default class ListTiddlers extends AbstractTabSection {
                                 await this._contextMenuStorage.removeCacheByID(
                                     cache_id
                                 );
+                                notify(response.message);
                                 await this._tabsManager.closeThisTab();
                             }
                         });
@@ -166,7 +181,7 @@ export default class ListTiddlers extends AbstractTabSection {
             return;
         }
 
-        for (let tiddler of this._tiddlers) {
+        for (let tiddler of this._listTiddlers) {
             if (tiddler.tb_filterable_title) {
                 const $item = <HTMLElement>(
                     dom("#tb-tabs-list-tiddler-" + tiddler.tb_id)

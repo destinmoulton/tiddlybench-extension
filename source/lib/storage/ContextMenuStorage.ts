@@ -17,8 +17,8 @@ import ConfigStorage from "./ConfigStorage";
 import { EBlockType, EContextMenuStorageKeys, EConfigKey } from "../../enums";
 import {
     ICustomDestination,
+    ICustomDestinationTiddler,
     IContextMenuCache,
-    ITiddlerItem,
 } from "../../types";
 //import { v4 } from "uuid";
 
@@ -101,7 +101,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
         return await this.set(EContextMenuStorageKeys.CACHE, []);
     }
 
-    async addCustomDestination(tiddler: ITiddlerItem) {
+    async addCustomDestination(tiddler: ICustomDestinationTiddler) {
         const destination: ICustomDestination = {
             tiddler,
             last_addition_time: dayjs().unix(),

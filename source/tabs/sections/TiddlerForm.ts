@@ -3,6 +3,7 @@
  *
  *
  */
+import md5 from "md5";
 import AbstractTabSection from "./AbstractTabSection";
 import API from "../../lib/API";
 import dom from "../../lib/dom";
@@ -10,6 +11,7 @@ import ContextMenuStorage from "../../lib/storage/ContextMenuStorage";
 import Messenger from "../../lib/Messenger";
 import TabsManager from "../../lib/TabsManager";
 import { IDispatchOptions } from "../../types";
+import notify from "../../lib/notify";
 
 import {
     EContextType,
@@ -91,6 +93,7 @@ export default class TiddlerForm extends AbstractTabSection {
             } else {
                 const params = this._getHashParams();
                 const cache_id = <string>params.get("cache_id");
+                const newTiddlerTitle = $tiddlerTitle.value;
                 const message: IDispatchOptions = {
                     source: EDispatchSource.TAB,
                     action: EDispatchAction.ADD_TIDDLER_WITH_TEXT,
@@ -98,7 +101,7 @@ export default class TiddlerForm extends AbstractTabSection {
                     context: EContextType.SELECTION,
                     packet: {
                         cache_id,
-                        tiddler_title: $tiddlerTitle.value,
+                        tiddler_title: newTiddlerTitle,
                         tiddler_tags: $tiddlerTags.value
                     },
                 };
@@ -107,6 +110,12 @@ export default class TiddlerForm extends AbstractTabSection {
                         await this._contextMenuStorage.removeCacheByID(
                             cache_id
                         );
+
+                        // Add the new tiddler to the context menu
+                        await this._contextMenuStorage.addCustomDestination(
+                            {title: newTiddlerTitle, tb_id: md5(newTiddlerTitle)}
+                        );
+                        notify(response.message);
                         await this._tabsManager.closeThisTab();
                     }
                 });
