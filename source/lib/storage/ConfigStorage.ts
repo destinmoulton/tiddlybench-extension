@@ -19,6 +19,7 @@ class ConfigStorage extends AbstractStorage<TSettings> {
             [EConfigKey.TIDDLER_JOURNAL_TITLE]:
                 "Journal {[MMM]} {[DD]}, {[YYYY]}",
             [EConfigKey.TIDDLER_JOURNAL_TAGS]: "journal",
+            [EConfigKey.BOOKMARK_TIDDLER_TITLE]: "Bookmarks",
             [EConfigKey.BOOKMARK_PREFIX]: "{[BR]}{[BR]}",
             [EConfigKey.BOOKMARK_MARKDOWN]: "[[{[TITLE]}|{[URL]}]]",
             [EConfigKey.BOOKMARK_SUFFIX]: "{[BR]}{[BR]}",

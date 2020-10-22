@@ -38,6 +38,7 @@ export enum EConfigKey {
     TIDDLER_INBOX_TITLE = "tiddler_inbox_title",
     TIDDLER_JOURNAL_TITLE = "tiddler_journal_title",
     TIDDLER_JOURNAL_TAGS = "tiddler_journal_tags",
+    BOOKMARK_TIDDLER_TITLE = "bookmark_tiddler_title",
     BOOKMARK_PREFIX = "bookmark_prefix",
     BOOKMARK_MARKDOWN = "bookmark_markdown",
     BOOKMARK_SUFFIX = "bookmark_suffix",
@@ -65,6 +66,7 @@ export enum EContextType {
 
 export enum EDestinationTiddler {
     NONE = "",
+    BOOKMARKS = "bookmarks",
     INBOX = "inbox",
     JOURNAL = "journal",
     CUSTOM = "custom",

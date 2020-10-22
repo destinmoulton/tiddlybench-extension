@@ -3,6 +3,7 @@ import {truncate} from "lodash";
 import API from "../API";
 import ConfigStorage from "../storage/ConfigStorage";
 import ContextMenuStorage from "../storage/ContextMenuStorage";
+import Bookmarks from "./Bookmarks";
 import CustomDestination from "./CustomDestination";
 import Journal from "./Journal";
 import Inbox from "./Inbox";
@@ -17,6 +18,7 @@ import { IDispatchOptions, ITabInfo } from "../../types";
 
 const DESTINATIONS = {
     [EDestinationTiddler.NONE]: null,
+    [EDestinationTiddler.BOOKMARKS]: Bookmarks,
     [EDestinationTiddler.INBOX]: Inbox,
     [EDestinationTiddler.JOURNAL]: Journal,
     [EDestinationTiddler.CUSTOM]: CustomDestination,
