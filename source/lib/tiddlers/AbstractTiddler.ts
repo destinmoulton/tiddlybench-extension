@@ -3,6 +3,7 @@ import API from "../API";
 import recoder from "../formatting/recoder";
 import { API_Result, IFullTiddler, ITabInfo } from "../../types";
 import ContextMenuStorage from "../storage/ContextMenuStorage";
+import { EConfigKey } from "../../enums";
 
 abstract class AbstractTiddler {
     protected _api: API;
@@ -51,6 +52,34 @@ abstract class AbstractTiddler {
             );
         }
         const [prefix, suffix] = await this.getBlockTypePrefixSuffix(blockType);
+
+        let newText =
+            recoder({ text: prefix, tabInfo }) +
+            recoder({ text, tabInfo }) +
+            recoder({ text: suffix, tabInfo });
+
+        let tiddlerText = this.getTiddlerText();
+        tiddlerText = tiddlerText + newText;
+        this.setTiddlerText(tiddlerText);
+    }
+
+    async addBookmark(
+        tabInfo: ITabInfo | undefined
+    ) {
+        if (this.getTiddlerTitle() === "") {
+            throw new Error(
+                "No tiddler title has been set. Make sure the populateTitle and populateTiddler are called."
+            );
+        }
+        const prefix = await this._configStorage.get(
+            EConfigKey.BOOKMARK_PREFIX
+        );
+        const text = await this._configStorage.get(
+            EConfigKey.BOOKMARK_MARKDOWN
+        );
+        const suffix = await this._configStorage.get(
+            EConfigKey.BOOKMARK_SUFFIX
+        );
 
         let newText =
             recoder({ text: prefix, tabInfo }) +

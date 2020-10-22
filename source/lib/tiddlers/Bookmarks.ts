@@ -8,5 +8,6 @@ class Bookmarks extends AbstractTiddler {
         this.setTiddlerTitle(title);
         return await this.populateTiddler();
     }
+
 }
 export default Bookmarks;
