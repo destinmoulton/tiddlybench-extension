@@ -70,7 +70,7 @@ class ContextMenu {
             browser.contextMenus.removeAll();
             browser.contextMenus.create({
                 id: "tb-ctxt-configure",
-                title: "Configure TiddlyBench.",
+                title: "Configure TiddlyBench",
                 contexts: ["all"],
             });
         } else {
@@ -79,8 +79,7 @@ class ContextMenu {
                 await this._contextMenuStorage.getAllCustomDestinations()
             );
             await this._setupSelectionContext(destinationTiddlers);
-            this._setupAddContext(EContextType.LINK, destinationTiddlers);
-            this._setupAddContext(EContextType.PAGE, destinationTiddlers);
+            this._setupAddContext(EContextType.PAGE, EDispatchAction.ADD_BOOKMARK_TO_TIDDLER, destinationTiddlers);
             //this._setupAddContext(EContextType.TAB, destinationTiddlers);
         }
         this.doesContextMenuExist = true;
@@ -111,7 +110,7 @@ class ContextMenu {
             contexts: ["selection"],
         });
 
-        this._setupAddContext(EContextType.SELECTION, destinationTiddlers);
+        this._setupAddContext(EContextType.SELECTION, EDispatchAction.ADD_TEXT_TO_TIDDLER, destinationTiddlers);
     }
 
     /**
@@ -122,16 +121,17 @@ class ContextMenu {
      */
     _setupAddContext(
         context: EContextType,
+        action: EDispatchAction,
         destinationTiddlers: ICustomDestination[]
     ) {
         const title = CONTEXT_TYPE_TITLES[context];
         browser.contextMenus.create({
-            id: `tb-ctxt-action|context=${context}&action=${EDispatchAction.ADD_TEXT_TO_TIDDLER}&destination=${EDestinationTiddler.INBOX}`,
+            id: `tb-ctxt-action|context=${context}&action=${action}&destination=${EDestinationTiddler.INBOX}`,
             title: `Add ${title} to Inbox Tiddler`,
             contexts: [context],
         });
         browser.contextMenus.create({
-            id: `tb-ctxt-action|context=${context}&action=${EDispatchAction.ADD_TEXT_TO_TIDDLER}&destination=${EDestinationTiddler.JOURNAL}`,
+            id: `tb-ctxt-action|context=${context}&action=${action}&destination=${EDestinationTiddler.JOURNAL}`,
             title: `Add ${title} to Journal Tiddler`,
             contexts: [context],
         });
@@ -154,7 +154,7 @@ class ContextMenu {
             for (let dest of destinationTiddlers) {
                 browser.contextMenus.create({
                     id:
-                        `tb-ctxt-action|context=${context}&action=${EDispatchAction.ADD_TEXT_TO_TIDDLER}&destination=${EDestinationTiddler.CUSTOM}&tiddler_id=` +
+                        `tb-ctxt-action|context=${context}&action=${action}&destination=${EDestinationTiddler.CUSTOM}&tiddler_id=` +
                         dest.tiddler.tb_id,
                     title:
                         `Add ${title} to '` +

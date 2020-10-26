@@ -171,29 +171,36 @@ class TiddlerDispatcher {
                 `${options.destination} is not an allowed destination.`
             );
         }
-        if (options.action === EDispatchAction.ADD_TEXT_TO_TIDDLER) {
-            if (options.destination !== EDestinationTiddler.NONE) {
-                const tiddler = new DESTINATIONS[options.destination](
-                    this._api,
-                    this._configStorage,
-                    this._contextMenuStorage
-                );
 
-                if(options.destination === EDestinationTiddler.CUSTOM){
-                    // Set the title for the custom destination tiddler
-                    if(!options.packet.tiddler_id){
-                        throw new Error("TiddlerDispatcher :: tiddler_id must be included in the options.packet")
-                    }
-                    const customDestination = await this._contextMenuStorage.getCustomDestinationByID(options.packet.tiddler_id);
-                    if(!customDestination){
-                        throw new Error("TiddlerDispatcher :: the customDestination could not be found in the context menu list of possible custom destinations.");
-                    }
+        if(options.destination === EDestinationTiddler.NONE ){
+            throw new Error(
+                "TiddlerDispatcher :: destination in options is null"
+            );
+        }
 
-                    tiddler.setTiddlerTitle(customDestination.tiddler.title);
-                }
+        const tiddler = new DESTINATIONS[options.destination](
+            this._api,
+            this._configStorage,
+            this._contextMenuStorage
+        );
 
-                await tiddler.configure();
+        if(options.destination === EDestinationTiddler.CUSTOM){
+            // Set the title for the custom destination tiddler
+            if(!options.packet.tiddler_id){
+                throw new Error("TiddlerDispatcher :: tiddler_id must be included in the options.packet")
+            }
+            const customDestination = await this._contextMenuStorage.getCustomDestinationByID(options.packet.tiddler_id);
+            if(!customDestination){
+                throw new Error("TiddlerDispatcher :: the customDestination could not be found in the context menu list of possible custom destinations.");
+            }
 
+            tiddler.setTiddlerTitle(customDestination.tiddler.title);
+        }
+
+        await tiddler.configure();
+
+        switch(options.action){
+            case EDispatchAction.ADD_TEXT_TO_TIDDLER: {
                 if (options.context === EContextType.SELECTION && clickData) {
                     if (
                         clickData.selectionText &&
@@ -213,6 +220,20 @@ class TiddlerDispatcher {
                                 `Text has been added to ${tiddlerTitle}`
                             );
                         }
+                    }
+                }
+                break;
+            }
+            case EDispatchAction.ADD_BOOKMARK_TO_TIDDLER: {
+                if(options.context === EContextType.PAGE){
+
+                    await tiddler.addBookmark(tabInfo);
+                    const response = await tiddler.submit();
+                    if (response.ok) {
+                        const tiddlerTitle = tiddler.getTiddlerTitle();
+                        await notify(
+                            `Bookmark has been added to ${tiddlerTitle} tiddler.`
+                        );
                     }
                 }
             }

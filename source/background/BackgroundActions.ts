@@ -57,96 +57,6 @@ class BackgroundActions {
         //sender: browser.runtime.MessageSender
     ) {
         return await this._tiddlerDispatcher.dispatchMessengerAction(msg);
-        /**
-        if (data.dispatch === "tiddler") {
-            switch (data.type) {
-                case "journal": {
-                    const res = await this._addText(
-                        data.packet.text,
-                        data.packet.blockType,
-                        undefined
-                    );
-                    if (res.ok) {
-                        return Promise.resolve({
-                            ok: true,
-                            message: "Journal text added.",
-                        });
-                    } else {
-                        return Promise.reject({
-                            ok: false,
-                            message: "Failed to add the Journal text.",
-                        });
-                    }
-                    break;
-                }
-                case "inbox": {
-                    const res = await this.addTextToInbox(
-                        data.packet.text,
-                        data.packet.blockType,
-                        undefined
-                    );
-                    if (res.ok) {
-                        return Promise.resolve({
-                            ok: true,
-                            message: "Inbox text added.",
-                        });
-                    } else {
-                        return Promise.reject({
-                            ok: false,
-                            message: "Failed to add the Inbox text.",
-                        });
-                    }
-                    break;
-                }
-                case "customdestination-from-choose-tiddler-tab": {
-                    const cacheID = data.packet.cache_id;
-                    const cache = await this._contextMenuStorage.getCacheByID(
-                        cacheID
-                    );
-                    if (
-                        cache &&
-                        cache.clickData.selectionText &&
-                        cache.tabData &&
-                        cache.tabData.title
-                    ) {
-                        const blockType = await this._contextMenuStorage.getSelectedBlockType();
-
-                        const tabInfo: ITabInfo = {
-                            title: cache.tabData.title,
-                            url: cache.tabData.url,
-                        };
-                        const res = await this.addTextToCustomDestination(
-                            data.packet.tiddler_id,
-                            cache.clickData.selectionText,
-                            blockType,
-                            tabInfo
-                        );
-                        const title = data.packet.tiddler_title.substring(
-                            0,
-                            25
-                        );
-                        if (res.ok) {
-                            return Promise.resolve({
-                                ok: true,
-                                message: `Selected text added to ${title}`,
-                            });
-                        } else {
-                            return Promise.reject({
-                                ok: false,
-                                message: `Failed to add selected text to ${title}`,
-                            });
-                        }
-                    }
-                    break;
-                }
-            }
-        }
-        return Promise.reject({
-            ok: false,
-            sender,
-            message: "No dispatch or type parameters provided in the data.",
-        });
-        **/
     }
 
     async handleContextMenuClicks(
@@ -184,7 +94,8 @@ class BackgroundActions {
                         await this._tabsManager.openChooseTiddlerTab(cacheID);
                         break;
                     }
-                    case EDispatchAction.ADD_TEXT_TO_TIDDLER: {
+                    case EDispatchAction.ADD_TEXT_TO_TIDDLER: 
+                    case EDispatchAction.ADD_BOOKMARK_TO_TIDDLER: {
                         const options: IDispatchOptions = {
                             action: params["action"],
                             context: params["context"],

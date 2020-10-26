@@ -73,6 +73,7 @@ export enum EDestinationTiddler {
 }
 
 export enum EDispatchAction {
+    ADD_BOOKMARK_TO_TIDDLER = "add_bookmark_to_tiddler",
     ADD_TEXT_TO_TIDDLER = "add_text_to_tiddler",
     ADD_TIDDLER_WITH_TEXT = "add_tiddler_with_text",
     CHANGE_BLOCKTYPE = "change_blocktype",
