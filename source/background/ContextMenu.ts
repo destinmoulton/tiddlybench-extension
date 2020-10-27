@@ -69,7 +69,7 @@ class ContextMenu {
         if (!(await this._api.isServerUp())) {
             browser.contextMenus.removeAll();
             browser.contextMenus.create({
-                id: "tb-ctxt-configure",
+                id: `tb-ctxt-action|context=all&action=${EDispatchAction.CONFIGURE}`,
                 title: "Configure TiddlyBench",
                 contexts: ["all"],
             });
