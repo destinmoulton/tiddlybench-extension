@@ -117,9 +117,20 @@ class BackgroundActions {
                             clickData,
                             tabData
                         );
+                        break;
+                    }
+                    case EDispatchAction.CONFIGURE: {
+                        this._tabsManager.openSettingsTab();
+                        break;
+                    }
+                    default: {
+                        throw new Error(`BackgroundAction :: The action ${params['action']} is not a defined option`)
                     }
                 }
                 break;
+            }
+            default:{
+                throw new Error(`BackgroundActions :: The command ${command} is not a defined option.`)
             }
         }
     }
