@@ -3,6 +3,7 @@ import { BLOCK_TYPES } from "../constants";
 import { IFormSection } from "../types";
 const form: IFormSection[] = [
     {
+        section_icon: "jam jam-database",
         section_title: "TiddlyWiki Connection Settings",
         section_subheading: "The settings for your TiddlyWiki server.",
         section_notes: [
@@ -31,6 +32,7 @@ const form: IFormSection[] = [
         ],
     },
     {
+        section_icon: "jam jam-inboxes",
         section_title: "Inbox and Journal Tiddler Settings",
         section_subheading: "",
         section_notes: [
@@ -55,6 +57,7 @@ const form: IFormSection[] = [
         ],
     },
     {
+        section_icon: "jam ",
         section_title: "Block Settings",
         section_subheading:
             "Blocks are used to wrap text that you add to a tiddler.",
@@ -115,6 +118,7 @@ const form: IFormSection[] = [
         ],
     },
     {
+        section_icon: "jam jam-plus-rectangle",
         section_title: "Quick Add Settings",
         section_subheading:
             "The Quick Add box allows you to quickly add text to your Inbox or Journal.",
@@ -140,6 +144,7 @@ const form: IFormSection[] = [
         ],
     },
     {
+        section_icon: "jam jam-menu",
         section_title: "Context Menu Settings",
         section_subheading:
             "Right clicking on a page or selection shows the TiddlyBench context menu.",
@@ -155,6 +160,7 @@ const form: IFormSection[] = [
         ],
     },
     {
+        section_icon: "jam jam-bookmark",
         section_title: "Bookmark Settings",
         section_subheading:
             "Bookmarks can be added via right clicking on a page with nothing selected.",

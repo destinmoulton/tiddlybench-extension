@@ -26,6 +26,7 @@ ul.tb-popup-main-menu {
         background-color: white;
         font-weight: bold;
         line-height: 1.7em;
+        color: $tiddlybench-blue;
 
         &:hover {
             background-color: #f2f7ff;
@@ -47,8 +48,21 @@ ul.tb-popup-main-menu {
     border: 1px solid gray;
     padding: 10px;
     box-sizing: border-box;
+    legend {
+        color: $tiddlybench-blue;
+        font-weight: bold;
+    }
     label {
         display: inline-block;
+    }
+
+    textarea {
+        margin-bottom: 4px;
+    }
+    .tb-popup-quickadd-destination-container {
+        width: 100%;
+        text-align: right;
+        margin-bottom: 4px;
     }
 
     .tb-popup-quickadd-button-container {

@@ -122,6 +122,7 @@ export interface IFormField {
     template_id?: string;
 }
 export interface IFormSection {
+    section_icon: string;
     section_title: string;
     section_subheading: string;
     section_notes: string[];

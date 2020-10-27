@@ -120,6 +120,7 @@ class OptionsForm {
                 );
             }
             html += compiletemplate(this._html.section, {
+                section_icon: section.section_icon,
                 section_title: section.section_title,
                 section_subheading: section.section_subheading,
                 section_notes: section.section_notes.join(),
