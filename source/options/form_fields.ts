@@ -57,7 +57,7 @@ const form: IFormSection[] = [
         ],
     },
     {
-        section_icon: "jam ",
+        section_icon: "jam jam-ordered-list",
         section_title: "Block Settings",
         section_subheading:
             "Blocks are used to wrap text that you add to a tiddler.",
