@@ -169,6 +169,12 @@ const form: IFormSection[] = [
         ],
         fields: [
             {
+                label: "Bookmarks Tiddler",
+                id: EConfigKey.BOOKMARK_TIDDLER_TITLE,
+                type: "text"
+
+            },
+            {
                 label: "Bookmark Prefix",
                 id: EConfigKey.BOOKMARK_PREFIX,
                 type: "text",
