@@ -23,7 +23,10 @@ export default class TiddlerForm extends AbstractTabSection {
     _contextMenuStorage: ContextMenuStorage;
     _messenger: Messenger;
     _tabsManager: TabsManager;
-    _$addbutton: HTMLInputElement | null;
+    _$addButton: HTMLInputElement | null;
+    _$cancelButton: HTMLInputElement | null;
+    _$tiddlerTitle: HTMLInputElement | null;
+    _$tiddlerTags: HTMLInputElement | null;
 
     constructor(
         api: API,
@@ -36,7 +39,10 @@ export default class TiddlerForm extends AbstractTabSection {
         this._messenger = messenger;
         this._tabsManager = tabsManager;
 
-        this._$addbutton = null;
+        this._$addButton = null;
+        this._$cancelButton = null;
+        this._$tiddlerTitle = null;
+        this._$tiddlerTags = null;
 
     }
 
@@ -45,26 +51,40 @@ export default class TiddlerForm extends AbstractTabSection {
         const compiled = this._compile("tmpl-tiddler-form", {});
 
         this._render(compiled);
+
+        this._$tiddlerTitle = <HTMLInputElement>dom("#tb-tiddler-title");
+        this._$tiddlerTitle.focus();
+        this._$tiddlerTags = <HTMLInputElement>dom("#tb-tiddler-tags");
         
-        this._$addbutton = <HTMLInputElement>dom("#tb-tiddler-form-submit");
-        if(this._$addbutton){
-            this._$addbutton.addEventListener("click", this._handleButtonAddTiddler.bind(this));
+        this._$addButton = <HTMLInputElement>dom("#tb-tiddler-form-submit");
+        if(this._$addButton){
+            this._$addButton.addEventListener("click", this._handleButtonAddTiddler.bind(this));
         }
         
+        this._$cancelButton = <HTMLInputElement>dom("#tb-tiddler-form-cancel");
+        if(this._$cancelButton){
+
+            this._$cancelButton.addEventListener("click", this._handleButtonCancel.bind(this));
+        }
+    }
+
+    async _handleButtonCancel(){
+            const params = this._getHashParams();
+            await this._tabsManager.openChooseTiddlerTab(<string>params.get("cache_id"), false);
     }
 
     _disableButtons(){
-        if(!this._$addbutton){
+        if(!this._$addButton){
             throw new Error("TiddlerForm :: The add button was not found in the dom.");
         }
-        this._$addbutton.disabled = true;
+        this._$addButton.disabled = true;
     }
 
     _enableButtons(){
-        if(!this._$addbutton){
+        if(!this._$addButton){
             throw new Error("TiddlerForm :: The add button was not found in the dom.");
         }
-        this._$addbutton.disabled = false;
+        this._$addButton.disabled = false;
     }
 
     _showError(errorText: string){
@@ -77,14 +97,12 @@ export default class TiddlerForm extends AbstractTabSection {
 
     async _handleButtonAddTiddler(){
 
-        const $tiddlerTitle = <HTMLInputElement>dom("#tb-tiddler-title");
-        const $tiddlerTags = <HTMLInputElement>dom("#tb-tiddler-tags");
 
         this._showError("");
-        if($tiddlerTitle.value !== ""){
+        if(this._$tiddlerTitle && this._$tiddlerTitle.value !== ""){
 
             this._disableButtons();
-            const res = await this._api.getTiddler($tiddlerTitle.value);
+            const res = await this._api.getTiddler(this._$tiddlerTitle.value);
             if(res.ok){
                 this._enableButtons();
 
@@ -93,7 +111,11 @@ export default class TiddlerForm extends AbstractTabSection {
             } else {
                 const params = this._getHashParams();
                 const cache_id = <string>params.get("cache_id");
-                const newTiddlerTitle = $tiddlerTitle.value;
+                const newTiddlerTitle = this._$tiddlerTitle.value;
+                let tiddlerTags = "";
+                if(this._$tiddlerTags && this._$tiddlerTags.value !== ""){
+                    tiddlerTags = this._$tiddlerTags.value;
+                }
                 const message: IDispatchOptions = {
                     source: EDispatchSource.TAB,
                     action: EDispatchAction.ADD_TIDDLER_WITH_TEXT,
@@ -102,7 +124,7 @@ export default class TiddlerForm extends AbstractTabSection {
                     packet: {
                         cache_id,
                         tiddler_title: newTiddlerTitle,
-                        tiddler_tags: $tiddlerTags.value
+                        tiddler_tags:tiddlerTags 
                     },
                 };
                 this._messenger.send(message, async (response) => {

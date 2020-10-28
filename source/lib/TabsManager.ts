@@ -16,10 +16,15 @@ const EXTENSION_URL = {
     [EExtensionURL.TiddlerForm]: "tabs/tabs.html#section=tiddler_form",
 };
 export default class TabsManager {
-    async openChooseTiddlerTab(cacheID: string) {
+    async openChooseTiddlerTab(cacheID: string, newTab: boolean = true) {
         const url =
             EXTENSION_URL[EExtensionURL.ChooseTiddler] + "&cache_id=" + cacheID;
-        return await this.openTab(url);
+        if (newTab) {
+            return await this.openTab(url);
+        } else {
+            window.location.href = "/" + url + "&cache_id=" + cacheID;
+            return true;
+        }
     }
     async openTiddlerForm(contextCacheID: string, newTab: boolean = false) {
         const url = EXTENSION_URL[EExtensionURL.TiddlerForm];

@@ -1,21 +1,26 @@
 <script type="text/template" id="tmpl-tiddler-form">
-    <div class="pure-control-group">
-        <label for="tb-tiddler-title">Tiddler Title</label>
-        <input
-            type="text"
-            class="tb-edit-text"
-            id="tb-tiddler-title"
-        />
-    </div>
-    <div class="pure-control-group">
-        <label for="tb-tiddler-tags">Tags</label>
-        <input type="text" class="tb-edit-text" id="tb-tiddler-tags" />
-    </div>
-    <div id="tb-tiddler-form-error" class="">
-        
-    </div>
-    <div class="pure-control-group">
-        <button type="button" id="tb-tiddler-form-cancel">Cancel</button>
-        <button type="button" id="tb-tiddler-form-submit">Create Tiddler</button>
+    <div id="tb-tiddler-form">
+    <form class="pure-form pure-form-aligned">
+        <h3><span class="jam jam-plus"></span>&nbsp;Add A New Tiddler</h3>
+        <div class="pure-control-group">
+            <label for="tb-tiddler-title">Tiddler Title</label>
+            <input
+                type="text"
+                class="tb-edit-text"
+                id="tb-tiddler-title"
+            />
+        </div>
+        <div class="pure-control-group">
+            <label for="tb-tiddler-tags">Tags</label>
+            <input type="text" class="tb-edit-text" id="tb-tiddler-tags" />
+        </div>
+        <div id="tb-tiddler-form-error" class="">
+            
+        </div>
+        <div class="pure-control-group tb-tiddler-form-button-container">
+            <button type="button" id="tb-tiddler-form-cancel">Cancel</button>
+            <button type="button" id="tb-tiddler-form-submit">Create Tiddler</button>
+        </div>
+    </form>
     </div>
 </script>
