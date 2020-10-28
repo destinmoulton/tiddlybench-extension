@@ -1,0 +1,28 @@
+.tb-text-center {
+    text-align: center;
+}
+
+.tb-text-right {
+    text-align: right;
+}
+
+.tb-color-error {
+    color: maroon;
+}
+
+.tb-color-success {
+    color: green;
+}
+
+.tb-color-warning {
+    color: orange;
+}
+
+.tb-btn {
+    &.tb-btn-primary {
+        color: white;
+        background-color: #7f8c8d;
+        padding: 5px 7px;
+        font-weight: 600;
+    }
+}

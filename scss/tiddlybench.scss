@@ -1,7 +1,8 @@
 html {
     height: 100%;
 }
-@import "./variables.scss";
+@import "./variables";
+@import "./common";
 @import "./loading_animation";
 @import "./options";
 @import "./popup";

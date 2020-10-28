@@ -48,31 +48,37 @@ ul.tb-popup-main-menu {
     border: 1px solid gray;
     padding: 10px;
     box-sizing: border-box;
-    legend {
-        color: $tiddlybench-blue;
-        font-weight: bold;
-    }
-    label {
-        display: inline-block;
-    }
+    fieldset {
+        padding-bottom: 0px;
 
-    textarea {
-        margin-bottom: 4px;
-    }
-    .tb-popup-quickadd-destination-container {
-        width: 100%;
-        text-align: right;
-        margin-bottom: 4px;
-    }
+        legend {
+            color: $tiddlybench-blue;
+            font-weight: bold;
+            font-size: 14px;
+        }
 
-    .tb-popup-quickadd-button-container {
-        width: 100%;
-        text-align: right;
-    }
+        label {
+            display: inline-block;
+        }
 
-    #tb-popup-quickadd-contents {
-        width: 100%;
-        min-height: 3em;
+        textarea {
+            margin-bottom: 4px;
+        }
+        .tb-popup-quickadd-destination-container {
+            width: 100%;
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .tb-popup-quickadd-button-container {
+            width: 100%;
+            text-align: right;
+        }
+
+        #tb-popup-quickadd-contents {
+            width: 100%;
+            min-height: 3em;
+        }
     }
 }
 

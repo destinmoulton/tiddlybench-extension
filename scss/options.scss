@@ -1,15 +1,13 @@
-.tb-options-icon {
-}
 .tb-options-container {
-    min-width: 550px;
+    width: 640px;
     overflow-x: hidden; /* Required to hide horizontal scroll on Firefox */
-    margin: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 15px;
 
-    label {
-        width: 20%;
-    }
     #tb-options-main-title {
         height: 32px;
+        margin-left: 15px;
 
         h3 {
             font-size: 2em;
@@ -39,6 +37,7 @@
         margin: 10px;
         padding: 10px;
         border: 1px solid gray;
+        width: 600px;
 
         .tb-options-section-subtitle {
             font-size: 1em;
@@ -48,15 +47,20 @@
 
         legend {
             font-size: 1.5em;
-            font-weight: bold;
+            color: #696969;
         }
 
         label {
-            width: 15%;
+            width: 180px;
         }
 
         input {
-            width: 70%;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        select {
+            padding-right: 18px;
         }
     }
 }
