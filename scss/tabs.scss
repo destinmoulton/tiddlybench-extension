@@ -18,16 +18,16 @@
 
         .tb-tabs-title-container {
             line-height: 48px;
-            img.tb-tabs-title-icon {
-                display: inline-block;
-                width: 48px;
-                height: 48px;
-            }
             .tb-tabs-title {
                 margin-left: 10px;
-                display: inline-block;
                 font-size: 2em;
                 font-weight: bold;
+            }
+            .tb-tabs-subtitle {
+                margin-left: 10px;
+                font-size: 1.5em;
+                font-weight: bold;
+                color: gray;
             }
         }
 
