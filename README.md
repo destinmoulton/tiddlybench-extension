@@ -4,11 +4,11 @@
 
 ## Options Page
 
-The options.html page can be accessed via the extension url.
+The `options.html` page can be accessed via the extension url.
 
 ### Chrome
 
-Visit `chrome-extension://<extension_id>/options.html`
+Visit `chrome-extension://<extension_id>/options/options.html`
 
 # browser-extension-template
 
