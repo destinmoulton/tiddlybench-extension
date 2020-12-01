@@ -68,5 +68,17 @@ abstract class AbstractTabSection {
     _getHashParams() {
         return new URLSearchParams(window.location.hash.substr(1));
     }
+    
+    // Get the cache_id from the query string
+    _getCacheID(): string{
+        const urlParams = this._getHashParams();
+        const cacheID = urlParams.get("cache_id");
+
+        if(!cacheID) {
+            throw new Error("AbstractTabSection :: _getCacheID() :: can't tet cache_id in uri params");
+        }
+        return cacheID;
+    }
+
 }
 export default AbstractTabSection;
