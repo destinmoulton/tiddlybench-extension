@@ -12,11 +12,12 @@ import { EExtensionURL } from "../enums";
 const EXTENSION_URL = {
     [EExtensionURL.Popup]: browser.runtime.getURL("popup/popup.html"),
     [EExtensionURL.Settings]: "options/options.html",
+    [EExtensionURL.InitialOptions]: "tabs/tabs.html#section=initial_options",
     [EExtensionURL.ChooseTiddler]: "tabs/tabs.html#section=choose_tiddler",
     [EExtensionURL.TiddlerForm]: "tabs/tabs.html#section=tiddler_form",
 };
 export default class TabsManager {
-    async openChooseTiddlerTab(cacheID: string, newTab: boolean = true) {
+    async openListTiddlersTab(cacheID: string, newTab: boolean = true) {
         const url =
             EXTENSION_URL[EExtensionURL.ChooseTiddler] + "&cache_id=" + cacheID;
         if (newTab) {
@@ -32,6 +33,17 @@ export default class TabsManager {
             return await this.openTab(url);
         } else {
             window.location.href = "/" + url + "&cache_id=" + contextCacheID;
+            return true;
+        }
+    }
+    async openInitialOptionsTab(cacheID: string, newTab: boolean = true){
+
+        const url =
+            EXTENSION_URL[EExtensionURL.InitialOptions] + "&cache_id=" + cacheID;
+        if (newTab) {
+            return await this.openTab(url);
+        } else {
+            window.location.href = "/" + url + "&cache_id=" + cacheID;
             return true;
         }
     }

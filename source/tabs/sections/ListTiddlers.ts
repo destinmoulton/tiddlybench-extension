@@ -106,8 +106,8 @@ export default class ListTiddlers extends AbstractTabSection {
         const $button = <HTMLElement>dom("#tb-add-tiddler-button");
         if ($button) {
             $button.addEventListener("click", () => {
-                const params = this._getHashParams();
-                this._tabsManager.openTiddlerForm(<string>params.get("cache_id"), false);
+                const cache_id = this._getCacheID();
+                this._tabsManager.openTiddlerForm(cache_id, false);
             });
         }
     }
@@ -120,8 +120,7 @@ export default class ListTiddlers extends AbstractTabSection {
                 const id = (<HTMLElement>e.target).getAttribute(
                     "data-tiddler-id"
                 );
-                const urlParams = this._getHashParams();
-                const cache_id = urlParams.get("cache_id");
+                const cache_id = this._getCacheID();
                 if (id && cache_id) {
                     const tiddler = this._getTiddlerById(id);
                     if (tiddler) {

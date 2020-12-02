@@ -70,7 +70,7 @@ export default class TiddlerForm extends AbstractTabSection {
 
     async _handleButtonCancel(){
             const params = this._getHashParams();
-            await this._tabsManager.openChooseTiddlerTab(<string>params.get("cache_id"), false);
+            await this._tabsManager.openListTiddlersTab(<string>params.get("cache_id"), false);
     }
 
     _disableButtons(){

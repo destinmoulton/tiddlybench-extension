@@ -91,7 +91,7 @@ class BackgroundActions {
                             clickData,
                             tabData
                         );
-                        await this._tabsManager.openChooseTiddlerTab(cacheID);
+                        await this._tabsManager.openInitialOptionsTab(cacheID);
                         break;
                     }
                     case EDispatchAction.ADD_TEXT_TO_TIDDLER: 
