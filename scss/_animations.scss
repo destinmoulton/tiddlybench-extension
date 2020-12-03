@@ -1,0 +1,57 @@
+.animate-invisible-state {
+    display: none;
+    opacity: 0;
+}
+.animate-fade-in {
+    display: block;
+    animation: fadeIn ease $tb-animate-fade-time;
+    -webkit-animation: fadeIn ease $tb-animate-fade-time;
+    -moz-animation: fadeIn ease $tb-animate-fade-time;
+    -o-animation: fadeIn ease $tb-animate-fade-time;
+    -ms-animation: fadeIn ease $tb-animate-fade-time;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-webkit-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-o-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@-ms-keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
