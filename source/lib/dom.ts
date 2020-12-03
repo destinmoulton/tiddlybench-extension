@@ -7,19 +7,17 @@
  * 
  * @param elIdentifier string
  */
-function el(identifier: string): HTMLElement | HTMLInputElement{
+function el(identifier: string): HTMLElement | HTMLInputElement | null{
     let $el;
     if (identifier.startsWith("#")) {
         $el = document.getElementById(identifier.slice(1));
         if (!$el) {
-            throw new Error(
-                `dom.el() :: getElementById() :: Unable to find element ${identifier}`
-            );
+            return null;
         }
     } else {
         const $els = [...document.querySelectorAll(identifier)];
         if (!$els || $els.length === 0) {
-            throw new Error(`dom.el() :: Unable to find element ${identifier}`);
+            return null;
         }
 
         if($els.length > 1){
@@ -27,7 +25,7 @@ function el(identifier: string): HTMLElement | HTMLInputElement{
         }
         $el = $els.pop();
         if(!$el){
-            throw new Error(`dom.el() :: Element ${identifier} not found in dom`)
+            return null;
         }
     }
 
