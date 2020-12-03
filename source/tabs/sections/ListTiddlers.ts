@@ -13,7 +13,7 @@ import dom from "../../lib/dom";
 import ContextMenuStorage from "../../lib/storage/ContextMenuStorage";
 import Messenger from "../../lib/Messenger";
 import TabsManager from "../../lib/TabsManager";
-import { IDispatchOptions} from "../../types";
+import { IDispatchOptions } from "../../types";
 import {
     EContextType,
     EDestinationTiddler,
@@ -24,17 +24,20 @@ import notify from "../../lib/notify";
 
 // Custom interface for each tiddler item
 interface IListTiddlerItem {
-    title: string,
+    title: string;
     tb_id: string;
 
     tb_filterable_title: string;
 }
 
 export default class ListTiddlers extends AbstractTabSection {
-    _contextMenuStorage: ContextMenuStorage;
-    _messenger: Messenger;
-    _tabsManager: TabsManager;
-    _listTiddlers: IListTiddlerItem[];
+    private contextMenuStorage: ContextMenuStorage;
+    private messenger: Messenger;
+    private tabsManager: TabsManager;
+    private listTiddlers: IListTiddlerItem[];
+    private isCreateNewTiddlerVisible: boolean;
+    private isCreateNewTiddlerListenerEnabled: boolean;
+    private $filterInput: HTMLInputElement | null;
 
     constructor(
         api: API,
@@ -43,10 +46,13 @@ export default class ListTiddlers extends AbstractTabSection {
         tabsManager: TabsManager
     ) {
         super(api);
-        this._contextMenuStorage = contextMenuStorage;
-        this._messenger = messenger;
-        this._tabsManager = tabsManager;
-        this._listTiddlers = [];
+        this.contextMenuStorage = contextMenuStorage;
+        this.messenger = messenger;
+        this.tabsManager = tabsManager;
+        this.listTiddlers = [];
+        this.isCreateNewTiddlerVisible = false;
+        this.isCreateNewTiddlerListenerEnabled = false;
+        this.$filterInput = null;
     }
 
     async display() {
@@ -56,6 +62,7 @@ export default class ListTiddlers extends AbstractTabSection {
         if (!this._api.isServerUp) {
             return;
         }
+
         const tiddlers = await this._api.getAllTiddlers();
         const liTmpl = "tmpl-list-tiddlers-item";
 
@@ -69,12 +76,12 @@ export default class ListTiddlers extends AbstractTabSection {
             const tb_id = md5(tiddler.title);
 
             // Build the filterable string
-            let filterable = this._convertToFilterable(tiddler["title"]);
+            let filterable = this.convertToFilterable(tiddler["title"]);
             listOfTiddlers.push({
                 title: tiddler.title,
                 tb_id,
-                tb_filterable_title: filterable
-            })
+                tb_filterable_title: filterable,
+            });
 
             // Compile the template
             const cmp = this._compile(liTmpl, {
@@ -88,30 +95,20 @@ export default class ListTiddlers extends AbstractTabSection {
             tiddlers: listItems.join(""),
         });
 
-        this._listTiddlers = listOfTiddlers;
+        this.listTiddlers = listOfTiddlers;
         this._render(compiled);
 
-        this._setupFilterInput();
-        this._setupTiddlerClickHandler();
+        this.setupFilterInput();
+        this.setupTiddlerClickHandler();
     }
 
-    _getTiddlerById(tiddlerId: string): IListTiddlerItem | undefined {
-        return this._listTiddlers.find(
+    private getTiddlerById(tiddlerId: string): IListTiddlerItem | undefined {
+        return this.listTiddlers.find(
             (el: IListTiddlerItem) => el.tb_id === tiddlerId
         );
     }
 
-    _setupAddTiddlerClickHandler() {
-        const $button = <HTMLElement>dom.el("#tb-add-tiddler-button");
-        if ($button) {
-            $button.addEventListener("click", () => {
-                const cache_id = this._getCacheID();
-                this._tabsManager.openTiddlerForm(cache_id, false);
-            });
-        }
-    }
-
-    _setupTiddlerClickHandler() {
+    private setupTiddlerClickHandler() {
         const $tiddlers = dom.els(".tb-tabs-tiddlers-list-item");
 
         for (let $tiddler of $tiddlers) {
@@ -121,12 +118,13 @@ export default class ListTiddlers extends AbstractTabSection {
                 );
                 const cache_id = this._getCacheID();
                 if (id && cache_id) {
-                    const tiddler = this._getTiddlerById(id);
+                    const tiddler = this.getTiddlerById(id);
                     if (tiddler) {
                         // Add it to the context menu
-                        await this._contextMenuStorage.addCustomDestination(
-                            {title: tiddler.title, tb_id: tiddler.tb_id}
-                        );
+                        await this.contextMenuStorage.addCustomDestination({
+                            title: tiddler.title,
+                            tb_id: tiddler.tb_id,
+                        });
 
                         // Dispatch the message to add the text
                         const message: IDispatchOptions = {
@@ -140,13 +138,13 @@ export default class ListTiddlers extends AbstractTabSection {
                                 tiddler_title: tiddler.title,
                             },
                         };
-                        this._messenger.send(message, async (response) => {
+                        this.messenger.send(message, async (response) => {
                             if (response.ok) {
-                                await this._contextMenuStorage.removeCacheByID(
+                                await this.contextMenuStorage.removeCacheByID(
                                     cache_id
                                 );
                                 notify(response.message);
-                                await this._tabsManager.closeThisTab();
+                                await this.tabsManager.closeThisTab();
                             }
                         });
                     } else {
@@ -157,33 +155,44 @@ export default class ListTiddlers extends AbstractTabSection {
         }
     }
 
-    _setupFilterInput() {
-        const $filter = <HTMLElement>dom.el("#tb-tabs-list-filter");
-        $filter.focus();
-        $filter.addEventListener(
+    private setupFilterInput() {
+        this.$filterInput = <HTMLInputElement>(
+            dom.el("#tb-tabs-list-filter-input")
+        );
+        this.$filterInput.focus();
+        this.$filterInput.addEventListener(
             "keyup",
-            _.debounce(this._handleFilter.bind(this), 200)
+            _.debounce(this.handleFilterKeyup.bind(this), 200)
         );
     }
 
-    _showAllTiddlers() {
+    private showAllTiddlers() {
         const $lis = dom.els(".tb-tabs-tiddlers-list-item");
         for (let $li of $lis) {
             $li.style.display = "block";
         }
     }
 
-    _handleFilter(e: Event) {
+    private handleFilterKeyup(e: KeyboardEvent) {
         const $filter = <HTMLInputElement>e.target;
-        const search = this._convertToFilterable($filter.value);
+
+        if (e.code === "Enter") {
+            if (this.isCreateNewTiddlerVisible) {
+                // Convert the filter box into a form
+                this.showForm();
+            }
+            return;
+        }
+
+        const search = this.convertToFilterable($filter.value);
 
         if (search === "") {
-            this._showAllTiddlers();
+            this.showAllTiddlers();
             return;
         }
 
         let isTiddlerFound = false;
-        for (let tiddler of this._listTiddlers) {
+        for (let tiddler of this.listTiddlers) {
             if (tiddler.tb_filterable_title) {
                 const $item = <HTMLElement>(
                     dom.el("#tb-tabs-list-tiddler-" + tiddler.tb_id)
@@ -197,25 +206,56 @@ export default class ListTiddlers extends AbstractTabSection {
             }
         }
 
-        if(!isTiddlerFound){
-            this._showAddTiddlerOption();
+        if (!isTiddlerFound) {
+            this.showAddTiddlerBox();
+        } else {
+            this.hideAddTiddlerBox();
         }
     }
 
-    _showAddTiddlerOption(){
-        console.log("_showAddTiddlerOption running");
-        const $el = dom.el("#tb-tabs-list-add-new-tiddler-box");
-        if($el.classList.contains("animate-invisible-state")){
+    private hideAddTiddlerBox() {
+        const $el = <HTMLElement>dom.el("#tb-tabs-list-add-new-tiddler-box");
+        $el.classList.remove("animate-fade-in");
+        $el.classList.add("animate-hidden");
 
-            $el.classList.remove("animate-invisible-state");
+        this.isCreateNewTiddlerVisible = false;
+    }
+
+    private showAddTiddlerBox() {
+        this.isCreateNewTiddlerVisible = true;
+        const $el = <HTMLElement>dom.el("#tb-tabs-list-add-new-tiddler-box");
+        const $notfound = <HTMLElement>dom.el("#tb-tlan-notfound");
+
+        if (this.$filterInput) {
+            $notfound.innerText =
+                '"' + this.$filterInput.value + '" not found.';
+        }
+
+        // Only fade it in if it is invisible
+        if ($el.classList.contains("animate-hidden")) {
+            $el.classList.remove("animate-hidden");
             $el.classList.add("animate-fade-in");
         }
+
+        if (!this.isCreateNewTiddlerListenerEnabled) {
+            $el.addEventListener("click", this.showForm.bind(this));
+            this.isCreateNewTiddlerListenerEnabled = true;
+        }
     }
 
-    _convertToFilterable(text: string): string {
+    private convertToFilterable(text: string): string {
         return text
             .trim()
             .toLowerCase()
             .replace(/[^0-9a-z]/g, "");
+    }
+
+    showForm() {
+        this.hideAddTiddlerBox();
+        const $formEl = dom.el("#tb-tabs-list-formend-container");
+        if ($formEl) {
+            $formEl.classList.remove("animate-hidden");
+            $formEl.classList.add("animate-fade-in");
+        }
     }
 }
