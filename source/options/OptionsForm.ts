@@ -67,7 +67,7 @@ class OptionsForm {
     }
 
     _getTemplate(templateID: string) {
-        const $el = <HTMLElement>dom("#" + templateID);
+        const $el = <HTMLElement>dom.el("#" + templateID);
         return $el.innerHTML;
     }
 
@@ -109,7 +109,7 @@ class OptionsForm {
                         if (field.template_id) {
                             label = ""; // no need for label for template
                             const $template = <HTMLElement>(
-                                dom("#" + field.template_id)
+                                dom.el("#" + field.template_id)
                             );
                             input = compiletemplate($template.innerHTML, {});
                         }
@@ -127,7 +127,7 @@ class OptionsForm {
                 groups: groups.join(""),
             });
         }
-        const $root = <HTMLElement>dom("#root");
+        const $root = <HTMLElement>dom.el("#root");
         $root.innerHTML = html;
     }
 

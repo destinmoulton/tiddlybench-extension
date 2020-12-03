@@ -1,7 +1,8 @@
 <script type="text/template" id="tmpl-list-tiddlers">
     <div class="tb-tabs-tiddlers-list-container">
-    <input type="text" id="tb-tabs-list-filter" placeholder="Filter...">
-    <button id="tb-add-tiddler-button"><span class="jam jam-plus"></span> New Tiddler</button>
+    <h3><span class="jam jam-search"></span>&nbsp;Find or Create a Tiddler</h3>
+    <input type="text" id="tb-tabs-list-filter" placeholder="Start typing the name of the tiddler...">
+    <div id="tb-tabs-list-add-new-tiddler-box" class="animate-hidden">Create a Tiddler</div>
     <ul id="tb-tabs-list-tiddlers">{{tiddlers}}</ul>
     </div>
 </script>
@@ -10,10 +11,4 @@
     <li id="tb-tabs-list-tiddler-{{id}}"
     class="tb-tabs-tiddlers-list-item"
     data-tiddler-id="{{id}}">{{tiddler_title}}</li>
-</script>
-
-<script type="text/template" id="tmpl-list-add-new-tiddler-item">
-    <li id="tb-tabs-list-add-new-tiddler-item"
-        class="tb-tabs-tiddlers-list-item"
-        >{{tiddler_title}}</li>
 </script>

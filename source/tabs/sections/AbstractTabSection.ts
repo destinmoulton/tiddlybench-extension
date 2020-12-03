@@ -20,11 +20,11 @@ abstract class AbstractTabSection {
     }
 
     initialize(rootElementID: string) {
-        this._$root = <HTMLElement>dom("#" + rootElementID);
+        this._$root = <HTMLElement>dom.el("#" + rootElementID);
     }
 
     _compile(templateID: string, data: any): string {
-        const $tmpl = <HTMLElement>dom("#" + templateID);
+        const $tmpl = <HTMLElement>dom.el("#" + templateID);
 
         if (!$tmpl) {
             throw new Error("Unable to find the template " + templateID);

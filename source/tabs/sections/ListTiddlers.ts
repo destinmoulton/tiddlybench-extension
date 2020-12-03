@@ -93,7 +93,6 @@ export default class ListTiddlers extends AbstractTabSection {
 
         this._setupFilterInput();
         this._setupTiddlerClickHandler();
-        this._setupAddTiddlerClickHandler();
     }
 
     _getTiddlerById(tiddlerId: string): IListTiddlerItem | undefined {
@@ -103,7 +102,7 @@ export default class ListTiddlers extends AbstractTabSection {
     }
 
     _setupAddTiddlerClickHandler() {
-        const $button = <HTMLElement>dom("#tb-add-tiddler-button");
+        const $button = <HTMLElement>dom.el("#tb-add-tiddler-button");
         if ($button) {
             $button.addEventListener("click", () => {
                 const cache_id = this._getCacheID();
@@ -113,7 +112,7 @@ export default class ListTiddlers extends AbstractTabSection {
     }
 
     _setupTiddlerClickHandler() {
-        const $tiddlers = <HTMLElement[]>dom(".tb-tabs-tiddlers-list-item");
+        const $tiddlers = dom.els(".tb-tabs-tiddlers-list-item");
 
         for (let $tiddler of $tiddlers) {
             $tiddler.addEventListener("click", async (e: Event) => {
@@ -124,9 +123,12 @@ export default class ListTiddlers extends AbstractTabSection {
                 if (id && cache_id) {
                     const tiddler = this._getTiddlerById(id);
                     if (tiddler) {
+                        // Add it to the context menu
                         await this._contextMenuStorage.addCustomDestination(
                             {title: tiddler.title, tb_id: tiddler.tb_id}
                         );
+
+                        // Dispatch the message to add the text
                         const message: IDispatchOptions = {
                             source: EDispatchSource.TAB,
                             action: EDispatchAction.ADD_TEXT_TO_TIDDLER,
@@ -156,7 +158,7 @@ export default class ListTiddlers extends AbstractTabSection {
     }
 
     _setupFilterInput() {
-        const $filter = <HTMLElement>dom("#tb-tabs-list-filter");
+        const $filter = <HTMLElement>dom.el("#tb-tabs-list-filter");
         $filter.focus();
         $filter.addEventListener(
             "keyup",
@@ -165,7 +167,7 @@ export default class ListTiddlers extends AbstractTabSection {
     }
 
     _showAllTiddlers() {
-        const $lis = <HTMLElement[]>dom(".tb-tabs-tiddlers-list-item");
+        const $lis = dom.els(".tb-tabs-tiddlers-list-item");
         for (let $li of $lis) {
             $li.style.display = "block";
         }
@@ -180,17 +182,33 @@ export default class ListTiddlers extends AbstractTabSection {
             return;
         }
 
+        let isTiddlerFound = false;
         for (let tiddler of this._listTiddlers) {
             if (tiddler.tb_filterable_title) {
                 const $item = <HTMLElement>(
-                    dom("#tb-tabs-list-tiddler-" + tiddler.tb_id)
+                    dom.el("#tb-tabs-list-tiddler-" + tiddler.tb_id)
                 );
                 if (tiddler.tb_filterable_title.includes(search)) {
+                    isTiddlerFound = true;
                     $item.style.display = "block";
                 } else {
                     $item.style.display = "none";
                 }
             }
+        }
+
+        if(!isTiddlerFound){
+            this._showAddTiddlerOption();
+        }
+    }
+
+    _showAddTiddlerOption(){
+        console.log("_showAddTiddlerOption running");
+        const $el = dom.el("#tb-tabs-list-add-new-tiddler-box");
+        if($el.classList.contains("animate-invisible-state")){
+
+            $el.classList.remove("animate-invisible-state");
+            $el.classList.add("animate-fade-in");
         }
     }
 

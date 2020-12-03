@@ -7,7 +7,7 @@ import ListTiddlers from "./sections/ListTiddlers";
 import TiddlerForm from "./sections/TiddlerForm";
 import Messenger from "../lib/Messenger";
 import TabsManager from "../lib/TabsManager";
-import InitialOptions from "./sections/InitialOptions";
+
 //import TabsManager from "../lib/TabsManager";
 window.addEventListener("load", () => {
     const configStorage = new ConfigStorage();
@@ -15,7 +15,6 @@ window.addEventListener("load", () => {
     const tabsManager = new TabsManager();
     const api = new API(configStorage);
     const messenger = new Messenger(api, configStorage);
-    const initialOptions = new InitialOptions(api, tabsManager);
     const listTiddlers = new ListTiddlers(
         api,
         contextMenuStorage,
@@ -28,18 +27,16 @@ window.addEventListener("load", () => {
         messenger,
         tabsManager
     );
-    const tabs = new Tabs(initialOptions, listTiddlers, tiddlerForm);
+    const tabs = new Tabs( listTiddlers, tiddlerForm);
     tabs.initialize();
 });
 
 class Tabs {
-    _initialOptions: InitialOptions;
     _listTiddlers: ListTiddlers;
     _tiddlerForm: TiddlerForm;
     _activeSection: string;
 
-    constructor(initialOptions: InitialOptions, listTiddlers: ListTiddlers, tiddlerForm: TiddlerForm) {
-        this._initialOptions = initialOptions;
+    constructor( listTiddlers: ListTiddlers, tiddlerForm: TiddlerForm) {
         this._listTiddlers = listTiddlers;
         this._tiddlerForm = tiddlerForm;
         this._activeSection = "";
@@ -47,7 +44,6 @@ class Tabs {
 
     initialize() {
         this._activeSection = this._getActiveSection();
-        this._initialOptions.initialize("tb-tabs-root");
         this._listTiddlers.initialize("tb-tabs-root");
         this._tiddlerForm.initialize("tb-tabs-root");
         this._display();
@@ -67,10 +63,6 @@ class Tabs {
 
     _display() {
         switch (this._activeSection) {
-            case "initial_options": {
-                this._initialOptions.display();
-                break;
-            }
             case "choose_tiddler": {
                 this._listTiddlers.display();
                 break;
@@ -80,7 +72,7 @@ class Tabs {
                 break;
             }
             default:
-                this._initialOptions.display();
+                this._listTiddlers.display();
                 break;
         }
     }

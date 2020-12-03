@@ -20,7 +20,7 @@ class ResetOptionsForm {
     }
 
     initialize() {
-        this.$resetFormButton = <HTMLElement>dom("#reset-settings");
+        this.$resetFormButton = <HTMLElement>dom.el("#reset-settings");
         this.$resetFormButton.addEventListener(
             "click",
             this.handleResetForm.bind(this)

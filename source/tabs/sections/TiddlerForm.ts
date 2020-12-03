@@ -52,16 +52,16 @@ export default class TiddlerForm extends AbstractTabSection {
 
         this._render(compiled);
 
-        this._$tiddlerTitle = <HTMLInputElement>dom("#tb-tiddler-title");
+        this._$tiddlerTitle = <HTMLInputElement>dom.el("#tb-tiddler-title");
         this._$tiddlerTitle.focus();
-        this._$tiddlerTags = <HTMLInputElement>dom("#tb-tiddler-tags");
+        this._$tiddlerTags = <HTMLInputElement>dom.el("#tb-tiddler-tags");
         
-        this._$addButton = <HTMLInputElement>dom("#tb-tiddler-form-submit");
+        this._$addButton = <HTMLInputElement>dom.el("#tb-tiddler-form-submit");
         if(this._$addButton){
             this._$addButton.addEventListener("click", this._handleButtonAddTiddler.bind(this));
         }
         
-        this._$cancelButton = <HTMLInputElement>dom("#tb-tiddler-form-cancel");
+        this._$cancelButton = <HTMLInputElement>dom.el("#tb-tiddler-form-cancel");
         if(this._$cancelButton){
 
             this._$cancelButton.addEventListener("click", this._handleButtonCancel.bind(this));
@@ -88,7 +88,7 @@ export default class TiddlerForm extends AbstractTabSection {
     }
 
     _showError(errorText: string){
-        const $error = <HTMLElement>dom("#tb-tiddler-form-error");
+        const $error = <HTMLElement>dom.el("#tb-tiddler-form-error");
         if(!$error){
             throw new Error("TiddlerForm :: The error element in the dom could not be found.");
         }

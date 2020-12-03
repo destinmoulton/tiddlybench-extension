@@ -33,25 +33,25 @@ class TestConnection {
     }
 
     initialize() {
-        this.$testConnectionButton = <HTMLElement>dom("#tb-test-connection");
+        this.$testConnectionButton = <HTMLElement>dom.el("#tb-test-connection");
         this.$testConnectionButton.addEventListener(
             "click",
             this.handleClickTestConnectionButton.bind(this)
         );
 
         this.$testConnectionSuccessMessage = <HTMLElement>(
-            dom("#tb-connection-success-message")
+            dom.el("#tb-connection-success-message")
         );
         this.$testConnectionErrorMessage = <HTMLElement>(
-            dom("#tb-connection-error-message")
+            dom.el("#tb-connection-error-message")
         );
 
-        this.$url = <HTMLInputElement>dom("#" + EConfigKey.SERVER_URL);
+        this.$url = <HTMLInputElement>dom.el("#" + EConfigKey.SERVER_URL);
         this.$username = <HTMLInputElement>(
-            dom("#" + EConfigKey.SERVER_USERNAME)
+            dom.el("#" + EConfigKey.SERVER_USERNAME)
         );
         this.$password = <HTMLInputElement>(
-            dom("#" + EConfigKey.SERVER_PASSWORD)
+            dom.el("#" + EConfigKey.SERVER_PASSWORD)
         );
     }
 

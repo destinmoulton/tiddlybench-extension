@@ -44,10 +44,10 @@ class QuickAddTiddler extends PopupTemplate {
             EConfigKey.QUICKADD_DEFAULT_BLOCKTYPE
         );
         // Get the main container
-        this.$container = <HTMLElement>dom("#tb-popup-quickadd-box");
+        this.$container = <HTMLElement>dom.el("#tb-popup-quickadd-box");
 
         // Focus on the textarea
-        this.$textarea = <HTMLInputElement>dom("#tb-popup-quickadd-contents");
+        this.$textarea = <HTMLInputElement>dom.el("#tb-popup-quickadd-contents");
         this.$textarea.focus();
         this.$textarea.addEventListener(
             "keydown",
@@ -55,17 +55,17 @@ class QuickAddTiddler extends PopupTemplate {
         );
 
         // Get the select box element
-        this.$destination = <HTMLInputElement>dom("#tb-popup-quickadd-type");
+        this.$destination = <HTMLInputElement>dom.el("#tb-popup-quickadd-type");
         this.$destination.value = defaultDestination;
 
         // Build the block type dropdown
-        this.$blocktype = <HTMLInputElement>dom("#tb-popup-quickadd-blocktype");
+        this.$blocktype = <HTMLInputElement>dom.el("#tb-popup-quickadd-blocktype");
         this.$blocktype.innerHTML = this._getBlockTypesOptionsHTML();
         this.$blocktype.value = defaultBlockType;
 
         // Setup the handler
         const $submit = <HTMLInputElement>(
-            dom("#tb-popup-quickadd-submit-button")
+            dom.el("#tb-popup-quickadd-submit-button")
         );
         $submit.addEventListener("click", this.handleClickSubmit.bind(this));
     }
