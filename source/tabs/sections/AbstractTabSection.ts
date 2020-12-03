@@ -9,21 +9,21 @@ import API from "../../lib/API";
 import compiletemplate from "../../lib/helpers/compiletemplate";
 import dom from "../../lib/dom";
 abstract class AbstractTabSection {
-    protected _$root: HTMLElement | null;
-    protected _api: API;
+    protected $root: HTMLElement | null;
+    protected api: API;
     abstract display(): void;
-    protected _loadingAnimationOldHTML: string;
+    protected loadingAnimationOldHTML: string;
     constructor(api: API) {
-        this._api = api;
-        this._$root = null;
-        this._loadingAnimationOldHTML = "";
+        this.api = api;
+        this.$root = null;
+        this.loadingAnimationOldHTML = "";
     }
 
     initialize(rootElementID: string) {
-        this._$root = <HTMLElement>dom.el("#" + rootElementID);
+        this.$root = <HTMLElement>dom.el("#" + rootElementID);
     }
 
-    _compile(templateID: string, data: any): string {
+    protected compile(templateID: string, data: any): string {
         const $tmpl = <HTMLElement>dom.el("#" + templateID);
 
         if (!$tmpl) {
@@ -32,53 +32,54 @@ abstract class AbstractTabSection {
         return compiletemplate($tmpl.innerText, data);
     }
 
-    _render(html: string) {
+    protected render(html: string) {
         console.log("About to render", html);
 
-        if (this._$root) {
-            this._$root.innerHTML = html;
+        if (this.$root) {
+            this.$root.innerHTML = html;
         } else {
             throw new Error("root element is not defined");
         }
     }
 
-    _loadingAnimation(animationText: string) {
-        if (this._$root) {
-            this._loadingAnimationOldHTML = this._$root.innerHTML;
+    protected loadingAnimation(animationText: string) {
+        if (this.$root) {
+            this.loadingAnimationOldHTML = this.$root.innerHTML;
         }
 
-        const loaderHTML = this._getLoadingAnimationHTML(animationText);
+        const loaderHTML = this.getLoadingAnimationHTML(animationText);
 
-        this._render(loaderHTML);
+        this.render(loaderHTML);
     }
 
-    _getLoadingAnimationHTML(loadingText: string) {
-        return this._compile("tmpl-loading-animation", {
+    protected getLoadingAnimationHTML(loadingText: string) {
+        return this.compile("tmpl-loading-animation", {
             text: loadingText,
         });
     }
 
     // Return the root to the old HTML
-    _cancelLoadingAnimation() {
-        if (this._$root) {
-            this._$root.innerHTML = this._loadingAnimationOldHTML;
+    protected cancelLoadingAnimation() {
+        if (this.$root) {
+            this.$root.innerHTML = this.loadingAnimationOldHTML;
         }
     }
 
-    _getHashParams() {
+    protected getHashParams() {
         return new URLSearchParams(window.location.hash.substr(1));
     }
-    
+
     // Get the cache_id from the query string
-    _getCacheID(): string{
-        const urlParams = this._getHashParams();
+    protected getCacheID(): string {
+        const urlParams = this.getHashParams();
         const cacheID = urlParams.get("cache_id");
 
-        if(!cacheID) {
-            throw new Error("AbstractTabSection :: _getCacheID() :: can't tet cache_id in uri params");
+        if (!cacheID) {
+            throw new Error(
+                "AbstractTabSection :: getCacheID() :: can't tet cache_id in uri params"
+            );
         }
         return cacheID;
     }
-
 }
 export default AbstractTabSection;

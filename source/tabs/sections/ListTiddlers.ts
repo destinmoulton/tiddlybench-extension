@@ -58,12 +58,12 @@ export default class ListTiddlers extends AbstractTabSection {
     async display() {
         console.log("running display() for ListTiddlers");
 
-        this._loadingAnimation("Getting Tiddlers...");
-        if (!this._api.isServerUp) {
+        this.loadingAnimation("Getting Tiddlers...");
+        if (!this.api.isServerUp) {
             return;
         }
 
-        const tiddlers = await this._api.getAllTiddlers();
+        const tiddlers = await this.api.getAllTiddlers();
         const liTmpl = "tmpl-list-tiddlers-item";
 
         const listItems = [];
@@ -84,19 +84,19 @@ export default class ListTiddlers extends AbstractTabSection {
             });
 
             // Compile the template
-            const cmp = this._compile(liTmpl, {
+            const cmp = this.compile(liTmpl, {
                 id: tb_id,
                 tiddler_title: tiddler.title,
             });
             listItems.push(cmp);
         }
 
-        const compiled = this._compile("tmpl-list-tiddlers", {
+        const compiled = this.compile("tmpl-list-tiddlers", {
             tiddlers: listItems.join(""),
         });
 
         this.listTiddlers = listOfTiddlers;
-        this._render(compiled);
+        this.render(compiled);
 
         this.setupFilterInput();
         this.setupTiddlerClickHandler();
@@ -116,7 +116,7 @@ export default class ListTiddlers extends AbstractTabSection {
                 const id = (<HTMLElement>e.target).getAttribute(
                     "data-tiddler-id"
                 );
-                const cache_id = this._getCacheID();
+                const cache_id = this.getCacheID();
                 if (id && cache_id) {
                     const tiddler = this.getTiddlerById(id);
                     if (tiddler) {

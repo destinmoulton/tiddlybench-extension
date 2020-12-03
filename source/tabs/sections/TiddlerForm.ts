@@ -20,13 +20,13 @@ import {
     EDispatchSource,
 } from "../../enums";
 export default class TiddlerForm extends AbstractTabSection {
-    _contextMenuStorage: ContextMenuStorage;
-    _messenger: Messenger;
-    _tabsManager: TabsManager;
-    _$addButton: HTMLInputElement | null;
-    _$cancelButton: HTMLInputElement | null;
-    _$tiddlerTitle: HTMLInputElement | null;
-    _$tiddlerTags: HTMLInputElement | null;
+    private contextMenuStorage: ContextMenuStorage;
+    private messenger: Messenger;
+    private tabsManager: TabsManager;
+    private $addButton: HTMLInputElement | null;
+    private $cancelButton: HTMLInputElement | null;
+    private $tiddlerTitle: HTMLInputElement | null;
+    private $tiddlerTags: HTMLInputElement | null;
 
     constructor(
         api: API,
@@ -35,86 +35,96 @@ export default class TiddlerForm extends AbstractTabSection {
         tabsManager: TabsManager
     ) {
         super(api);
-        this._contextMenuStorage = contextMenuStorage;
-        this._messenger = messenger;
-        this._tabsManager = tabsManager;
+        this.contextMenuStorage = contextMenuStorage;
+        this.messenger = messenger;
+        this.tabsManager = tabsManager;
 
-        this._$addButton = null;
-        this._$cancelButton = null;
-        this._$tiddlerTitle = null;
-        this._$tiddlerTags = null;
-
+        this.$addButton = null;
+        this.$cancelButton = null;
+        this.$tiddlerTitle = null;
+        this.$tiddlerTags = null;
     }
 
     async display() {
+        const compiled = this.compile("tmpl-tiddler-form", {});
 
-        const compiled = this._compile("tmpl-tiddler-form", {});
+        this.render(compiled);
 
-        this._render(compiled);
+        this.$tiddlerTitle = <HTMLInputElement>dom.el("#tb-tiddler-title");
+        this.$tiddlerTitle.focus();
+        this.$tiddlerTags = <HTMLInputElement>dom.el("#tb-tiddler-tags");
 
-        this._$tiddlerTitle = <HTMLInputElement>dom.el("#tb-tiddler-title");
-        this._$tiddlerTitle.focus();
-        this._$tiddlerTags = <HTMLInputElement>dom.el("#tb-tiddler-tags");
-        
-        this._$addButton = <HTMLInputElement>dom.el("#tb-tiddler-form-submit");
-        if(this._$addButton){
-            this._$addButton.addEventListener("click", this._handleButtonAddTiddler.bind(this));
+        this.$addButton = <HTMLInputElement>dom.el("#tb-tiddler-form-submit");
+        if (this.$addButton) {
+            this.$addButton.addEventListener(
+                "click",
+                this.handleButtonAddTiddler.bind(this)
+            );
         }
-        
-        this._$cancelButton = <HTMLInputElement>dom.el("#tb-tiddler-form-cancel");
-        if(this._$cancelButton){
 
-            this._$cancelButton.addEventListener("click", this._handleButtonCancel.bind(this));
+        this.$cancelButton = <HTMLInputElement>(
+            dom.el("#tb-tiddler-form-cancel")
+        );
+        if (this.$cancelButton) {
+            this.$cancelButton.addEventListener(
+                "click",
+                this.handleButtonCancel.bind(this)
+            );
         }
     }
 
-    async _handleButtonCancel(){
-            const params = this._getHashParams();
-            await this._tabsManager.openListTiddlersTab(<string>params.get("cache_id"), false);
+    private async handleButtonCancel() {
+        const params = this.getHashParams();
+        await this.tabsManager.openListTiddlersTab(
+            <string>params.get("cache_id"),
+            false
+        );
     }
 
-    _disableButtons(){
-        if(!this._$addButton){
-            throw new Error("TiddlerForm :: The add button was not found in the dom.");
+    private disableButtons() {
+        if (!this.$addButton) {
+            throw new Error(
+                "TiddlerForm :: The add button was not found in the dom."
+            );
         }
-        this._$addButton.disabled = true;
+        this.$addButton.disabled = true;
     }
 
-    _enableButtons(){
-        if(!this._$addButton){
-            throw new Error("TiddlerForm :: The add button was not found in the dom.");
+    private enableButtons() {
+        if (!this.$addButton) {
+            throw new Error(
+                "TiddlerForm :: The add button was not found in the dom."
+            );
         }
-        this._$addButton.disabled = false;
+        this.$addButton.disabled = false;
     }
 
-    _showError(errorText: string){
+    private showError(errorText: string) {
         const $error = <HTMLElement>dom.el("#tb-tiddler-form-error");
-        if(!$error){
-            throw new Error("TiddlerForm :: The error element in the dom could not be found.");
+        if (!$error) {
+            throw new Error(
+                "TiddlerForm :: The error element in the dom could not be found."
+            );
         }
         $error.innerHTML = errorText;
     }
 
-    async _handleButtonAddTiddler(){
+    private async handleButtonAddTiddler() {
+        this.showError("");
+        if (this.$tiddlerTitle && this.$tiddlerTitle.value !== "") {
+            this.disableButtons();
+            const res = await this.api.getTiddler(this.$tiddlerTitle.value);
+            if (res.ok) {
+                this.enableButtons();
 
-
-        this._showError("");
-        if(this._$tiddlerTitle && this._$tiddlerTitle.value !== ""){
-
-            this._disableButtons();
-            const res = await this._api.getTiddler(this._$tiddlerTitle.value);
-            if(res.ok){
-                this._enableButtons();
-
-                this._showError("A Tiddler with that title already exists.")
-                
+                this.showError("A Tiddler with that title already exists.");
             } else {
-                const params = this._getHashParams();
+                const params = this.getHashParams();
                 const cache_id = <string>params.get("cache_id");
-                const newTiddlerTitle = this._$tiddlerTitle.value;
+                const newTiddlerTitle = this.$tiddlerTitle.value;
                 let tiddlerTags = "";
-                if(this._$tiddlerTags && this._$tiddlerTags.value !== ""){
-                    tiddlerTags = this._$tiddlerTags.value;
+                if (this.$tiddlerTags && this.$tiddlerTags.value !== "") {
+                    tiddlerTags = this.$tiddlerTags.value;
                 }
                 const message: IDispatchOptions = {
                     source: EDispatchSource.TAB,
@@ -124,21 +134,20 @@ export default class TiddlerForm extends AbstractTabSection {
                     packet: {
                         cache_id,
                         tiddler_title: newTiddlerTitle,
-                        tiddler_tags:tiddlerTags 
+                        tiddler_tags: tiddlerTags,
                     },
                 };
-                this._messenger.send(message, async (response) => {
+                this.messenger.send(message, async (response) => {
                     if (response.ok) {
-                        await this._contextMenuStorage.removeCacheByID(
-                            cache_id
-                        );
+                        await this.contextMenuStorage.removeCacheByID(cache_id);
 
                         // Add the new tiddler to the context menu
-                        await this._contextMenuStorage.addCustomDestination(
-                            {title: newTiddlerTitle, tb_id: md5(newTiddlerTitle)}
-                        );
+                        await this.contextMenuStorage.addCustomDestination({
+                            title: newTiddlerTitle,
+                            tb_id: md5(newTiddlerTitle),
+                        });
                         notify(response.message);
-                        await this._tabsManager.closeThisTab();
+                        await this.tabsManager.closeThisTab();
                     }
                 });
             }
