@@ -25,12 +25,12 @@
             }
         }
 
+        h3 {
+            margin-left: 15px;
+            border-bottom: 1px solid gray;
+            line-height: 1.5em;
+        }
         div#tb-tiddler-form {
-            h3 {
-                margin-left: 15px;
-                border-bottom: 1px solid gray;
-                line-height: 1.5em;
-            }
             input {
                 width: 100%;
                 max-width: 400px;
@@ -41,8 +41,11 @@
         }
         .tb-tabs-tiddlers-list-container {
             #tb-tabs-list-filter {
-                width: 300px;
                 font-size: 1.3em;
+                width: 95%;
+                height: 1.8em;
+                margin: 0px 15px 10px 15px;
+                box-sizing: border-box;
             }
             ul {
                 list-style: none;
