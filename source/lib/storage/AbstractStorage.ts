@@ -13,33 +13,33 @@ export interface StorageElement {
 
 /** The option name corresponds to the input id */
 abstract class AbstractStorage<T extends StorageElement> {
-    abstract _storageDefaults: T;
-    abstract _storageKey: string;
+    protected abstract storageDefaults: T;
+    protected abstract storageKey: string;
 
-    async _setAll(settings: T) {
-        return browser.storage.local.set({ [this._storageKey]: settings });
+    public async setAll(settings: T) {
+        return browser.storage.local.set({ [this.storageKey]: settings });
     }
 
-    async getAll(): Promise<T> {
+    public async getAll(): Promise<T> {
         const setObj: any = await (<Promise<any>>(
-            browser.storage.local.get(this._storageKey)
+            browser.storage.local.get(this.storageKey)
         ));
 
-        if (setObj.hasOwnProperty(this._storageKey)) {
-            return <T>setObj[this._storageKey];
+        if (setObj.hasOwnProperty(this.storageKey)) {
+            return <T>setObj[this.storageKey];
         }
 
         try {
             // There is nothing, so set the default value
-            await this._setAll(this._storageDefaults);
+            await this.setAll(this.storageDefaults);
         } catch (err) {
             throw err;
         }
 
-        return this._storageDefaults;
+        return this.storageDefaults;
     }
 
-    async set(key: keyof T, value: any) {
+    public async set(key: keyof T, value: any) {
         const settings: T = await this.getAll();
 
         console.log(settings);
@@ -49,10 +49,10 @@ abstract class AbstractStorage<T extends StorageElement> {
 
         settings[key] = value;
 
-        return await this._setAll(settings);
+        return await this.setAll(settings);
     }
 
-    async get(key: string): Promise<any> {
+    public async get(key: string): Promise<any> {
         const settings = await this.getAll();
 
         if (!settings.hasOwnProperty(key)) {

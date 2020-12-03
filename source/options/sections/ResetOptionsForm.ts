@@ -11,11 +11,11 @@
 import ConfigStorage from "../../lib/storage/ConfigStorage";
 import dom from "../../lib/dom";
 class ResetOptionsForm {
-    _configStorage: ConfigStorage;
-    $resetFormButton: HTMLElement | null;
+    private configStorage: ConfigStorage;
+    private $resetFormButton: HTMLElement | null;
 
     constructor(configStorage: ConfigStorage) {
-        this._configStorage = configStorage;
+        this.configStorage = configStorage;
         this.$resetFormButton = null;
     }
 
@@ -27,13 +27,13 @@ class ResetOptionsForm {
         );
     }
 
-    async handleResetForm() {
+    private async handleResetForm() {
         const isOk = confirm(
             "Are you sure you want reset the settings back to default?"
         );
 
         if (isOk) {
-            await this._configStorage.reset("options-form");
+            await this.configStorage.reset("options-form");
         }
     }
 }

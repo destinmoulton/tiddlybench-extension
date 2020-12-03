@@ -16,7 +16,7 @@ const EXTENSION_URL = {
     [EExtensionURL.TiddlerForm]: "tabs/tabs.html#section=tiddler_form",
 };
 export default class TabsManager {
-    async openListTiddlersTab(cacheID: string, newTab: boolean = true) {
+    public async openListTiddlersTab(cacheID: string, newTab: boolean = true) {
         const url =
             EXTENSION_URL[EExtensionURL.ChooseTiddler] + "&cache_id=" + cacheID;
         if (newTab) {
@@ -26,7 +26,10 @@ export default class TabsManager {
             return true;
         }
     }
-    async openTiddlerForm(contextCacheID: string, newTab: boolean = false) {
+    public async openTiddlerForm(
+        contextCacheID: string,
+        newTab: boolean = false
+    ) {
         const url = EXTENSION_URL[EExtensionURL.TiddlerForm];
         if (newTab) {
             return await this.openTab(url);
@@ -35,17 +38,17 @@ export default class TabsManager {
             return true;
         }
     }
-    async openSettingsTab() {
+    public async openSettingsTab() {
         return await this.openTab(EXTENSION_URL[EExtensionURL.Settings]);
     }
-    async openTab(url: string) {
+    public async openTab(url: string) {
         // We only want one version of a tab existing
         await this.closeCurrentTabsForURL(url);
 
         return browser.tabs.create({ url });
     }
 
-    async closeCurrentTabsForURL(url: string) {
+    public async closeCurrentTabsForURL(url: string) {
         const tabs = await this.findTabsByURL(url);
 
         let tabsToClose = [];
@@ -59,7 +62,7 @@ export default class TabsManager {
         }
     }
 
-    async findTabsByURL(url: string) {
+    public async findTabsByURL(url: string) {
         const partial = url;
         const tabs = await this.getAll();
         const foundTabs = [];
@@ -71,17 +74,19 @@ export default class TabsManager {
         return foundTabs;
     }
 
-    async getAll() {
+    public async getAll() {
         return await browser.tabs.query({});
     }
 
-    async doesTabExist(tab_id: number) {
+    public async doesTabExist(tab_id: number) {
         const tabs = await this.getAll();
 
         return tabs.some((tab) => tab.id === tab_id);
     }
 
-    async getTabByID(tab_id: number): Promise<browser.tabs.Tab | undefined> {
+    public async getTabByID(
+        tab_id: number
+    ): Promise<browser.tabs.Tab | undefined> {
         const tabs = await this.getAll();
         const results = tabs.filter((tab) => tab.id === tab_id);
         if (results.length > 0) {
@@ -90,7 +95,7 @@ export default class TabsManager {
         return undefined;
     }
 
-    async closeThisTab() {
+    public async closeThisTab() {
         const tab = await browser.tabs.getCurrent();
         if (tab && tab.id) {
             return await browser.tabs.remove(tab.id);

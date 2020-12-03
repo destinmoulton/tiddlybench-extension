@@ -19,12 +19,12 @@ import { TFormInputOptions } from "../types";
 //import logger from "../lib/logger";
 
 class OptionsForm {
-    _api: API;
-    _configStorage: ConfigStorage;
-    _testConnection: TestConnection;
-    _resetOptionsForm: ResetOptionsForm;
+    private api: API;
+    private configStorage: ConfigStorage;
+    private testConnection: TestConnection;
+    private resetOptionsForm: ResetOptionsForm;
 
-    _html = {
+    private html = {
         label: "",
         input: {
             text: "",
@@ -38,40 +38,40 @@ class OptionsForm {
     };
 
     constructor(api: API, configStorage: ConfigStorage) {
-        this._api = api;
-        this._configStorage = configStorage;
-        this._testConnection = new TestConnection(this._api);
-        this._resetOptionsForm = new ResetOptionsForm(configStorage);
+        this.api = api;
+        this.configStorage = configStorage;
+        this.testConnection = new TestConnection(this.api);
+        this.resetOptionsForm = new ResetOptionsForm(configStorage);
     }
 
-    display() {
-        this._loadAllHTMLTemplates();
-        this._buildForm();
-        this._testConnection.initialize();
-        this._resetOptionsForm.initialize();
-        this._configStorage.syncForm("options-form");
+    public display() {
+        this.loadAllHTMLTemplates();
+        this.buildForm();
+        this.testConnection.initialize();
+        this.resetOptionsForm.initialize();
+        this.configStorage.syncForm("options-form");
     }
 
-    _loadAllHTMLTemplates() {
-        this._html = {
-            label: this._getTemplate("tmpl-form-label"),
+    private loadAllHTMLTemplates() {
+        this.html = {
+            label: this.getTemplate("tmpl-form-label"),
             input: {
-                text: this._getTemplate("tmpl-form-input-text"),
-                password: this._getTemplate("tmpl-form-input-password"),
-                select: this._getTemplate("tmpl-form-input-select"),
-                option: this._getTemplate("tmpl-form-input-select-option"),
+                text: this.getTemplate("tmpl-form-input-text"),
+                password: this.getTemplate("tmpl-form-input-password"),
+                select: this.getTemplate("tmpl-form-input-select"),
+                option: this.getTemplate("tmpl-form-input-select-option"),
             },
-            section: this._getTemplate("tmpl-form-section"),
-            group: this._getTemplate("tmpl-form-group"),
+            section: this.getTemplate("tmpl-form-section"),
+            group: this.getTemplate("tmpl-form-group"),
         };
     }
 
-    _getTemplate(templateID: string) {
+    private getTemplate(templateID: string) {
         const $el = <HTMLElement>dom.el("#" + templateID);
         return $el.innerHTML;
     }
 
-    _buildForm() {
+    private buildForm() {
         let html = "";
         for (let section of FORM_SECTIONS) {
             let groups = [];
@@ -80,27 +80,22 @@ class OptionsForm {
                     id: field.id,
                 };
                 let input = "";
-                let label = compiletemplate(this._html.label, {
+                let label = compiletemplate(this.html.label, {
                     id: field.id,
                     label: field.label,
                 });
                 switch (field.type) {
                     case "text":
-                        input = compiletemplate(this._html.input.text, opts);
+                        input = compiletemplate(this.html.input.text, opts);
                         break;
                     case "password":
-                        input = compiletemplate(
-                            this._html.input.password,
-                            opts
-                        );
+                        input = compiletemplate(this.html.input.password, opts);
                         break;
                     case "select": {
                         if (field.options) {
-                            input = compiletemplate(this._html.input.select, {
+                            input = compiletemplate(this.html.input.select, {
                                 ...opts,
-                                options: this._buildSelectOptions(
-                                    field.options
-                                ),
+                                options: this.buildSelectOptions(field.options),
                             });
                         }
                         break;
@@ -115,11 +110,9 @@ class OptionsForm {
                         }
                     }
                 }
-                groups.push(
-                    compiletemplate(this._html.group, { label, input })
-                );
+                groups.push(compiletemplate(this.html.group, { label, input }));
             }
-            html += compiletemplate(this._html.section, {
+            html += compiletemplate(this.html.section, {
                 section_icon: section.section_icon,
                 section_title: section.section_title,
                 section_subheading: section.section_subheading,
@@ -131,12 +124,12 @@ class OptionsForm {
         $root.innerHTML = html;
     }
 
-    _buildSelectOptions(options: TFormInputOptions) {
+    private buildSelectOptions(options: TFormInputOptions) {
         let html = [];
         if (_.isArray(options)) {
             for (let option of options) {
                 html.push(
-                    compiletemplate(this._html.input.option, {
+                    compiletemplate(this.html.input.option, {
                         value: option,
                         option,
                     })
@@ -146,7 +139,7 @@ class OptionsForm {
             for (let value in options) {
                 const option = options[value];
                 html.push(
-                    compiletemplate(this._html.input.option, { value, option })
+                    compiletemplate(this.html.input.option, { value, option })
                 );
             }
         }

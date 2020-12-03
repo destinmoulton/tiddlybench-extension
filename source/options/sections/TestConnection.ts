@@ -10,20 +10,19 @@
 
 import API from "../../lib/API";
 import dom from "../../lib/dom";
-import logger from "../../lib/logger";
 import { EConfigKey } from "../../enums";
-//import { API_Result } from "../../types";
+
 class TestConnection {
-    _api: API;
-    $testConnectionButton: HTMLElement | null;
-    $testConnectionSuccessMessage: HTMLElement | null;
-    $testConnectionErrorMessage: HTMLElement | null;
-    $url: HTMLInputElement | null;
-    $username: HTMLInputElement | null;
-    $password: HTMLInputElement | null;
+    private api: API;
+    private $testConnectionButton: HTMLElement | null;
+    private $testConnectionSuccessMessage: HTMLElement | null;
+    private $testConnectionErrorMessage: HTMLElement | null;
+    private $url: HTMLInputElement | null;
+    private $username: HTMLInputElement | null;
+    private $password: HTMLInputElement | null;
 
     constructor(api: API) {
-        this._api = api;
+        this.api = api;
         this.$testConnectionButton = null;
         this.$testConnectionSuccessMessage = null;
         this.$testConnectionErrorMessage = null;
@@ -32,7 +31,7 @@ class TestConnection {
         this.$password = null;
     }
 
-    initialize() {
+    public initialize() {
         this.$testConnectionButton = <HTMLElement>dom.el("#tb-test-connection");
         this.$testConnectionButton.addEventListener(
             "click",
@@ -55,84 +54,69 @@ class TestConnection {
         );
     }
 
-    async handleClickTestConnectionButton(): Promise<boolean> {
-        if (this._validate()) {
-            const res = await this._api.getStatus();
+    private async handleClickTestConnectionButton(): Promise<boolean> {
+        if (this.validate()) {
+            const res = await this.api.getStatus();
             if (res.ok) {
-                this._showSuccessMessage();
+                this.showSuccessMessage();
                 return true;
             } else {
-                this._showErrorMessage(<string>res.message);
+                this.showErrorMessage(<string>res.message);
             }
         }
         return false;
     }
 
-    private _validate() {
+    private validate() {
         if (this.$url) {
             const url = this.$url.value;
             if (url.trim() === "") {
-                this._showErrorMessage("You must include a URL");
+                this.showErrorMessage("You must include a URL");
                 return false;
             }
         }
         if (this.$username) {
             const username = this.$username.value;
             if (username.trim() === "") {
-                this._showErrorMessage("You must include a username.");
+                this.showErrorMessage("You must include a username.");
                 return false;
             }
         }
         if (this.$password) {
             const username = this.$password.value;
             if (username.trim() === "") {
-                this._showErrorMessage("You must include a password.");
+                this.showErrorMessage("You must include a password.");
                 return false;
             }
         }
         return true;
     }
 
-    private _showSuccessMessage() {
-        this._hideErrorMessage();
+    private showSuccessMessage() {
+        this.hideErrorMessage();
         if (this.$testConnectionSuccessMessage) {
             this.$testConnectionSuccessMessage.style.display = "inline-block";
-        } else {
-            logger.error(
-                "OptionsForm :: testConnectionOptions() ;; this.$testConnectionSuccessMessage is null."
-            );
         }
     }
 
-    private _hideSuccessMessage() {
+    private hideSuccessMessage() {
         if (this.$testConnectionSuccessMessage) {
             this.$testConnectionSuccessMessage.style.display = "none";
-        } else {
-            logger.error(
-                "OptionsForm :: testConnectionOptions() ;; this.$testConnectionSuccessMessage is null."
-            );
         }
     }
-    private _showErrorMessage(message: string) {
-        this._hideSuccessMessage();
+
+    private showErrorMessage(message: string) {
+        this.hideSuccessMessage();
         if (this.$testConnectionErrorMessage) {
             this.$testConnectionErrorMessage.innerText = <string>message;
             this.$testConnectionErrorMessage.style.display = "inline-block";
-        } else {
-            logger.error(
-                "TestConnection :: _showErrorMessage() ||  this.$testConnectionErrorMessage is null."
-            );
         }
     }
 
-    private _hideErrorMessage() {
+    private hideErrorMessage() {
         if (this.$testConnectionErrorMessage) {
             this.$testConnectionErrorMessage.innerText = "";
             this.$testConnectionErrorMessage.style.display = "none";
-        } else {
-            logger.error(
-                "TestConnection :: _showErrorMessage() ||  this.$testConnectionErrorMessage is null."
-            );
         }
     }
 }

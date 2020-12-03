@@ -12,23 +12,23 @@ export const ENDPOINTS = {
 };
 
 class API {
-    _configStorage: ConfigStorage;
+    private configStorage: ConfigStorage;
 
     constructor(configStorage: ConfigStorage) {
-        this._configStorage = configStorage;
+        this.configStorage = configStorage;
         this.joinURL = this.joinURL.bind(this);
     }
 
-    joinURL(p1: string, p2: string) {
+    private joinURL(p1: string, p2: string) {
         p1 = p1.endsWith("/") ? p1.substr(0, p1.length - 1) : p1;
         p2 = p2.startsWith("/") ? p2.substr(1) : p2;
 
         return p1 + "/" + p2;
     }
 
-    async get(url: string): Promise<API_Result> {
+    public async get(url: string): Promise<API_Result> {
         let response;
-        const options = await this._configStorage.getAll();
+        const options = await this.configStorage.getAll();
         try {
             response = await superagent
                 .get(url)
@@ -69,14 +69,14 @@ class API {
         return { ok: true, data };
     }
 
-    async putTiddler(tiddler: IFullTiddler): Promise<API_Result> {
+    public async putTiddler(tiddler: IFullTiddler): Promise<API_Result> {
         if (!tiddler.title || tiddler.title === "") {
             console.error("putTiddler() :: tiddler", tiddler);
             throw new Error(
                 "API :: putTiddler() :: You must include a title in the tiddler."
             );
         }
-        const conf = await this._configStorage.getAll();
+        const conf = await this.configStorage.getAll();
         let response;
         const uriTitle = encodeURIComponent(tiddler.title);
         let url = this.joinURL(
@@ -117,8 +117,8 @@ class API {
     /**
      * Get the /status of the server
      */
-    async getStatus(): Promise<API_Result> {
-        const options = await this._configStorage.getAll();
+    public async getStatus(): Promise<API_Result> {
+        const options = await this.configStorage.getAll();
         const url = this.joinURL(
             options[EConfigKey.SERVER_URL],
             ENDPOINTS.STATUS
@@ -126,8 +126,8 @@ class API {
         return await this.get(url);
     }
 
-    async getTiddler(tiddlerTitle: string): Promise<API_Result> {
-        const serverURL = await this._configStorage.get(EConfigKey.SERVER_URL);
+    public async getTiddler(tiddlerTitle: string): Promise<API_Result> {
+        const serverURL = await this.configStorage.get(EConfigKey.SERVER_URL);
         const uriTiddlerTitle = encodeURIComponent(tiddlerTitle);
         let url = this.joinURL(serverURL, ENDPOINTS.GET_SINGLE_TIDDLER);
         url = this.joinURL(url, uriTiddlerTitle);
@@ -135,8 +135,8 @@ class API {
         return await this.get(url);
     }
 
-    async getAllTiddlers(): Promise<ITiddlerItem[]> {
-        const serverURL = await this._configStorage.get(EConfigKey.SERVER_URL);
+    public async getAllTiddlers(): Promise<ITiddlerItem[]> {
+        const serverURL = await this.configStorage.get(EConfigKey.SERVER_URL);
         let url = this.joinURL(serverURL, ENDPOINTS.GET_ALL);
 
         const res = await this.get(url);
@@ -151,8 +151,8 @@ class API {
      *
      * If the server is not up, open the config tab.
      */
-    async isServerUp(): Promise<boolean> {
-        if (await this._configStorage.isServerConfigured()) {
+    public async isServerUp(): Promise<boolean> {
+        if (await this.configStorage.isServerConfigured()) {
             const status = await this.getStatus();
             if (status.ok) {
                 return true;

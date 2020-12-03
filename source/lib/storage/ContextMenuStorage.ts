@@ -28,27 +28,27 @@ interface IContextMenuStorage extends StorageElement {
     [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]: string;
 }
 class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
-    _configStorage: ConfigStorage;
-    _storageDefaults: IContextMenuStorage;
-    _storageKey: string;
+    private configStorage: ConfigStorage;
+    protected storageDefaults: IContextMenuStorage;
+    storageKey: string;
 
     constructor(configStorage: ConfigStorage) {
         super();
-        this._configStorage = configStorage;
+        this.configStorage = configStorage;
 
-        this._storageDefaults = {
+        this.storageDefaults = {
             [EContextMenuStorageKeys.DESTINATIONS]: [],
             [EContextMenuStorageKeys.CACHE]: [],
             [EContextMenuStorageKeys.SELECTED_BLOCK_TYPE]: EBlockType.QUOTE,
         };
 
-        this._storageKey = "context_menu";
+        this.storageKey = "context_menu";
     }
-    async setSelectedBlockType(type: string) {
+    public async setSelectedBlockType(type: string) {
         await this.set(EContextMenuStorageKeys.SELECTED_BLOCK_TYPE, type);
     }
 
-    async getSelectedBlockType() {
+    public async getSelectedBlockType() {
         return await this.get(EContextMenuStorageKeys.SELECTED_BLOCK_TYPE);
     }
 
@@ -57,7 +57,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
      *
      * @returns string ID for selection cache.
      */
-    async addCache(
+    public async addCache(
         context: string,
         clickData: browser.contextMenus.OnClickData,
         tabData: browser.tabs.Tab | undefined
@@ -76,7 +76,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
         return cacheID;
     }
 
-    async removeCacheByID(cacheID: string) {
+    public async removeCacheByID(cacheID: string) {
         const caches = <IContextMenuCache[]>(
             await this.get(EContextMenuStorageKeys.CACHE)
         );
@@ -84,7 +84,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
         return await this.set(EContextMenuStorageKeys.CACHE, newCaches);
     }
 
-    async getCacheByID(cacheID: string): Promise<IContextMenuCache> {
+    public async getCacheByID(cacheID: string): Promise<IContextMenuCache> {
         const caches = <IContextMenuCache[]>(
             await this.get(EContextMenuStorageKeys.CACHE)
         );
@@ -97,11 +97,11 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
      * The selection cache should be cleared
      * soon after retrieval.
      */
-    async clearAllSelectionCache() {
+    public async clearAllSelectionCache() {
         return await this.set(EContextMenuStorageKeys.CACHE, []);
     }
 
-    async addCustomDestination(tiddler: ICustomDestinationTiddler) {
+    public async addCustomDestination(tiddler: ICustomDestinationTiddler) {
         const destination: ICustomDestination = {
             tiddler,
             last_addition_time: dayjs().unix(),
@@ -116,7 +116,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
             // destinations that are allowed in the
             // context menu
             const numAllowedCurrent = parseInt(
-                await this._configStorage.get(
+                await this.configStorage.get(
                     EConfigKey.CONTEXTMENU_NUM_CUSTOM_DESTINATIONS
                 )
             );
@@ -130,14 +130,14 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
         }
     }
 
-    async findDestinationByTitle(tiddlerTitle: string) {
+    public async findDestinationByTitle(tiddlerTitle: string) {
         const destinations = await this.getAllCustomDestinations();
 
         return destinations.find(
             (dest: ICustomDestination) => dest.tiddler.title === tiddlerTitle
         );
     }
-    async findDestinationById(id: string) {
+    public async findDestinationById(id: string) {
         const destinations = await this.getAllCustomDestinations();
 
         return destinations.find(
@@ -149,7 +149,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
      * Return a list of the custom destinations
      * sorted by last_addition_time DESC
      */
-    async getAllCustomDestinations(): Promise<ICustomDestination[]> {
+    public async getAllCustomDestinations(): Promise<ICustomDestination[]> {
         const dests = <ICustomDestination[]>(
             await this.get(EContextMenuStorageKeys.DESTINATIONS)
         );
@@ -166,7 +166,7 @@ class ContextMenuStorage extends AbstractStorage<IContextMenuStorage> {
         });
     }
 
-    async getCustomDestinationByID(id: string) {
+    public async getCustomDestinationByID(id: string) {
         const destinations = await this.getAllCustomDestinations();
         return destinations.find((dest) => dest.tiddler.tb_id === id);
     }

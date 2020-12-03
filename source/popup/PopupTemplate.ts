@@ -1,14 +1,14 @@
 import compiletemplate from "../lib/helpers/compiletemplate";
 import logger from "../lib/logger";
 class PopupTemplate {
-    _$root: HTMLElement;
-    _loadingAnimationOldHTML: string = "";
+    private $root: HTMLElement;
+    private loadingAnimationOldHTML: string = "";
 
     constructor() {
-        this._$root = this._getRootElement();
+        this.$root = this.getRootElement();
     }
 
-    _getRootElement(): HTMLElement {
+    private getRootElement(): HTMLElement {
         const $root = document.getElementById("tb-popup-root");
 
         if (!$root) {
@@ -17,7 +17,7 @@ class PopupTemplate {
 
         return $root;
     }
-    _compile(templateID: string, data: any): string {
+    protected compile(templateID: string, data: any): string {
         const $tmpl = document.getElementById(templateID);
 
         logger.log("PopupTemplates :: render()", templateID);
@@ -28,32 +28,32 @@ class PopupTemplate {
         return compiletemplate($tmpl.innerText, data);
     }
 
-    _render(html: string) {
+    protected render(html: string) {
         logger.log("PopupTemplate :: adding html");
-        this._$root.innerHTML = html;
+        this.$root.innerHTML = html;
     }
 
-    _append(html: string) {
-        this._$root.innerHTML = this._$root.innerHTML + html;
+    protected append(html: string) {
+        this.$root.innerHTML = this.$root.innerHTML + html;
     }
 
-    _loadingAnimation(animationText: string) {
-        this._loadingAnimationOldHTML = this._$root.innerHTML;
+    protected loadingAnimation(animationText: string) {
+        this.loadingAnimationOldHTML = this.$root.innerHTML;
 
-        const loaderHTML = this._getLoadingAnimationHTML(animationText);
+        const loaderHTML = this.getLoadingAnimationHTML(animationText);
 
-        this._render(loaderHTML);
+        this.render(loaderHTML);
     }
 
-    _getLoadingAnimationHTML(loadingText: string) {
-        return this._compile("tmpl-loading-animation", {
+    protected getLoadingAnimationHTML(loadingText: string) {
+        return this.compile("tmpl-loading-animation", {
             text: loadingText,
         });
     }
 
     // Return the root to the old HTML
-    _cancelLoadingAnimation() {
-        this._$root.innerHTML = this._loadingAnimationOldHTML;
+    protected cancelLoadingAnimation() {
+        this.$root.innerHTML = this.loadingAnimationOldHTML;
     }
 }
 

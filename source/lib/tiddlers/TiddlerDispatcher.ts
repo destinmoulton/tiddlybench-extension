@@ -1,4 +1,4 @@
-import {truncate} from "lodash";
+import { truncate } from "lodash";
 
 import API from "../API";
 import ConfigStorage from "../storage/ConfigStorage";
@@ -24,33 +24,33 @@ const DESTINATIONS = {
     [EDestinationTiddler.CUSTOM]: CustomDestination,
 };
 class TiddlerDispatcher {
-    _api: API;
-    _configStorage: ConfigStorage;
-    _contextMenuStorage: ContextMenuStorage;
+    private api: API;
+    private configStorage: ConfigStorage;
+    private contextMenuStorage: ContextMenuStorage;
 
     constructor(
         api: API,
         configStorage: ConfigStorage,
         contextMenuStorage: ContextMenuStorage
     ) {
-        this._api = api;
-        this._configStorage = configStorage;
-        this._contextMenuStorage = contextMenuStorage;
+        this.api = api;
+        this.configStorage = configStorage;
+        this.contextMenuStorage = contextMenuStorage;
     }
 
-    async dispatchMessengerAction(msg: IDispatchOptions) {
+    public async dispatchMessengerAction(msg: IDispatchOptions) {
         if (!msg.destination) {
             throw new Error(`The destination in msg is not defined`);
         }
         const tiddler = new DESTINATIONS[msg.destination](
-            this._api,
-            this._configStorage,
-            this._contextMenuStorage
+            this.api,
+            this.configStorage,
+            this.contextMenuStorage
         );
         let res: any = null;
         let title: string = "";
         switch (msg.source) {
-            case EDispatchSource.QUICKADD:{
+            case EDispatchSource.QUICKADD: {
                 console.log("quickadd message being processed");
                 // Quick Add dispatcher
                 if (!msg.packet.text) {
@@ -69,11 +69,11 @@ class TiddlerDispatcher {
 
                 break;
             }
-            case EDispatchSource.TAB:{
+            case EDispatchSource.TAB: {
                 // Dispatched when a user selects a tiddler from the
                 // TiddlerList component in a tab
 
-                const blockType = await this._contextMenuStorage.getSelectedBlockType();
+                const blockType = await this.contextMenuStorage.getSelectedBlockType();
 
                 const cacheID = msg.packet.cache_id;
                 if (!cacheID) {
@@ -81,14 +81,21 @@ class TiddlerDispatcher {
                         "The context menu cache could not be found."
                     );
                 }
-                const cache = await this._contextMenuStorage.getCacheByID(
+                const cache = await this.contextMenuStorage.getCacheByID(
                     cacheID
                 );
 
-                if (!cache || !cache.clickData ||
-                    !cache.clickData.selectionText || !cache.tabData || 
-                    !cache.tabData.title || !cache.tabData.url){
-                    throw new Error("tabData or clickData is not present in the message object");
+                if (
+                    !cache ||
+                    !cache.clickData ||
+                    !cache.clickData.selectionText ||
+                    !cache.tabData ||
+                    !cache.tabData.title ||
+                    !cache.tabData.url
+                ) {
+                    throw new Error(
+                        "tabData or clickData is not present in the message object"
+                    );
                 }
 
                 const tabInfo: ITabInfo = {
@@ -96,34 +103,43 @@ class TiddlerDispatcher {
                     url: cache.tabData.url,
                 };
 
-                switch(msg.action){
-                    case EDispatchAction.ADD_TEXT_TO_TIDDLER:{
+                switch (msg.action) {
+                    case EDispatchAction.ADD_TEXT_TO_TIDDLER: {
                         // A Tiddler has been selected from the TiddlerList
-                        if(!msg.packet.tiddler_id){
-                            throw new Error("TiddlerDispatcher :: the msg.packet.tiddler_id is not set.")
+                        if (!msg.packet.tiddler_id) {
+                            throw new Error(
+                                "TiddlerDispatcher :: the msg.packet.tiddler_id is not set."
+                            );
                         }
-                        const dest = await this._contextMenuStorage.getCustomDestinationByID(
+                        const dest = await this.contextMenuStorage.getCustomDestinationByID(
                             msg.packet.tiddler_id
                         );
 
-                        if(!dest){
-                            throw new Error("TiddlerDispatcher :: The destination was not found in the context menu storage.")
+                        if (!dest) {
+                            throw new Error(
+                                "TiddlerDispatcher :: The destination was not found in the context menu storage."
+                            );
                         }
                         tiddler.setTiddlerTitle(dest.tiddler.title);
                         break;
                     }
-                    case EDispatchAction.ADD_TIDDLER_WITH_TEXT:{
+                    case EDispatchAction.ADD_TIDDLER_WITH_TEXT: {
                         // The TiddlerForm Tab has been used to create a new tab
-                        if(!msg.packet.tiddler_title || !msg.packet.tiddler_tags){
-                            throw new Error("TiddlerDispatcher :: You must include the tiddler_title and tiddler_tags in the msg.packet.")
+                        if (
+                            !msg.packet.tiddler_title ||
+                            !msg.packet.tiddler_tags
+                        ) {
+                            throw new Error(
+                                "TiddlerDispatcher :: You must include the tiddler_title and tiddler_tags in the msg.packet."
+                            );
                         }
-                        tiddler.setTiddlerTitle(msg.packet.tiddler_title)
+                        tiddler.setTiddlerTitle(msg.packet.tiddler_title);
                         tiddler.setTiddlerTags(msg.packet.tiddler_tags);
 
                         break;
                     }
                 }
-                    
+
                 await tiddler.configure();
                 await tiddler.addText(
                     cache.clickData.selectionText,
@@ -131,7 +147,7 @@ class TiddlerDispatcher {
                     tabInfo
                 );
                 let title = tiddler.getTiddlerTitle();
-                title = truncate(title,{length:20});
+                title = truncate(title, { length: 20 });
 
                 break;
             }
@@ -151,7 +167,7 @@ class TiddlerDispatcher {
         }
     }
 
-    async dispatchContextAction(
+    public async dispatchContextAction(
         options: IDispatchOptions,
         clickData: browser.contextMenus.OnClickData | undefined,
         tabData: browser.tabs.Tab | undefined
@@ -172,26 +188,32 @@ class TiddlerDispatcher {
             );
         }
 
-        if(options.destination === EDestinationTiddler.NONE ){
+        if (options.destination === EDestinationTiddler.NONE) {
             throw new Error(
                 "TiddlerDispatcher :: destination in options is null"
             );
         }
 
         const tiddler = new DESTINATIONS[options.destination](
-            this._api,
-            this._configStorage,
-            this._contextMenuStorage
+            this.api,
+            this.configStorage,
+            this.contextMenuStorage
         );
 
-        if(options.destination === EDestinationTiddler.CUSTOM){
+        if (options.destination === EDestinationTiddler.CUSTOM) {
             // Set the title for the custom destination tiddler
-            if(!options.packet.tiddler_id){
-                throw new Error("TiddlerDispatcher :: tiddler_id must be included in the options.packet")
+            if (!options.packet.tiddler_id) {
+                throw new Error(
+                    "TiddlerDispatcher :: tiddler_id must be included in the options.packet"
+                );
             }
-            const customDestination = await this._contextMenuStorage.getCustomDestinationByID(options.packet.tiddler_id);
-            if(!customDestination){
-                throw new Error("TiddlerDispatcher :: the customDestination could not be found in the context menu list of possible custom destinations.");
+            const customDestination = await this.contextMenuStorage.getCustomDestinationByID(
+                options.packet.tiddler_id
+            );
+            if (!customDestination) {
+                throw new Error(
+                    "TiddlerDispatcher :: the customDestination could not be found in the context menu list of possible custom destinations."
+                );
             }
 
             tiddler.setTiddlerTitle(customDestination.tiddler.title);
@@ -199,14 +221,14 @@ class TiddlerDispatcher {
 
         await tiddler.configure();
 
-        switch(options.action){
+        switch (options.action) {
             case EDispatchAction.ADD_TEXT_TO_TIDDLER: {
                 if (options.context === EContextType.SELECTION && clickData) {
                     if (
                         clickData.selectionText &&
                         clickData.selectionText !== ""
                     ) {
-                        const blockType = await this._contextMenuStorage.getSelectedBlockType();
+                        const blockType = await this.contextMenuStorage.getSelectedBlockType();
                         await tiddler.addText(
                             clickData.selectionText,
                             blockType,
@@ -225,8 +247,7 @@ class TiddlerDispatcher {
                 break;
             }
             case EDispatchAction.ADD_BOOKMARK_TO_TIDDLER: {
-                if(options.context === EContextType.PAGE){
-
+                if (options.context === EContextType.PAGE) {
                     await tiddler.addBookmark(tabInfo);
                     const response = await tiddler.submit();
                     if (response.ok) {

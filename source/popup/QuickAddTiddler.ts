@@ -32,8 +32,8 @@ class QuickAddTiddler extends PopupTemplate {
     }
 
     display() {
-        const html = this._compile("tmpl-quickadd-tiddler", {});
-        this._append(html);
+        const html = this.compile("tmpl-quickadd-tiddler", {});
+        this.append(html);
     }
 
     async setup() {
@@ -47,7 +47,9 @@ class QuickAddTiddler extends PopupTemplate {
         this.$container = <HTMLElement>dom.el("#tb-popup-quickadd-box");
 
         // Focus on the textarea
-        this.$textarea = <HTMLInputElement>dom.el("#tb-popup-quickadd-contents");
+        this.$textarea = <HTMLInputElement>(
+            dom.el("#tb-popup-quickadd-contents")
+        );
         this.$textarea.focus();
         this.$textarea.addEventListener(
             "keydown",
@@ -59,7 +61,9 @@ class QuickAddTiddler extends PopupTemplate {
         this.$destination.value = defaultDestination;
 
         // Build the block type dropdown
-        this.$blocktype = <HTMLInputElement>dom.el("#tb-popup-quickadd-blocktype");
+        this.$blocktype = <HTMLInputElement>(
+            dom.el("#tb-popup-quickadd-blocktype")
+        );
         this.$blocktype.innerHTML = this._getBlockTypesOptionsHTML();
         this.$blocktype.value = defaultBlockType;
 
@@ -80,7 +84,7 @@ class QuickAddTiddler extends PopupTemplate {
             throw new Error("An element was not found in the dom.");
         }
         if (this.validate()) {
-            const animation = this._getLoadingAnimationHTML("Adding...");
+            const animation = this.getLoadingAnimationHTML("Adding...");
             this.$container.innerHTML = animation;
             try {
                 const blockType = this.$blocktype.value;
@@ -120,7 +124,7 @@ class QuickAddTiddler extends PopupTemplate {
         for (let blockKey in BLOCK_TYPES) {
             const blockName = BLOCK_TYPES[<EBlockType>blockKey];
 
-            const html = this._compile("tmpl-quickadd-blocktype-option", {
+            const html = this.compile("tmpl-quickadd-blocktype-option", {
                 block_type: blockKey,
                 block_title: blockName,
             });

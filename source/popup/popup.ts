@@ -9,7 +9,7 @@ window.addEventListener("load", function() {
     const configStorage = new ConfigStorage();
     const tabsManager = new TabsManager();
     const api = new API(configStorage);
-    const messenger = new Messenger(api, configStorage);
+    const messenger = new Messenger();
     const quickAddTiddler = new QuickAddTiddler(configStorage, messenger);
     const mainMenu = new MainMenu(tabsManager);
     const popup = new Popup(api, mainMenu, quickAddTiddler, tabsManager);
@@ -17,10 +17,10 @@ window.addEventListener("load", function() {
 });
 
 class Popup extends PopupTemplate {
-    _api: API;
-    _mainMenu: MainMenu;
-    _quickAddTiddler: QuickAddTiddler;
-    _tabsManager: TabsManager;
+    private api: API;
+    private mainMenu: MainMenu;
+    private quickAddTiddler: QuickAddTiddler;
+    private tabsManager: TabsManager;
 
     constructor(
         api: API,
@@ -29,24 +29,24 @@ class Popup extends PopupTemplate {
         tabsManager: TabsManager
     ) {
         super();
-        this._api = api;
-        this._mainMenu = mainMenu;
-        this._quickAddTiddler = quickAddTiddler;
-        this._tabsManager = tabsManager;
+        this.api = api;
+        this.mainMenu = mainMenu;
+        this.quickAddTiddler = quickAddTiddler;
+        this.tabsManager = tabsManager;
     }
-    async initialize() {
+    public async initialize() {
         //const status = await this._api.getStatus();
 
-        if (!(await this._api.isServerUp())) {
-            await this._tabsManager.openSettingsTab();
+        if (!(await this.api.isServerUp())) {
+            await this.tabsManager.openSettingsTab();
         } else {
             // Add the html
-            this._quickAddTiddler.display();
-            this._mainMenu.display();
+            this.quickAddTiddler.display();
+            this.mainMenu.display();
 
             // setup the functionality
-            await this._quickAddTiddler.setup();
-            this._mainMenu.setup();
+            await this.quickAddTiddler.setup();
+            this.mainMenu.setup();
         }
     }
 }

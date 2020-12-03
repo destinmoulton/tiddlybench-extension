@@ -14,7 +14,7 @@ window.addEventListener("load", () => {
     const contextMenuStorage = new ContextMenuStorage(configStorage);
     const tabsManager = new TabsManager();
     const api = new API(configStorage);
-    const messenger = new Messenger(api, configStorage);
+    const messenger = new Messenger();
     const listTiddlers = new ListTiddlers(
         api,
         contextMenuStorage,
@@ -27,58 +27,55 @@ window.addEventListener("load", () => {
         messenger,
         tabsManager
     );
-    const tabs = new Tabs( listTiddlers, tiddlerForm);
+    const tabs = new Tabs(listTiddlers, tiddlerForm);
     tabs.initialize();
 });
 
 class Tabs {
-    _listTiddlers: ListTiddlers;
-    _tiddlerForm: TiddlerForm;
-    _activeSection: string;
+    private listTiddlers: ListTiddlers;
+    private tiddlerForm: TiddlerForm;
+    private activeSection: string;
 
-    constructor( listTiddlers: ListTiddlers, tiddlerForm: TiddlerForm) {
-        this._listTiddlers = listTiddlers;
-        this._tiddlerForm = tiddlerForm;
-        this._activeSection = "";
+    constructor(listTiddlers: ListTiddlers, tiddlerForm: TiddlerForm) {
+        this.listTiddlers = listTiddlers;
+        this.tiddlerForm = tiddlerForm;
+        this.activeSection = "";
     }
 
-    initialize() {
-        this._activeSection = this._getActiveSection();
-        this._listTiddlers.initialize("tb-tabs-root");
-        this._tiddlerForm.initialize("tb-tabs-root");
-        this._display();
+    public initialize() {
+        this.activeSection = this.getActiveSection();
+        this.listTiddlers.initialize("tb-tabs-root");
+        this.tiddlerForm.initialize("tb-tabs-root");
+        this.display();
 
         // Re-run the display method when
         // the hash changes
-        window.addEventListener(
-            "hashchange",
-            this._handleHashChange.bind(this)
-        );
+        window.addEventListener("hashchange", this.handleHashChange.bind(this));
     }
 
-    _handleHashChange() {
-        this._activeSection = this._getActiveSection();
-        this._display();
+    private handleHashChange() {
+        this.activeSection = this.getActiveSection();
+        this.display();
     }
 
-    _display() {
-        switch (this._activeSection) {
+    private display() {
+        switch (this.activeSection) {
             case "choose_tiddler": {
-                this._listTiddlers.display();
+                this.listTiddlers.display();
                 break;
             }
             case "tiddler_form": {
-                this._tiddlerForm.display();
+                this.tiddlerForm.display();
                 break;
             }
             default:
-                this._listTiddlers.display();
+                this.listTiddlers.display();
                 break;
         }
     }
 
-    _getActiveSection(): string {
-        const params = this._getHashParams();
+    private getActiveSection(): string {
+        const params = this.getHashParams();
         const section = params.get("section");
         if (section) {
             return section;
@@ -86,7 +83,7 @@ class Tabs {
         return "";
     }
 
-    _getHashParams() {
+    private getHashParams() {
         return new URLSearchParams(window.location.hash.substr(1));
     }
 }

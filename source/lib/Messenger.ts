@@ -1,17 +1,8 @@
 import { browser } from "webextension-polyfill-ts";
 
-import API from "./API";
-import ConfigStorage from "./storage/ConfigStorage";
 import notify from "./notify";
 class Messenger {
-    _api: API;
-    _configStorage: ConfigStorage;
-
-    constructor(api: API, configStorage: ConfigStorage) {
-        this._api = api;
-        this._configStorage = configStorage;
-    }
-    setupListener(
+    public setupListener(
         listener: (
             data: any,
             sender: browser.runtime.MessageSender
@@ -24,7 +15,7 @@ class Messenger {
         browser.runtime.onMessage.addListener(listener);
     }
 
-    async send(
+    public async send(
         message: any,
         responseHandler?: (message: any) => any,
         errorHandler?: () => any
@@ -33,20 +24,20 @@ class Messenger {
         if (responseHandler && errorHandler) {
             return sending.then(responseHandler, errorHandler);
         } else if (responseHandler) {
-            return sending.then(responseHandler, this._handleError);
+            return sending.then(responseHandler, this.handleError);
         } else {
-            return sending.then(this._handleSuccess, this._handleError);
+            return sending.then(this.handleSuccess, this.handleError);
         }
     }
 
-    _handleSuccess(response: any) {
+    private handleSuccess(response: any) {
         if (response.message) {
             // Notify the user
             notify(response.message);
         }
     }
 
-    _handleError(error: any) {
+    private handleError(error: any) {
         console.error("Messenger :: _handleError", error);
     }
 }

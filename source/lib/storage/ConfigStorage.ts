@@ -6,12 +6,12 @@ type TSettings = {
     [key in EConfigKey]: string;
 };
 class ConfigStorage extends AbstractStorage<TSettings> {
-    _storageDefaults: TSettings;
-    _storageKey: string;
+    storageDefaults: TSettings;
+    storageKey: string;
 
     constructor() {
         super();
-        this._storageDefaults = {
+        this.storageDefaults = {
             [EConfigKey.SERVER_URL]: "",
             [EConfigKey.SERVER_USERNAME]: "",
             [EConfigKey.SERVER_PASSWORD]: "",
@@ -38,10 +38,10 @@ class ConfigStorage extends AbstractStorage<TSettings> {
             [EConfigKey.QUICKADD_DEFAULT_BLOCKTYPE]: "ulitem",
         };
 
-        this._storageKey = "settings";
+        this.storageKey = "settings";
     }
 
-    async isServerConfigured(): Promise<boolean> {
+    public async isServerConfigured(): Promise<boolean> {
         const config = await this.getAll();
 
         if (
@@ -54,7 +54,7 @@ class ConfigStorage extends AbstractStorage<TSettings> {
         return false;
     }
 
-    async reset(formID: string) {
+    public async reset(formID: string) {
         const $form = document.getElementById(formID);
         if (!$form) {
             throw new Error(
@@ -67,7 +67,7 @@ class ConfigStorage extends AbstractStorage<TSettings> {
         // Rewrite the html to reset all the even handlers
         $form.innerHTML = html;
 
-        await this._setAll(this._storageDefaults);
+        await this.setAll(this.storageDefaults);
 
         this.syncForm(formID);
     }
@@ -77,7 +77,7 @@ class ConfigStorage extends AbstractStorage<TSettings> {
      *
      * @param formID string
      */
-    async syncForm(formID: string) {
+    public async syncForm(formID: string) {
         const $form = document.getElementById(formID);
 
         const settings = await this.getAll();
@@ -88,7 +88,7 @@ class ConfigStorage extends AbstractStorage<TSettings> {
             );
         }
 
-        const inputIDs = Object.keys(this._storageDefaults);
+        const inputIDs = Object.keys(this.storageDefaults);
 
         for (let inputID of inputIDs) {
             const $input: HTMLInputElement = <HTMLInputElement>(
@@ -134,7 +134,7 @@ class ConfigStorage extends AbstractStorage<TSettings> {
         }
     }
 
-    async syncInputElement(e: Event) {
+    public async syncInputElement(e: Event) {
         if (e.target) {
             const id = (<HTMLInputElement>e.target).id;
             const val = (<HTMLInputElement>e.target).value;

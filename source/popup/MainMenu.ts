@@ -7,9 +7,9 @@ class MainMenu extends PopupTemplate {
         this._tabsManager = tabsManager;
     }
     display() {
-        const html = this._compile("tmpl-main-menu", {});
+        const html = this.compile("tmpl-main-menu", {});
 
-        this._append(html);
+        this.append(html);
     }
 
     setup() {

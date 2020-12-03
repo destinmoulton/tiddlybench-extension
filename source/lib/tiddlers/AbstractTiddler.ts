@@ -6,11 +6,11 @@ import ContextMenuStorage from "../storage/ContextMenuStorage";
 import { EConfigKey } from "../../enums";
 
 abstract class AbstractTiddler {
-    protected _api: API;
-    protected _configStorage: ConfigStorage;
-    protected _contextMenuStorage: ContextMenuStorage;
-    protected _tiddlerTitle: string;
-    protected _tiddler: IFullTiddler;
+    protected api: API;
+    protected configStorage: ConfigStorage;
+    protected contextMenuStorage: ContextMenuStorage;
+    protected tiddlerTitle: string;
+    protected tiddler: IFullTiddler;
     abstract async configure(...args: any): Promise<void>;
 
     constructor(
@@ -18,30 +18,30 @@ abstract class AbstractTiddler {
         configStorage: ConfigStorage,
         contextMenuStorage: ContextMenuStorage
     ) {
-        this._api = api;
-        this._configStorage = configStorage;
-        this._contextMenuStorage = contextMenuStorage;
+        this.api = api;
+        this.configStorage = configStorage;
+        this.contextMenuStorage = contextMenuStorage;
 
-        this._tiddlerTitle = "";
-        this._tiddler = {
+        this.tiddlerTitle = "";
+        this.tiddler = {
             title: "",
             text: "",
-            tags: ""
+            tags: "",
         };
     }
 
-    async getBlockTypePrefixSuffix(blockType: string) {
-        const prefix = await this._configStorage.get(
+    private async getBlockTypePrefixSuffix(blockType: string) {
+        const prefix = await this.configStorage.get(
             "block_" + blockType + "_prefix"
         );
-        const suffix = await this._configStorage.get(
+        const suffix = await this.configStorage.get(
             "block_" + blockType + "_suffix"
         );
 
         return [prefix, suffix];
     }
 
-    async addText(
+    public async addText(
         text: string,
         blockType: string,
         tabInfo: ITabInfo | undefined
@@ -63,23 +63,15 @@ abstract class AbstractTiddler {
         this.setTiddlerText(tiddlerText);
     }
 
-    async addBookmark(
-        tabInfo: ITabInfo | undefined
-    ) {
+    async addBookmark(tabInfo: ITabInfo | undefined) {
         if (this.getTiddlerTitle() === "") {
             throw new Error(
                 "No tiddler title has been set. Make sure the populateTitle and populateTiddler are called."
             );
         }
-        const prefix = await this._configStorage.get(
-            EConfigKey.BOOKMARK_PREFIX
-        );
-        const text = await this._configStorage.get(
-            EConfigKey.BOOKMARK_MARKDOWN
-        );
-        const suffix = await this._configStorage.get(
-            EConfigKey.BOOKMARK_SUFFIX
-        );
+        const prefix = await this.configStorage.get(EConfigKey.BOOKMARK_PREFIX);
+        const text = await this.configStorage.get(EConfigKey.BOOKMARK_MARKDOWN);
+        const suffix = await this.configStorage.get(EConfigKey.BOOKMARK_SUFFIX);
 
         let newText =
             recoder({ text: prefix, tabInfo }) +
@@ -98,16 +90,16 @@ abstract class AbstractTiddler {
     protected async populateTiddler(): Promise<void> {
         let res: API_Result;
         try {
-            res = await this._api.getTiddler(this._tiddlerTitle);
+            res = await this.api.getTiddler(this.tiddlerTitle);
         } catch (err) {
             throw err;
         }
         if (!res.ok && res.status === 404) {
             // The tiddler was not found, so set this one to blank
-            this._tiddler.title = this._tiddlerTitle;
+            this.tiddler.title = this.tiddlerTitle;
         } else if (res.ok) {
-            this._tiddler = <IFullTiddler>res.data;
-            console.log("_popuplateTiddler :: this._tiddler", this._tiddler);
+            this.tiddler = <IFullTiddler>res.data;
+            console.log("_popuplateTiddler :: this._tiddler", this.tiddler);
         } else {
             console.error(res);
             throw new Error(
@@ -119,14 +111,16 @@ abstract class AbstractTiddler {
     /**
      * Send the Tiddler to the server
      */
-    async submit() {
-        if(this._tiddlerTitle===""){
-            throw new Error("AbstractTiddler :: submit() - The _tiddlerTitle has not been set.");
+    public async submit() {
+        if (this.tiddlerTitle === "") {
+            throw new Error(
+                "AbstractTiddler :: submit() - The _tiddlerTitle has not been set."
+            );
         }
         try {
-            console.log("submit() :: ", this._tiddler);
+            console.log("submit() :: ", this.tiddler);
 
-            return await this._api.putTiddler(this._tiddler);
+            return await this.api.putTiddler(this.tiddler);
         } catch (err) {
             throw err;
         }
@@ -135,28 +129,28 @@ abstract class AbstractTiddler {
     /**
      * Get the tiddler
      */
-    getTiddler(): IFullTiddler {
-        return this._tiddler;
+    public getTiddler(): IFullTiddler {
+        return this.tiddler;
     }
 
-    getTiddlerText(): string {
-        return this._tiddler.text;
+    public getTiddlerText(): string {
+        return this.tiddler.text;
     }
 
-    getTiddlerTitle(): string {
-        return this._tiddlerTitle;
+    public getTiddlerTitle(): string {
+        return this.tiddlerTitle;
     }
 
-    setTiddlerTitle(tiddlerTitle: string){
-        this._tiddlerTitle = recoder({ text: tiddlerTitle });
+    public setTiddlerTitle(tiddlerTitle: string) {
+        this.tiddlerTitle = recoder({ text: tiddlerTitle });
     }
 
-    setTiddlerText(text: string) {
-        this._tiddler.text = text;
+    public setTiddlerText(text: string) {
+        this.tiddler.text = text;
     }
 
-    setTiddlerTags(tags: string){
-        this._tiddler.tags = tags;
+    public setTiddlerTags(tags: string) {
+        this.tiddler.tags = tags;
     }
 
     jsonify() {}

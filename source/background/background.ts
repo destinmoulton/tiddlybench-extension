@@ -13,7 +13,7 @@ import TiddlerDispatcher from "../lib/tiddlers/TiddlerDispatcher";
     const contextMenuStorage = new ContextMenuStorage(configStorage);
     const tabsmanager = new TabsManager();
     const api = new API(configStorage);
-    const messenger = new Messenger(api, configStorage);
+    const messenger = new Messenger();
     const tiddlerDispatcher = new TiddlerDispatcher(
         api,
         configStorage,
