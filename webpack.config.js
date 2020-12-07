@@ -15,6 +15,7 @@ module.exports = {
         options: "./source/options/options.ts",
         popup: "./source/popup/popup.ts",
         tabs: "./source/tabs/tabs.ts",
+        ui: "./source/ui/index.tsx",
     },
     output: {
         path: path.join(__dirname, "distribution"),
