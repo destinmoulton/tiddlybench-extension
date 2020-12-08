@@ -10,6 +10,7 @@ type FormProps = {
 };
 
 class TiddlerForm extends React.Component<FormProps, FormState> {
+    filterInput: React.RefObject<HTMLInputElement>;
     constructor(props: FormProps) {
         super(props);
 
@@ -20,6 +21,12 @@ class TiddlerForm extends React.Component<FormProps, FormState> {
         this.handleChangeTiddlerTitle = this.handleChangeTiddlerTitle.bind(
             this
         );
+        this.filterInput = React.createRef();
+    }
+    componentDidMount() {
+        if (this.filterInput && this.filterInput.current) {
+            this.filterInput.current.focus();
+        }
     }
 
     private handleChangeTiddlerTitle(e: React.ChangeEvent<HTMLInputElement>) {
@@ -37,6 +44,7 @@ class TiddlerForm extends React.Component<FormProps, FormState> {
                     placeholder="Start typing the name of the tiddler..."
                     value={this.state.tiddlerTitle}
                     onChange={this.handleChangeTiddlerTitle}
+                    ref={this.filterInput}
                 />
             </div>
         );
