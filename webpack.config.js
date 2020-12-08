@@ -8,14 +8,14 @@ module.exports = {
     devtool: "source-map",
     stats: "errors-only",
     resolve: {
-        extensions: [".ts", ".js", ".json"],
+        extensions: [".ts", ".tsx", ".js", ".json"],
     },
     entry: {
         background: "./source/background/background.ts",
         options: "./source/options/options.ts",
         popup: "./source/popup/popup.ts",
         tabs: "./source/tabs/tabs.ts",
-        ui: "./source/ui/index.tsx",
+        tiddlerpicker: "./source/TiddlerPicker/index.tsx",
     },
     output: {
         path: path.join(__dirname, "distribution"),
@@ -24,7 +24,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(js|ts|tsx)$/,
+                test: /\.(js|ts|tsx|jsx)$/,
                 loader: "ts-loader",
                 exclude: /node_modules/,
             },
