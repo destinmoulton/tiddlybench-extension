@@ -28,6 +28,12 @@ export interface ITiddlerItem {
     type: string;
 }
 
+// Derived type used when listing tiddlers (ie TiddlerPicker)
+export type TTiddlerListItem = {
+    title: string;
+    id: string;
+};
+
 // A full tiddler
 // Defined at: https://tiddlywiki.com/prerelease/static/TiddlyWeb%2520JSON%2520tiddler%2520format.html
 export interface IFullTiddler {
