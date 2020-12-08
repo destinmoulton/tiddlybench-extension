@@ -29,9 +29,10 @@ class TiddlerPicker extends React.Component<{}, PickerState> {
     }
 
     handleClickAddNewBox() {
-        this.setState({ isFullFormVisible: true });
+        this.setState({ isFullFormVisible: true, isAddNewBoxVisible: false });
     }
 
+    // Determine whether to show the "Add New Tiddler" box
     setNumberVisible(numVisible: number) {
         if (numVisible === 0 && !this.state.isAddNewBoxVisible) {
             this.setState({ isAddNewBoxVisible: true });
