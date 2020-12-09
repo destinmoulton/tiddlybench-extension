@@ -55,12 +55,15 @@ class TiddlerForm extends React.Component<FormProps, FormState> {
             ? "animate-fade-in"
             : "animate-hidden";
         return (
-            <div id="tb-tabs-list-formend-container" className={formClass}>
-                <div>
-                    Tags: <input type="text" id="tb-tp-tags-input" />
+            <div id="tb-tp-form-end-container" className={formClass}>
+                <div className="tb-tp-form-tags-container">
+                    <div className="tb-tp-form-tags-left">Tiddler Tags:</div>
+                    <div className="tb-tp-form-tags-right">
+                        <input type="text" id="tb-tp-tags-input" />
+                    </div>
                 </div>
-                <div>
-                    <button id="tb-tabs-add-tiddler-button">Add Tiddler</button>
+                <div className="tb-tp-form-button-container">
+                    <button id="tb-tp-add-tiddler-button">Add Tiddler</button>
                 </div>
             </div>
         );

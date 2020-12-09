@@ -14,7 +14,7 @@ const LoadingAnimation: React.FunctionComponent<AnimationProps> = ({
                 <div className="tb-loading-ball2"></div>
                 <div className="tb-loading-ball3"></div>
             </div>
-            <div className="tb-loading-text">{{ loadingText }}</div>
+            <div className="tb-loading-text">{loadingText}</div>
         </div>
     );
 };
