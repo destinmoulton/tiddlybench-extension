@@ -132,6 +132,9 @@ class TiddlerForm extends React.Component<FormProps, FormState> {
                             value={tags}
                         />
                     </div>
+                    <div className="tb-tp-form-tags-info">
+                        Wrap multi-word tags in [[]]. ie [[camping equipment]]
+                    </div>
                 </div>
                 <div className="tb-tp-form-button-container">
                     <button
