@@ -7,6 +7,7 @@ import TiddlerList from "./TiddlerList";
 type PickerState = {
     isAddNewBoxVisible: boolean;
     isFullFormVisible: boolean;
+    isListEmpty: boolean;
 
     filterText: string;
 };
@@ -16,6 +17,7 @@ class TiddlerPicker extends React.Component<{}, PickerState> {
         this.state = {
             isAddNewBoxVisible: false,
             isFullFormVisible: false,
+            isListEmpty: true,
             filterText: "",
         };
 
@@ -34,16 +36,24 @@ class TiddlerPicker extends React.Component<{}, PickerState> {
 
     // Determine whether to show the "Add New Tiddler" box
     setNumberVisible(numVisible: number) {
-        if (numVisible === 0 && !this.state.isAddNewBoxVisible) {
-            this.setState({ isAddNewBoxVisible: true });
-        } else if (numVisible > 0 && this.state.isAddNewBoxVisible) {
-            this.setState({ isAddNewBoxVisible: false });
+        const { isAddNewBoxVisible, isFullFormVisible } = this.state;
+        if (numVisible === 0) {
+            this.setState({ isListEmpty: true });
+            if (!isAddNewBoxVisible && !isFullFormVisible) {
+                this.setState({ isAddNewBoxVisible: true });
+            }
+        } else if (numVisible > 0) {
+            this.setState({ isListEmpty: false });
+            if (isAddNewBoxVisible) {
+                this.setState({ isAddNewBoxVisible: false });
+            }
         }
     }
     render() {
         const {
             filterText,
             isAddNewBoxVisible,
+            isListEmpty,
             isFullFormVisible,
         } = this.state;
 
@@ -55,6 +65,7 @@ class TiddlerPicker extends React.Component<{}, PickerState> {
                 </div>
                 <TiddlerForm
                     isFullFormVisible={isFullFormVisible}
+                    isButtonEnabled={isListEmpty}
                     handleChangeFilter={this.handleChangeFilter}
                 />
                 <TiddlerList

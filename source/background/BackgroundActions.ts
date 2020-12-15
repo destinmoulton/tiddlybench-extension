@@ -91,10 +91,10 @@ class BackgroundActions {
                             clickData,
                             tabData
                         );
-                        await this._tabsManager.openListTiddlersTab(cacheID);
+                        await this._tabsManager.openTiddlerPicker(cacheID);
                         break;
                     }
-                    case EDispatchAction.ADD_TEXT_TO_TIDDLER: 
+                    case EDispatchAction.ADD_TEXT_TO_TIDDLER:
                     case EDispatchAction.ADD_BOOKMARK_TO_TIDDLER: {
                         const options: IDispatchOptions = {
                             action: params["action"],
@@ -124,13 +124,17 @@ class BackgroundActions {
                         break;
                     }
                     default: {
-                        throw new Error(`BackgroundAction :: The action ${params['action']} is not a defined option`)
+                        throw new Error(
+                            `BackgroundAction :: The action ${params["action"]} is not a defined option`
+                        );
                     }
                 }
                 break;
             }
-            default:{
-                throw new Error(`BackgroundActions :: The command ${command} is not a defined option.`)
+            default: {
+                throw new Error(
+                    `BackgroundActions :: The command ${command} is not a defined option.`
+                );
             }
         }
     }

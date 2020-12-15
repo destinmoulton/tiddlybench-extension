@@ -4,8 +4,8 @@
 export enum EExtensionURL {
     Popup,
     Settings,
-    ChooseTiddler,
     TiddlerForm,
+    TiddlerPicker,
 }
 
 /**
@@ -78,7 +78,7 @@ export enum EDispatchAction {
     ADD_TIDDLER_WITH_TEXT = "add_tiddler_with_text",
     CHANGE_BLOCKTYPE = "change_blocktype",
     CHOOSE_CUSTOM_DESTINATION = "choose_custom_destination",
-    CONFIGURE = "configure"
+    CONFIGURE = "configure",
 }
 
 export enum EDispatchSource {

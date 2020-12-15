@@ -5,6 +5,7 @@ type FormState = {
     tags: string;
 };
 type FormProps = {
+    isButtonEnabled: boolean;
     isFullFormVisible: boolean;
     handleChangeFilter: (newFilterText: string) => void;
 };
@@ -51,6 +52,7 @@ class TiddlerForm extends React.Component<FormProps, FormState> {
     }
 
     private buildLowerForm() {
+        let { isButtonEnabled } = this.props;
         let formClass = this.props.isFullFormVisible
             ? "animate-fade-in"
             : "animate-hidden";
@@ -63,7 +65,12 @@ class TiddlerForm extends React.Component<FormProps, FormState> {
                     </div>
                 </div>
                 <div className="tb-tp-form-button-container">
-                    <button id="tb-tp-add-tiddler-button">Add Tiddler</button>
+                    <button
+                        id="tb-tp-add-tiddler-button"
+                        disabled={!isButtonEnabled}
+                    >
+                        Add Tiddler
+                    </button>
                 </div>
             </div>
         );
