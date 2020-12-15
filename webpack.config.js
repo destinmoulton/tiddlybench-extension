@@ -14,7 +14,6 @@ module.exports = {
         background: "./source/background/background.ts",
         options: "./source/options/options.ts",
         popup: "./source/popup/popup.ts",
-        tabs: "./source/tabs/tabs.ts",
         tiddlerpicker: "./source/TiddlerPicker/index.tsx",
     },
     output: {

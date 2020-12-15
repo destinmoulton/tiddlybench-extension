@@ -16,7 +16,6 @@ gulp.task("remove-compiled-html", () => {
             [
                 "./distribution/options/options.html",
                 "./distribution/popup/popup.html",
-                "./distribution/tabs/tabs.html",
                 "./distribution/tiddlerpicker/tiddlerpicker.html",
             ],
             { allowEmpty: true }
@@ -39,13 +38,6 @@ gulp.task("compile-options-partials", function() {
         .pipe(gulp.dest("./distribution/options/"));
 });
 
-gulp.task("compile-tabs-partials", function() {
-    return gulp
-        .src("./templates/tabs/tabs.html")
-        .pipe(partial({ basePath: "./templates/tabs/partials/" }))
-        .pipe(gulp.dest("./distribution/tabs/"));
-});
-
 gulp.task("compile-tiddlerpicker-partials", function() {
     return gulp
         .src("./templates/tiddlerpicker/tiddlerpicker.html")
@@ -58,7 +50,6 @@ gulp.task(
         "remove-compiled-html",
         "compile-popup-partials",
         "compile-options-partials",
-        "compile-tabs-partials",
         "compile-tiddlerpicker-partials",
         "compile-scss",
     ])
@@ -71,7 +62,6 @@ gulp.task("watch", function() {
             "remove-compiled-html",
             "compile-popup-partials",
             "compile-options-partials",
-            "compile-tabs-partials",
             "compile-tiddlerpicker-partials",
         ])
     );
