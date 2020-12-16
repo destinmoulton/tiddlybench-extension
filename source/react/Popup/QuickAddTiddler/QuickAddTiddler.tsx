@@ -40,7 +40,6 @@ class QuickAddTiddler extends React.Component<{}, QAState> {
                         <span className="jam jam-plus-rectangle"></span>
                         &nbsp;Quick Add to Tiddler
                     </legend>
-                    <div className="pure-control-group"></div>
                     <div className="pure-control-group">
                         <textarea
                             id="tb-popup-quickadd-contents"
