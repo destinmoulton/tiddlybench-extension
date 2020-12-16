@@ -1,5 +1,6 @@
 import React from "react";
 
+import BlockTypeSelector from "./BlockTypeSelector";
 type QAState = {
     quickAddText: string;
     selectedDestination: string;
@@ -14,9 +15,24 @@ class QuickAddTiddler extends React.Component<{}, QAState> {
             selectedDestination: "",
             selectedBlockType: "",
         };
+        this.handleChangeSelectedBlockType = this.handleChangeSelectedBlockType.bind(
+            this
+        );
+        this.handleChangeText = this.handleChangeText.bind(this);
     }
 
+    handleChangeSelectedBlockType(e: React.ChangeEvent<HTMLSelectElement>) {
+        this.setState({ selectedBlockType: e.currentTarget.value });
+    }
+
+    handleChangeText(e: React.ChangeEvent<HTMLTextAreaElement>) {
+        this.setState({ quickAddText: e.currentTarget.value });
+    }
+
+    handleClickButton() {}
+
     render() {
+        const { selectedBlockType, quickAddText } = this.state;
         return (
             <form className="pure-form ">
                 <fieldset>
@@ -26,7 +42,11 @@ class QuickAddTiddler extends React.Component<{}, QAState> {
                     </legend>
                     <div className="pure-control-group"></div>
                     <div className="pure-control-group">
-                        <textarea id="tb-popup-quickadd-contents"></textarea>
+                        <textarea
+                            id="tb-popup-quickadd-contents"
+                            value={quickAddText}
+                            onChange={this.handleChangeText}
+                        ></textarea>
                     </div>
                     <div className="pure-control-group tb-popup-quickadd-destination-container">
                         <label htmlFor="tb-popup-quickadd-type">
@@ -37,7 +57,10 @@ class QuickAddTiddler extends React.Component<{}, QAState> {
                             <option value="inbox">Inbox</option>
                         </select>
                         <label htmlFor="tb-popup-quickadd-blocktype">As</label>
-                        <select id="tb-popup-quickadd-blocktype"></select>
+                        <BlockTypeSelector
+                            handleChange={this.handleChangeSelectedBlockType}
+                            selectedBlockType={selectedBlockType}
+                        />
                     </div>
                     <div className="pure-control-group tb-popup-quickadd-button-container">
                         <button
@@ -53,3 +76,5 @@ class QuickAddTiddler extends React.Component<{}, QAState> {
         );
     }
 }
+
+export default QuickAddTiddler;
