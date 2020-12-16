@@ -9,7 +9,7 @@ type State = {
     selectedDestination: string;
     selectedBlockType: string;
 };
-class QuickAddTiddler extends React.Component<Props, State> {
+class QuickAdd extends React.Component<Props, State> {
     constructor(props: Props) {
         super(props);
 
@@ -73,4 +73,4 @@ class QuickAddTiddler extends React.Component<Props, State> {
     }
 }
 
-export default QuickAddTiddler;
+export default QuickAdd;
