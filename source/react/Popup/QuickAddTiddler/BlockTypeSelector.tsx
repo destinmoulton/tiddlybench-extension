@@ -23,9 +23,12 @@ const BlockTypeSelector: React.FunctionComponent<BlockType> = ({
         );
     }
     return (
-        <select onChange={handleChange} value={selectedBlockType}>
-            {options}
-        </select>
+        <span>
+            <label htmlFor="tb-popup-quickadd-blocktype">As</label>
+            <select onChange={handleChange} value={selectedBlockType}>
+                {options}
+            </select>
+        </span>
     );
 };
 

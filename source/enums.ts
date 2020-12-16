@@ -72,6 +72,11 @@ export enum EDestinationTiddler {
     CUSTOM = "custom",
 }
 
+export enum EQuickAddDestinations {
+    INBOX = "inbox",
+    JOURNAL = "journal",
+}
+
 export enum EDispatchAction {
     ADD_BOOKMARK_TO_TIDDLER = "add_bookmark_to_tiddler",
     ADD_TEXT_TO_TIDDLER = "add_text_to_tiddler",

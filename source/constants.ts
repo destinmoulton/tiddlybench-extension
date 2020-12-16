@@ -1,4 +1,4 @@
-import { EBlockType, EContextType } from "./enums";
+import { EBlockType, EContextType, EQuickAddDestinations } from "./enums";
 import { TContextTypes } from "./types";
 /**
  * Define the available block types
@@ -9,6 +9,11 @@ export const BLOCK_TYPES = {
     [EBlockType.PARAGRAPH]: "Paragraph",
     [EBlockType.ULITEM]: "Unordered List Item",
     [EBlockType.OLITEM]: "Ordered List Item",
+};
+
+export const QUICK_ADD_DESTINATIONS = {
+    [EQuickAddDestinations.INBOX]: "Inbox",
+    [EQuickAddDestinations.JOURNAL]: "Journal",
 };
 
 export const CONTEXT_TYPE_TITLES: TContextTypes = {

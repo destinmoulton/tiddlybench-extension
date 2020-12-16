@@ -1,16 +1,20 @@
 import React from "react";
 
-import BlockTypeSelector from "./BlockTypeSelector";
-type QAState = {
+import QuickAddForm from "./QuickAddForm";
+import LoadingAnimation from "../../shared/LoadingAnimation";
+type Props = {};
+type State = {
+    isProcessingForm: boolean;
     quickAddText: string;
     selectedDestination: string;
     selectedBlockType: string;
 };
-class QuickAddTiddler extends React.Component<{}, QAState> {
-    constructor() {
-        super({});
+class QuickAddTiddler extends React.Component<Props, State> {
+    constructor(props: Props) {
+        super(props);
 
         this.state = {
+            isProcessingForm: false,
             quickAddText: "",
             selectedDestination: "",
             selectedBlockType: "",
@@ -18,7 +22,15 @@ class QuickAddTiddler extends React.Component<{}, QAState> {
         this.handleChangeSelectedBlockType = this.handleChangeSelectedBlockType.bind(
             this
         );
+        this.handleChangeSelectedDestination = this.handleChangeSelectedDestination.bind(
+            this
+        );
         this.handleChangeText = this.handleChangeText.bind(this);
+        this.handleClickButton = this.handleClickButton.bind(this);
+    }
+
+    handleChangeSelectedDestination(e: React.ChangeEvent<HTMLSelectElement>) {
+        this.setState({ selectedDestination: e.currentTarget.value });
     }
 
     handleChangeSelectedBlockType(e: React.ChangeEvent<HTMLSelectElement>) {
@@ -29,49 +41,34 @@ class QuickAddTiddler extends React.Component<{}, QAState> {
         this.setState({ quickAddText: e.currentTarget.value });
     }
 
-    handleClickButton() {}
+    handleClickButton(e: React.MouseEvent<HTMLButtonElement>) {
+        this.setState({ isProcessingForm: true });
+        console.log("clicked button", this.state, e);
+    }
 
     render() {
-        const { selectedBlockType, quickAddText } = this.state;
+        const {
+            isProcessingForm,
+            quickAddText,
+            selectedDestination,
+            selectedBlockType,
+        } = this.state;
+
+        if (isProcessingForm) {
+            return <LoadingAnimation loadingText={"Adding tiddler..."} />;
+        }
         return (
-            <form className="pure-form ">
-                <fieldset>
-                    <legend>
-                        <span className="jam jam-plus-rectangle"></span>
-                        &nbsp;Quick Add to Tiddler
-                    </legend>
-                    <div className="pure-control-group">
-                        <textarea
-                            id="tb-popup-quickadd-contents"
-                            value={quickAddText}
-                            onChange={this.handleChangeText}
-                        ></textarea>
-                    </div>
-                    <div className="pure-control-group tb-popup-quickadd-destination-container">
-                        <label htmlFor="tb-popup-quickadd-type">
-                            Quick Add to
-                        </label>
-                        <select id="tb-popup-quickadd-type">
-                            <option value="journal">Journal</option>
-                            <option value="inbox">Inbox</option>
-                        </select>
-                        <label htmlFor="tb-popup-quickadd-blocktype">As</label>
-                        <BlockTypeSelector
-                            handleChange={this.handleChangeSelectedBlockType}
-                            selectedBlockType={selectedBlockType}
-                        />
-                    </div>
-                    <div className="pure-control-group tb-popup-quickadd-button-container">
-                        <button
-                            type="button"
-                            id="tb-popup-quickadd-submit-button"
-                            className="tb-btn tb-btn-primary"
-                        >
-                            Add Text
-                        </button>
-                    </div>
-                </fieldset>
-            </form>
+            <QuickAddForm
+                quickAddText={quickAddText}
+                selectedDestination={selectedDestination}
+                selectedBlockType={selectedBlockType}
+                handleChangeDestination={this.handleChangeSelectedDestination}
+                handleChangeSelectedBlockType={
+                    this.handleChangeSelectedBlockType
+                }
+                handleChangeText={this.handleChangeText}
+                handleClickButton={this.handleClickButton}
+            />
         );
     }
 }
