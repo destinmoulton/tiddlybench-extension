@@ -15,6 +15,7 @@ import {
     EDispatchSource,
     EMessengerAction,
     EMessengerSource,
+    EQuickAddDestinations,
 } from "./enums";
 
 // The tiddler that is returned by get calls
@@ -149,8 +150,8 @@ export interface IDispatchPacket {
 }
 export interface IDispatchOptions {
     action: EDispatchAction;
-    destination: EDestinationTiddler;
-    context: EContextType;
+    destination: EDestinationTiddler | EQuickAddDestinations;
+    context?: EContextType;
     source: EDispatchSource;
     packet: IDispatchPacket;
 }
