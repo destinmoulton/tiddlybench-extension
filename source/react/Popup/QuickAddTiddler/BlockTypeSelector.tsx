@@ -1,7 +1,7 @@
 import React from "react";
 
-import { EBlockType } from "../../enums";
-import { BLOCK_TYPES } from "../../constants";
+import { EBlockType } from "../../../enums";
+import { BLOCK_TYPES } from "../../../constants";
 
 type BlockType = {
     selectedBlockType: string;

@@ -1,21 +1,21 @@
 import React from "react";
 import _ from "lodash";
 import md5 from "md5";
-import ConfigStorage from "../lib/storage/ConfigStorage";
-import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
-import Messenger from "../lib/Messenger";
-import notify from "../lib/notify";
-import TabsManager from "../lib/TabsManager";
-import urlhashparser from "../lib/helpers/urlhashparser";
+import ConfigStorage from "../../lib/storage/ConfigStorage";
+import ContextMenuStorage from "../../lib/storage/ContextMenuStorage";
+import Messenger from "../../lib/Messenger";
+import notify from "../../lib/notify";
+import TabsManager from "../../lib/TabsManager";
+import urlhashparser from "../../lib/helpers/urlhashparser";
 
-import { IDispatchOptions } from "../types";
+import { IDispatchOptions } from "../../types";
 
 import {
     EContextType,
     EDestinationTiddler,
     EDispatchAction,
     EDispatchSource,
-} from "../enums";
+} from "../../enums";
 type FormState = {
     tiddlerTitle: string;
     tags: string;

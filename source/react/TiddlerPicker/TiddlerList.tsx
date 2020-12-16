@@ -2,24 +2,24 @@ import React from "react";
 
 import _ from "lodash";
 import md5 from "md5";
-import API from "../lib/API";
-import ConfigStorage from "../lib/storage/ConfigStorage";
-import ContextMenuStorage from "../lib/storage/ContextMenuStorage";
-import LoadingAnimation from "./LoadingAnimation";
-import Messenger from "../lib/Messenger";
-import notify from "../lib/notify";
-import TabsManager from "../lib/TabsManager";
+import API from "../../lib/API";
+import ConfigStorage from "../../lib/storage/ConfigStorage";
+import ContextMenuStorage from "../../lib/storage/ContextMenuStorage";
+import LoadingAnimation from "../shared/LoadingAnimation";
+import Messenger from "../../lib/Messenger";
+import notify from "../../lib/notify";
+import TabsManager from "../../lib/TabsManager";
 import TiddlerListItem from "./TiddlerListItem";
-import urlhashparser from "../lib/helpers/urlhashparser";
+import urlhashparser from "../../lib/helpers/urlhashparser";
 
-import { IDispatchOptions } from "../types";
+import { IDispatchOptions } from "../../types";
 
 import {
     EContextType,
     EDestinationTiddler,
     EDispatchAction,
     EDispatchSource,
-} from "../enums";
+} from "../../enums";
 type TTiddlerListItem = {
     title: string;
     id: string;

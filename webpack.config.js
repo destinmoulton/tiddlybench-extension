@@ -13,8 +13,8 @@ module.exports = {
     entry: {
         background: "./source/background/background.ts",
         options: "./source/options/options.ts",
-        popup: "./source/popup/index.tsx",
-        tiddlerpicker: "./source/TiddlerPicker/index.tsx",
+        popup: "./source/react/Popup/index.tsx",
+        tiddlerpicker: "./source/react/TiddlerPicker/index.tsx",
     },
     output: {
         path: path.join(__dirname, "distribution"),
