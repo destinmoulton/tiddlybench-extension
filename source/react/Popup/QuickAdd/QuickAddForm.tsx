@@ -11,7 +11,7 @@ type Props = {
         e: React.ChangeEvent<HTMLSelectElement>
     ) => void;
     handleChangeText: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
-    handleClickButton: (e: React.MouseEvent<HTMLButtonElement>) => void;
+    handleClickSubmit: () => void;
 };
 
 const QuickAddForm: React.FunctionComponent<Props> = ({
@@ -21,8 +21,15 @@ const QuickAddForm: React.FunctionComponent<Props> = ({
     handleChangeSelectedBlockType,
     handleChangeDestination,
     handleChangeText,
-    handleClickButton,
+    handleClickSubmit,
 }) => {
+    const textareaKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        console.log(e);
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleClickSubmit();
+        }
+    };
     return (
         <form className="pure-form ">
             <fieldset>
@@ -33,6 +40,7 @@ const QuickAddForm: React.FunctionComponent<Props> = ({
                 <div className="pure-control-group">
                     <textarea
                         autoFocus
+                        onKeyDown={textareaKeyDown}
                         id="tb-popup-quickadd-contents"
                         value={quickAddText}
                         onChange={handleChangeText}
@@ -53,7 +61,7 @@ const QuickAddForm: React.FunctionComponent<Props> = ({
                         type="button"
                         id="tb-popup-quickadd-submit-button"
                         className="tb-btn tb-btn-primary"
-                        onClick={handleClickButton}
+                        onClick={handleClickSubmit}
                     >
                         Add Text
                     </button>
