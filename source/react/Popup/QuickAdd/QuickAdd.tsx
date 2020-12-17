@@ -3,25 +3,27 @@ import _ from "lodash";
 import QuickAddForm from "./QuickAddForm";
 import LoadingAnimation from "../../shared/LoadingAnimation";
 import {
-    EQuickAddDestinations,
+    EBlockType,
+    EConfigKey,
     EDispatchAction,
     EDispatchSource,
+    EQuickAddDestinations,
 } from "../../../enums";
 import { IDispatchOptions } from "../../../types";
 import { TBContext } from "../../TBContext";
 
-const INITIAL_STATE = {
-    isProcessingForm: false,
-    quickAddText: "",
-    selectedDestination: EQuickAddDestinations.JOURNAL,
-    selectedBlockType: "",
-};
 type Props = {};
 type State = {
     isProcessingForm: boolean;
     quickAddText: string;
     selectedDestination: EQuickAddDestinations;
     selectedBlockType: string;
+};
+const INITIAL_STATE: State = {
+    isProcessingForm: false,
+    quickAddText: "",
+    selectedDestination: EQuickAddDestinations.JOURNAL,
+    selectedBlockType: EBlockType.ULITEM,
 };
 class QuickAdd extends React.Component<Props, State> {
     static contextType = TBContext;
@@ -39,6 +41,20 @@ class QuickAdd extends React.Component<Props, State> {
         this.handleClickButton = this.handleClickButton.bind(this);
     }
 
+    async componentDidMount() {
+        // Populate the default selections via configStorage
+        const defaultDestination = await this.context.configStorage.get(
+            EConfigKey.QUICKADD_DEFAULT_DESTINATION
+        );
+        const defaultBlockType = await this.context.configStorage.get(
+            EConfigKey.QUICKADD_DEFAULT_BLOCKTYPE
+        );
+        this.setState({
+            selectedBlockType: defaultBlockType,
+            selectedDestination: defaultDestination,
+        });
+    }
+
     handleChangeSelectedDestination(e: React.ChangeEvent<HTMLSelectElement>) {
         this.setState({
             selectedDestination: e.currentTarget.value as EQuickAddDestinations,
@@ -53,7 +69,7 @@ class QuickAdd extends React.Component<Props, State> {
         this.setState({ quickAddText: e.currentTarget.value });
     }
 
-    handleClickButton() {
+    async handleClickButton() {
         const {
             quickAddText,
             selectedDestination,
@@ -75,13 +91,15 @@ class QuickAdd extends React.Component<Props, State> {
                 blockType: selectedBlockType,
             },
         };
-        console.log(msg);
-        this.context.messenger.send(msg);
+        await this.context.messenger.send(msg);
         this.resetState();
     }
 
     private resetState() {
-        this.setState(_.cloneDeep(INITIAL_STATE));
+        this.setState({
+            isProcessingForm: false,
+            quickAddText: _.clone(INITIAL_STATE.quickAddText),
+        });
     }
 
     render() {
