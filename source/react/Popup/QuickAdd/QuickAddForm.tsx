@@ -32,6 +32,7 @@ const QuickAddForm: React.FunctionComponent<Props> = ({
                 </legend>
                 <div className="pure-control-group">
                     <textarea
+                        autoFocus
                         id="tb-popup-quickadd-contents"
                         value={quickAddText}
                         onChange={handleChangeText}

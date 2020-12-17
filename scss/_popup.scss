@@ -64,6 +64,12 @@ ul.tb-popup-main-menu {
         textarea {
             margin-bottom: 4px;
         }
+        select {
+            margin-left: 4px;
+        }
+        .jam {
+            font-size: 16px;
+        }
         .tb-popup-quickadd-destination-container {
             width: 100%;
             text-align: right;
@@ -78,6 +84,9 @@ ul.tb-popup-main-menu {
         #tb-popup-quickadd-contents {
             width: 100%;
             min-height: 3em;
+        }
+        #tb-popup-quickadd-type {
+            margin-right: 4px;
         }
     }
 }

@@ -96,17 +96,21 @@ class QuickAdd extends React.Component<Props, State> {
             return <LoadingAnimation loadingText={"Adding tiddler..."} />;
         }
         return (
-            <QuickAddForm
-                quickAddText={quickAddText}
-                selectedDestination={selectedDestination}
-                selectedBlockType={selectedBlockType}
-                handleChangeDestination={this.handleChangeSelectedDestination}
-                handleChangeSelectedBlockType={
-                    this.handleChangeSelectedBlockType
-                }
-                handleChangeText={this.handleChangeText}
-                handleClickButton={this.handleClickButton}
-            />
+            <div id="tb-popup-quickadd-box">
+                <QuickAddForm
+                    quickAddText={quickAddText}
+                    selectedDestination={selectedDestination}
+                    selectedBlockType={selectedBlockType}
+                    handleChangeDestination={
+                        this.handleChangeSelectedDestination
+                    }
+                    handleChangeSelectedBlockType={
+                        this.handleChangeSelectedBlockType
+                    }
+                    handleChangeText={this.handleChangeText}
+                    handleClickButton={this.handleClickButton}
+                />
+            </div>
         );
     }
 }
