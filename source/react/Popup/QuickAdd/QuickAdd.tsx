@@ -1,6 +1,5 @@
 import React from "react";
 import _ from "lodash";
-import Messenger from "../../../lib/Messenger";
 import QuickAddForm from "./QuickAddForm";
 import LoadingAnimation from "../../shared/LoadingAnimation";
 import {
@@ -9,6 +8,7 @@ import {
     EDispatchSource,
 } from "../../../enums";
 import { IDispatchOptions } from "../../../types";
+import { TBContext } from "../../TBContext";
 
 const INITIAL_STATE = {
     isProcessingForm: false,
@@ -24,10 +24,9 @@ type State = {
     selectedBlockType: string;
 };
 class QuickAdd extends React.Component<Props, State> {
-    private messenger: Messenger;
+    static contextType = TBContext;
     constructor(props: Props) {
         super(props);
-        this.messenger = new Messenger();
 
         this.state = _.cloneDeep(INITIAL_STATE);
         this.handleChangeSelectedBlockType = this.handleChangeSelectedBlockType.bind(
@@ -76,7 +75,8 @@ class QuickAdd extends React.Component<Props, State> {
                 blockType: selectedBlockType,
             },
         };
-        this.messenger.send(msg);
+        console.log(msg);
+        this.context.messenger.send(msg);
         this.resetState();
     }
 
@@ -108,7 +108,7 @@ class QuickAdd extends React.Component<Props, State> {
                         this.handleChangeSelectedBlockType
                     }
                     handleChangeText={this.handleChangeText}
-                    handleClickButton={this.handleClickButton}
+                    handleClickSubmit={this.handleClickButton}
                 />
             </div>
         );
